@@ -8,13 +8,10 @@ import org.springframework.stereotype.Service;
 import com.openclassrooms.safetynetalerts.model.FireStation;
 import com.openclassrooms.safetynetalerts.repository.FireStationRepository;
 
-import lombok.Data;
-
-@Data
 @Service
 public class FireStationService {
 	
-	@Autowired
+	/*@Autowired
 	private FireStationRepository fireStationRepository;
 	
 	public Optional<FireStation> getFireStation(final Long id) {
@@ -27,6 +24,6 @@ public class FireStationService {
 	
 	public FireStation saveFireStation(FireStation fireStation) {
 		return fireStationRepository.save(fireStation);
-	}
+	}*/
 		
 }
