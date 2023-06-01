@@ -1,5 +1,6 @@
 package com.openclassrooms.safetynetalerts.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -7,18 +8,23 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.openclassrooms.safetynetalerts.model.FireStation;
+import com.openclassrooms.safetynetalerts.service.FireStationService;
+
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.Optional;
 
 import org.json.JSONObject;
 
 @RestController
 public class FireStationController {
+	
+	@Autowired
+	FireStationService fireStationService;
 
 	private ArrayList<JSONObject> persons = new ArrayList<JSONObject>(Arrays.asList(
 			new JSONObject().put("firstName", "John").put("lastName", "Boyd").put("address", "1509 Culver St")
@@ -223,7 +229,12 @@ public class FireStationController {
 		}
 		return result;
 	}
-
+	
+	@GetMapping("/firestationrepository")
+	public Iterable<FireStation> getAllFireStations() {
+		return fireStationService.getAllFireStations();
+	}
+	
 	/**
 	 * Put - Changes the station number of a firestation in the database
 	 * 
@@ -232,29 +243,20 @@ public class FireStationController {
 	 */
 	@PutMapping("/firestation")
 	public void putFireStation(@RequestParam(value = "address") String address,
-			@RequestParam(value = "stationNumber") Optional<Integer> stationNumber) {
-		if (stationNumber.isPresent()) {
-			for (JSONObject fireStation : fireStations) {
-				if (fireStation.getString("address").equals(address)) {
-					int i = fireStations.indexOf(fireStation);
-					fireStation.remove("station");
-					fireStation.put("station", stationNumber.get());
-					fireStations.set(i, fireStation);
-				}
-			}
-		}
+			@RequestParam(value = "stationNumber") int stationNumber) {
+		fireStationService.putFireStation(new FireStation(address, stationNumber));
 	}
 
 	/**
 	 * Post - Adds a new firestation to the database
 	 * 
-	 * @param - A String corresponding to the address of the fire station
-	 *  and an int corresponding to the fire station number
+	 * @param - A String corresponding to the address of the fire station and an int
+	 *          corresponding to the fire station number
 	 */
 	@PostMapping("/firestation")
 	public void postFireStation(@RequestParam(value = "address") String address,
 			@RequestParam(value = "stationNumber", defaultValue = "0") int stationNumber) {
-		fireStations.add(new JSONObject().put("address", address).put("station", stationNumber));
+		fireStationService.postFireStation(new FireStation(address, stationNumber));
 	}
 
 	/**
@@ -266,19 +268,9 @@ public class FireStationController {
 	@DeleteMapping("/firestation")
 	public void deleteFireStation(@RequestParam(value = "address") Optional<String> address,
 			@RequestParam(value = "stationNumber") Optional<Integer> stationNumber) {
-		Iterator<JSONObject> ite = fireStations.iterator();
-		while (ite.hasNext()) {
-			JSONObject fireStation = ite.next();
-			if (address.isPresent()) {
-				if (fireStation.getString("address").equals(address.get())) {
-					ite.remove();
-				}
-			} else {
-				if (stationNumber.isPresent())
-					if (fireStation.getInt("station") == stationNumber.get()) {
-						ite.remove();
-					}
-			}
-		}
+		if(address.isPresent())
+			fireStationService.deleteFireStation(address.get());
+		if(stationNumber.isPresent())
+			fireStationService.deleteFireStation(stationNumber.get());
 	}
 }
