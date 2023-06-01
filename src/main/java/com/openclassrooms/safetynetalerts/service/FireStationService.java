@@ -23,7 +23,7 @@ public class FireStationService {
 	 * address is found
 	 */
 	public boolean deleteFireStation(String address) {
-		ArrayList<FireStation> fireStations = fireStationRepository.findByAddress(address);
+		ArrayList<FireStation> fireStations = new ArrayList<FireStation>(fireStationRepository.findByAddress(address));
 		if (fireStations.isEmpty())
 			return false;
 		else {
@@ -42,7 +42,7 @@ public class FireStationService {
 	 * station number is found
 	 */
 	public boolean deleteFireStation(int stationNumber) {
-		ArrayList<FireStation> fireStations = fireStationRepository.findByStationNumber(stationNumber);
+		ArrayList<FireStation> fireStations = new ArrayList<FireStation>(fireStationRepository.findByStationNumber(stationNumber));
 		if (fireStations.isEmpty())
 			return false;
 		else {
@@ -60,7 +60,7 @@ public class FireStationService {
 	 * @return - A boolean that is false if the fire station is not found
 	 */
 	public boolean deleteFireStation(FireStation fireStation) {
-		ArrayList<FireStation> fireStations = fireStationRepository.findByAddress(fireStation.getAddress());
+		ArrayList<FireStation> fireStations = new ArrayList<FireStation>(fireStationRepository.findByAddress(fireStation.getAddress()));
 		if (fireStations.isEmpty())
 			return false;
 		else {
@@ -103,7 +103,7 @@ public class FireStationService {
 	 */
 	public Iterable<FireStation> getFireStation(FireStation fireStation) {
 		ArrayList<FireStation> result = new ArrayList<FireStation>();
-		result = fireStationRepository.findByAddress(fireStation.getAddress());
+		result = new ArrayList<FireStation>(fireStationRepository.findByAddress(fireStation.getAddress()));
 		for (FireStation fireStationByAddress : result) {
 			if (fireStationByAddress.getStationNumber() != fireStation.getStationNumber())
 				result.remove(fireStationByAddress);
@@ -125,9 +125,9 @@ public class FireStationService {
 	 * 
 	 * @param - A FireStation representing a fire station
 	 * 
-	 * @return - A FireStation
+	 * @return - true if the fire station was correctly saved
 	 */
-	public FireStation postFireStation(FireStation fireStation) {
+	public boolean postFireStation(FireStation fireStation) {
 		return fireStationRepository.save(fireStation);
 	}
 
@@ -139,9 +139,9 @@ public class FireStationService {
 	 * 
 	 * @param - A FireStation representing a fire station
 	 * 
-	 * @return - A FireStation
+	 * @return - true if the fire station was correctly saved
 	 */
-	public FireStation putFireStation(FireStation fireStation) {
+	public boolean putFireStation(FireStation fireStation) {
 		for (FireStation fireStationInDB : fireStationRepository.findByAddress(fireStation.getAddress()))
 			fireStationRepository.delete(fireStationInDB);
 		return fireStationRepository.save(fireStation);
