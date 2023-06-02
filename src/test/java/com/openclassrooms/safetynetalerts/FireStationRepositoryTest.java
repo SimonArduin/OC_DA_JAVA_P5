@@ -32,6 +32,10 @@ public class FireStationRepositoryTest {
 	}
 
 	@Test
+	void contextLoads() {
+	}
+	
+	@Test
 	public void deleteTest() {
 		assertTrue(fireStationRepository.delete(fireStation));
 	}
@@ -52,8 +56,14 @@ public class FireStationRepositoryTest {
 	@Test
 	public void findByAddressTest() {
 		ArrayList<FireStation> result = new ArrayList<FireStation>(fireStationRepository.findByAddress(fireStation.getAddress()));
+		boolean wrongAddress = false;
+		for(FireStation fireStationInResult : result) {
+			if(!fireStationInResult.getAddress().equals(fireStation.getAddress()))
+				wrongAddress = true;
+		}
 		assertEquals(result.size(), nbOfFireStationsWithAddress);
 		assertTrue(result.contains(fireStation));
+		assertFalse(wrongAddress);
 	}
 	
 	@Test
@@ -64,8 +74,14 @@ public class FireStationRepositoryTest {
 	@Test
 	public void findByStationNumberTest() {
 		ArrayList<FireStation> result = new ArrayList<FireStation>(fireStationRepository.findByStationNumber(fireStation.getStationNumber()));
+		boolean wrongStationNumber = false;
+		for(FireStation fireStationInResult : result) {
+			if(fireStationInResult.getStationNumber() != fireStation.getStationNumber())
+				wrongStationNumber = true;
+		}
 		assertEquals(result.size(), nbOfFireStationsWithStationNumber);
 		assertTrue(result.contains(fireStation));
+		assertFalse(wrongStationNumber);
 	}
 	
 	@Test
