@@ -48,6 +48,15 @@ public class FireStationRepository {
 		return fireStations;
 	}
 
+	public List<FireStation> find(FireStation fireStation) {
+		ArrayList<FireStation> result = new ArrayList<FireStation>();
+		for (FireStation fireStationInDB : fireStations) {
+			if (fireStation.equals(fireStationInDB))
+				result.add(fireStationInDB);
+		}
+		return result;
+	}
+
 	public List<FireStation> findByAddress(String address) {
 		ArrayList<FireStation> result = new ArrayList<FireStation>();
 		for (FireStation fireStation : fireStations) {

@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.springframework.stereotype.Repository;
+
 import com.openclassrooms.safetynetalerts.model.Person;
 
+@Repository
 public class PersonRepository {
 
 	private ArrayList<Person> persons = new ArrayList<Person>(Arrays.asList(

@@ -1,6 +1,7 @@
 package com.openclassrooms.safetynetalerts.service;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,7 +43,8 @@ public class FireStationService {
 	 * station number is found
 	 */
 	public boolean deleteFireStation(int stationNumber) {
-		ArrayList<FireStation> fireStations = new ArrayList<FireStation>(fireStationRepository.findByStationNumber(stationNumber));
+		ArrayList<FireStation> fireStations = new ArrayList<FireStation>(
+				fireStationRepository.findByStationNumber(stationNumber));
 		if (fireStations.isEmpty())
 			return false;
 		else {
@@ -60,14 +62,13 @@ public class FireStationService {
 	 * @return - A boolean that is false if the fire station is not found
 	 */
 	public boolean deleteFireStation(FireStation fireStation) {
-		ArrayList<FireStation> fireStations = new ArrayList<FireStation>(fireStationRepository.findByAddress(fireStation.getAddress()));
+		ArrayList<FireStation> fireStations = new ArrayList<FireStation>(
+				fireStationRepository.find(fireStation));
 		if (fireStations.isEmpty())
 			return false;
 		else {
-			for (FireStation fireStationByAddress : fireStations) {
-				if (fireStationByAddress.equals(fireStation))
-					fireStationRepository.delete(fireStation);
-			}
+			for (FireStation fireStationInDB : fireStations)
+				fireStationRepository.delete(fireStationInDB);
 			return true;
 		}
 	}
@@ -79,7 +80,7 @@ public class FireStationService {
 	 * 
 	 * @return - An Iterable<FireStation>
 	 */
-	public Iterable<FireStation> getFireStation(String address) {
+	public List<FireStation> getFireStation(String address) {
 		return fireStationRepository.findByAddress(address);
 	}
 
@@ -90,7 +91,7 @@ public class FireStationService {
 	 * 
 	 * @return - An Iterable<FireStation>
 	 */
-	public Iterable<FireStation> getFireStation(int stationNumber) {
+	public List<FireStation> getFireStation(int stationNumber) {
 		return fireStationRepository.findByStationNumber(stationNumber);
 	}
 
@@ -101,7 +102,7 @@ public class FireStationService {
 	 * 
 	 * @return - An Iterable<FireStation>
 	 */
-	public Iterable<FireStation> getFireStation(FireStation fireStation) {
+	public List<FireStation> getFireStation(FireStation fireStation) {
 		ArrayList<FireStation> result = new ArrayList<FireStation>();
 		result = new ArrayList<FireStation>(fireStationRepository.findByAddress(fireStation.getAddress()));
 		for (FireStation fireStationByAddress : result) {
@@ -116,7 +117,7 @@ public class FireStationService {
 	 * 
 	 * @return - An Iterable<FireStation>
 	 */
-	public Iterable<FireStation> getAllFireStations() {
+	public List<FireStation> getAllFireStations() {
 		return fireStationRepository.findAll();
 	}
 

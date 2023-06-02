@@ -59,6 +59,10 @@ public class MedicalRecord {
 		this.medications = medications;
 		this.allergies = allergies;
 	}
+	
+	public MedicalRecord() {
+		super();
+	}
 
 	@Override
 	public boolean equals(Object o) {

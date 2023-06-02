@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.springframework.stereotype.Repository;
+
 import com.openclassrooms.safetynetalerts.model.MedicalRecord;
 
+@Repository
 public class MedicalRecordRepository {
 
 	private ArrayList<MedicalRecord> medicalRecords = new ArrayList<MedicalRecord>(Arrays.asList(
@@ -144,10 +147,28 @@ public class MedicalRecordRepository {
 		return medicalRecords;
 	}
 
+	public MedicalRecord findByFullName(String firstName, String lastName) {
+		MedicalRecord result = new MedicalRecord();
+		for (MedicalRecord medicalRecord : medicalRecords) {
+			if (firstName.equals(medicalRecord.getFirstName()) && lastName.equals(medicalRecord.getLastName()))
+				result = medicalRecord;
+		}
+		return result;
+	}
+
 	public List<MedicalRecord> findByFirstName(String firstName) {
 		ArrayList<MedicalRecord> result = new ArrayList<MedicalRecord>();
 		for (MedicalRecord medicalRecord : medicalRecords) {
 			if (firstName.equals(medicalRecord.getFirstName()))
+				result.add(medicalRecord);
+		}
+		return result;
+	}
+
+	public List<MedicalRecord> findByLastName(String lastName) {
+		ArrayList<MedicalRecord> result = new ArrayList<MedicalRecord>();
+		for (MedicalRecord medicalRecord : medicalRecords) {
+			if (lastName.equals(medicalRecord.getLastName()))
 				result.add(medicalRecord);
 		}
 		return result;
@@ -197,6 +218,10 @@ public class MedicalRecordRepository {
 		return result;
 	}
 
+	/*
+	 * search by EXACT allergy list TODO rewrite so it returns every MedicalRecord
+	 * that contains specified allergies
+	 */
 	public List<MedicalRecord> findByAllergies(ArrayList<String> allergies) {
 		ArrayList<MedicalRecord> result = new ArrayList<MedicalRecord>();
 		for (MedicalRecord medicalRecord : medicalRecords) {

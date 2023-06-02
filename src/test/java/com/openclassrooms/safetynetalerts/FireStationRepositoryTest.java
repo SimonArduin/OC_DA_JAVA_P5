@@ -45,12 +45,29 @@ public class FireStationRepositoryTest {
 		assertFalse(fireStationRepository.delete(fireStationOtherAddress));
 	}
 
-
 	@Test
 	public void findAllTest() {
 		ArrayList<FireStation> result = new ArrayList<FireStation>(fireStationRepository.findAll());
 		assertEquals(result.size(), sizeOfDB);
 		assertTrue(result.contains(fireStation));
+	}
+
+	@Test
+	public void findTest() {
+		ArrayList<FireStation> result = new ArrayList<FireStation>(fireStationRepository.find(fireStation));
+		boolean wrongAddress = false;
+		for(FireStation fireStationInResult : result) {
+			if(!fireStationInResult.equals(fireStation))
+				wrongAddress = true;
+		}
+		assertEquals(result.size(), nbOfFireStationsWithAddress);
+		assertTrue(result.contains(fireStation));
+		assertFalse(wrongAddress);
+	}
+	
+	@Test
+	public void findIfFireStationNotInDB() {
+		assertEquals(fireStationRepository.find(fireStationOtherAddress).size(), 0);
 	}
 
 	@Test
