@@ -29,9 +29,12 @@ public class FireStation {
 
 	@Override
 	public boolean equals(Object o) {
+		try {
 		if (this.address.equals(((FireStation) o).getAddress()) && this.stationNumber == ((FireStation) o).getStationNumber())
 			return true;
-		else
-			return false;
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 }
