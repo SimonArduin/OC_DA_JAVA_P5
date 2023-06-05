@@ -42,9 +42,9 @@ public class FireStationService {
 	 * @return - A boolean that is false if no fire station with the specified
 	 * station number is found
 	 */
-	public boolean deleteFireStation(int stationNumber) {
+	public boolean deleteFireStation(int station) {
 		ArrayList<FireStation> fireStations = new ArrayList<FireStation>(
-				fireStationRepository.findByStationNumber(stationNumber));
+				fireStationRepository.findByStation(station));
 		if (fireStations.isEmpty())
 			return false;
 		else {
@@ -90,8 +90,8 @@ public class FireStationService {
 	 * 
 	 * @return - An Iterable<FireStation>
 	 */
-	public List<FireStation> getFireStation(int stationNumber) {
-		return fireStationRepository.findByStationNumber(stationNumber);
+	public List<FireStation> getFireStation(int station) {
+		return fireStationRepository.findByStation(station);
 	}
 
 	/*

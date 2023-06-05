@@ -66,10 +66,10 @@ public class FireStationRepository {
 		return result;
 	}
 
-	public List<FireStation> findByStationNumber(int stationNumber) {
+	public List<FireStation> findByStation(int station) {
 		ArrayList<FireStation> result = new ArrayList<FireStation>();
 		for (FireStation fireStation : fireStations) {
-			if (stationNumber == fireStation.getStationNumber())
+			if (station == fireStation.getStation())
 				result.add(fireStation);
 		}
 		return result;

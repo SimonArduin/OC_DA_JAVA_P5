@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import com.openclassrooms.safetynetalerts.model.FireStation;
 import com.openclassrooms.safetynetalerts.model.MedicalRecord;
@@ -23,16 +24,17 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@EnableWebMvc
 public class FireStationController {
 
-	//@Autowired
-	FireStationService fireStationService = new FireStationService();
+	@Autowired
+	FireStationService fireStationService;
 
-	//@Autowired
-	PersonService personService = new PersonService();
+	@Autowired
+	PersonService personService;
 
-	//@Autowired
-	MedicalRecordService medicalRecordService = new MedicalRecordService();
+	@Autowired
+	MedicalRecordService medicalRecordService;
 
 	/**
 	 * Read - Get info on residents covered by a certain fire station or get all
@@ -43,7 +45,7 @@ public class FireStationController {
 	 *         filled
 	 */
 	@GetMapping("/firestation")
-	public List<Object> getFireStations(@RequestParam(value = "stationNumber") Optional<Integer> stationNumber) {
+	public List<Object> getFireStation(@RequestParam(value = "stationNumber") Optional<Integer> stationNumber) {
 		ArrayList<Object> result = new ArrayList<Object>();
 		int numberOfAdults = 0;
 		int numberOfChildren = 0;
@@ -92,9 +94,12 @@ public class FireStationController {
 	 *          optional int corresponding to the new fire station number
 	 */
 	@PutMapping("/firestation")
-	public void putFireStation(@RequestParam(value = "address") String address,
+	public FireStation putFireStation(@RequestParam(value = "address") String address,
 			@RequestParam(value = "stationNumber") int stationNumber) {
-		fireStationService.putFireStation(new FireStation(address, stationNumber));
+		FireStation fireStation = new FireStation(address, stationNumber);
+		if (fireStationService.putFireStation(fireStation))
+			return fireStation;
+		return new FireStation();
 	}
 
 	/**
@@ -104,9 +109,12 @@ public class FireStationController {
 	 *          corresponding to the fire station number
 	 */
 	@PostMapping("/firestation")
-	public void postFireStation(@RequestParam(value = "address") String address,
+	public FireStation postFireStation(@RequestParam(value = "address") String address,
 			@RequestParam(value = "stationNumber", defaultValue = "0") int stationNumber) {
-		fireStationService.postFireStation(new FireStation(address, stationNumber));
+		FireStation fireStation = new FireStation(address, stationNumber);
+		if (fireStationService.postFireStation(fireStation))
+			return fireStation;
+		return new FireStation();
 	}
 
 	/**
@@ -116,11 +124,22 @@ public class FireStationController {
 	 *          and an optional int corresponding to the new fire station number
 	 */
 	@DeleteMapping("/firestation")
-	public void deleteFireStation(@RequestParam(value = "address") Optional<String> address,
+	public FireStation deleteFireStation(@RequestParam(value = "address") Optional<String> address,
 			@RequestParam(value = "stationNumber") Optional<Integer> stationNumber) {
-		if (address.isPresent())
-			fireStationService.deleteFireStation(address.get());
-		if (stationNumber.isPresent())
-			fireStationService.deleteFireStation(stationNumber.get());
+		if (address.isPresent() && stationNumber.isPresent()) {
+			FireStation fireStation = new FireStation(address.get(), stationNumber.get());
+			if(fireStationService.deleteFireStation(fireStation))
+			return fireStation;
+		} else {
+			if (address.isPresent()) {
+				if(fireStationService.deleteFireStation(address.get()))
+				return new FireStation(address.get(), 0);
+			}
+			if (stationNumber.isPresent()) {
+				if(fireStationService.deleteFireStation(stationNumber.get()))
+				return new FireStation(null, stationNumber.get());
+			}
+		}
+		return new FireStation();
 	}
 }

@@ -20,11 +20,11 @@ public class FireStationRepositoryTest {
 	@Autowired
 	FireStationRepository fireStationRepository;
 	static FireStation fireStation = new FireStation("1509 Culver St", 3);
-	static FireStation fireStationOtherAddress = new FireStation("wrong address", fireStation.getStationNumber());
-	static FireStation fireStationOtherStationNumber = new FireStation(fireStation.getAddress(), 421);
+	static FireStation fireStationOtherAddress = new FireStation("wrong address", fireStation.getStation());
+	static FireStation fireStationOtherStation = new FireStation(fireStation.getAddress(), 421);
 	int sizeOfDB = 13;
 	int nbOfFireStationsWithAddress = 1;
-	int nbOfFireStationsWithStationNumber = 5;
+	int nbOfFireStationsWithStation = 5;
 	
 	@BeforeEach
 	private void setUpPerTest() {
@@ -89,21 +89,21 @@ public class FireStationRepositoryTest {
 	}
 
 	@Test
-	public void findByStationNumberTest() {
-		ArrayList<FireStation> result = new ArrayList<FireStation>(fireStationRepository.findByStationNumber(fireStation.getStationNumber()));
-		boolean wrongStationNumber = false;
+	public void findByStationTest() {
+		ArrayList<FireStation> result = new ArrayList<FireStation>(fireStationRepository.findByStation(fireStation.getStation()));
+		boolean wrongStation = false;
 		for(FireStation fireStationInResult : result) {
-			if(fireStationInResult.getStationNumber() != fireStation.getStationNumber())
-				wrongStationNumber = true;
+			if(fireStationInResult.getStation() != fireStation.getStation())
+				wrongStation = true;
 		}
-		assertEquals(result.size(), nbOfFireStationsWithStationNumber);
+		assertEquals(result.size(), nbOfFireStationsWithStation);
 		assertTrue(result.contains(fireStation));
-		assertFalse(wrongStationNumber);
+		assertFalse(wrongStation);
 	}
 	
 	@Test
-	public void findByStationNumberTestIfFireStationNotInDB() {
-		ArrayList<FireStation> result = new ArrayList<FireStation>(fireStationRepository.findByStationNumber(fireStationOtherStationNumber.getStationNumber()));
+	public void findByStationTestIfFireStationNotInDB() {
+		ArrayList<FireStation> result = new ArrayList<FireStation>(fireStationRepository.findByStation(fireStationOtherStation.getStation()));
 		assertEquals(result.size(), 0);
 	}
 

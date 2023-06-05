@@ -3,7 +3,7 @@ package com.openclassrooms.safetynetalerts.model;
 public class FireStation {
 
 	private String address;
-	private int stationNumber;
+	private int station;
 
 	public String getAddress() {
 		return address;
@@ -13,24 +13,27 @@ public class FireStation {
 		this.address = address;
 	}
 
-	public int getStationNumber() {
-		return stationNumber;
+	public int getStation() {
+		return station;
 	}
 
-	public void setStationNumber(int stationNumber) {
-		this.stationNumber = stationNumber;
+	public void setStation(int stationNumber) {
+		this.station = stationNumber;
 	}
 
 	public FireStation(String address, int stationNumber) {
 		super();
 		this.address = address;
-		this.stationNumber = stationNumber;
+		this.station = stationNumber;
+	}
+
+	public FireStation() {
 	}
 
 	@Override
 	public boolean equals(Object o) {
 		try {
-		if (this.address.equals(((FireStation) o).getAddress()) && this.stationNumber == ((FireStation) o).getStationNumber())
+		if (this.address.equals(((FireStation) o).getAddress()) && this.station == ((FireStation) o).getStation())
 			return true;
 		} catch(Exception e) {
 			e.printStackTrace();
