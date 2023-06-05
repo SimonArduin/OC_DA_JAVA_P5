@@ -55,14 +55,14 @@ public class FireStationRepositoryTest {
 	@Test
 	public void findTest() {
 		ArrayList<FireStation> result = new ArrayList<FireStation>(fireStationRepository.find(fireStation));
-		boolean wrongAddress = false;
+		boolean wrongFireStation = false;
 		for(FireStation fireStationInResult : result) {
 			if(!fireStationInResult.equals(fireStation))
-				wrongAddress = true;
+				wrongFireStation = true;
 		}
 		assertEquals(result.size(), nbOfFireStationsWithAddress);
 		assertTrue(result.contains(fireStation));
-		assertFalse(wrongAddress);
+		assertFalse(wrongFireStation);
 	}
 	
 	@Test

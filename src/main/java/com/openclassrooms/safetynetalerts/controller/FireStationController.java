@@ -25,14 +25,14 @@ import java.util.Optional;
 @RestController
 public class FireStationController {
 
-	@Autowired
-	FireStationService fireStationService;
+	//@Autowired
+	FireStationService fireStationService = new FireStationService();
 
-	@Autowired
-	PersonService personService;
+	//@Autowired
+	PersonService personService = new PersonService();
 
-	@Autowired
-	MedicalRecordService medicalRecordService;
+	//@Autowired
+	MedicalRecordService medicalRecordService = new MedicalRecordService();
 
 	/**
 	 * Read - Get info on residents covered by a certain fire station or get all

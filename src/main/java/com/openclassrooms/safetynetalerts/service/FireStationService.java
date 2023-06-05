@@ -62,8 +62,7 @@ public class FireStationService {
 	 * @return - A boolean that is false if the fire station is not found
 	 */
 	public boolean deleteFireStation(FireStation fireStation) {
-		ArrayList<FireStation> fireStations = new ArrayList<FireStation>(
-				fireStationRepository.find(fireStation));
+		ArrayList<FireStation> fireStations = new ArrayList<FireStation>(fireStationRepository.find(fireStation));
 		if (fireStations.isEmpty())
 			return false;
 		else {
@@ -103,12 +102,7 @@ public class FireStationService {
 	 * @return - An Iterable<FireStation>
 	 */
 	public List<FireStation> getFireStation(FireStation fireStation) {
-		ArrayList<FireStation> result = new ArrayList<FireStation>();
-		result = new ArrayList<FireStation>(fireStationRepository.findByAddress(fireStation.getAddress()));
-		for (FireStation fireStationByAddress : result) {
-			if (fireStationByAddress.getStationNumber() != fireStation.getStationNumber())
-				result.remove(fireStationByAddress);
-		}
+		ArrayList<FireStation> result = new ArrayList<FireStation>(fireStationRepository.find(fireStation));
 		return result;
 	}
 
@@ -143,8 +137,16 @@ public class FireStationService {
 	 * @return - true if the fire station was correctly saved
 	 */
 	public boolean putFireStation(FireStation fireStation) {
-		for (FireStation fireStationInDB : fireStationRepository.findByAddress(fireStation.getAddress()))
-			fireStationRepository.delete(fireStationInDB);
-		return fireStationRepository.save(fireStation);
+		boolean isInDB = false;
+		for (FireStation fireStationInDB : fireStationRepository.findByAddress(fireStation.getAddress())) {
+			if (fireStationInDB.getAddress() == fireStation.getAddress()) {
+				isInDB = true;
+				fireStationRepository.delete(fireStationInDB);
+			}
+		}
+		if (isInDB)
+			return fireStationRepository.save(fireStation);
+		else
+			return isInDB;
 	}
 }
