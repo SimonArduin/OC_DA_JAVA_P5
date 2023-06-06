@@ -1,5 +1,6 @@
 package com.openclassrooms.safetynetalerts.controller;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -59,9 +60,13 @@ public class FireStationController {
 						personService.getPersonByAddress(fireStation.getAddress()));
 				for (Person person : persons) {
 					// return first name, last name, address and phone number of the resident
-					result.add(new String((String.format(
-							"\"firstName\":\"%s\",\"lastName\":\"%s\",\"address\":\"%s\",\"phone\":\"%s\"",
-							person.getFirstName(), person.getLastName(), person.getAddress(), person.getPhone()))));
+					result.add(person);
+					/*
+					 * result.add(String.format(
+					 * "{\"firstName\":\"%s\",\"lastName\":\"%s\",\"address\":\"%s\",\"phone\":\"%s\"}",
+					 * person.getFirstName(), person.getLastName(), person.getAddress(),
+					 * person.getPhone()));
+					 */
 					// get medical record of the patient
 					MedicalRecord medicalRecord = medicalRecordService.getMedicalRecordByName(person.getFirstName(),
 							person.getLastName());
@@ -76,15 +81,20 @@ public class FireStationController {
 				}
 			}
 			// return number of adults and number of children
-			result.add(new String((String.format("\"numberofadults\":\"%s\",\"numberofchildren\":\"%s\"",
-					numberOfAdults, numberOfChildren))));
+			result.add(numberOfAdults);
+			result.add(numberOfChildren);
+			/*
+			 * result.add(new String((String.format(
+			 * "{\"numberofadults\":\"%s\",\"numberofchildren\":\"%s\"}", numberOfAdults,
+			 * numberOfChildren))));
+			 */
+			return result;
 		}
 
 		// is no station number is given, returns a list of all fire stations
 		else {
-			result = new ArrayList<Object>(fireStationService.getAllFireStations());
+			return new ArrayList<Object>(fireStationService.getAllFireStations());
 		}
-		return result;
 	}
 
 	/**
@@ -128,16 +138,16 @@ public class FireStationController {
 			@RequestParam(value = "stationNumber") Optional<Integer> stationNumber) {
 		if (address.isPresent() && stationNumber.isPresent()) {
 			FireStation fireStation = new FireStation(address.get(), stationNumber.get());
-			if(fireStationService.deleteFireStation(fireStation))
-			return fireStation;
+			if (fireStationService.deleteFireStation(fireStation))
+				return fireStation;
 		} else {
 			if (address.isPresent()) {
-				if(fireStationService.deleteFireStation(address.get()))
-				return new FireStation(address.get(), 0);
+				if (fireStationService.deleteFireStation(address.get()))
+					return new FireStation(address.get(), 0);
 			}
 			if (stationNumber.isPresent()) {
-				if(fireStationService.deleteFireStation(stationNumber.get()))
-				return new FireStation(null, stationNumber.get());
+				if (fireStationService.deleteFireStation(stationNumber.get()))
+					return new FireStation(null, stationNumber.get());
 			}
 		}
 		return new FireStation();
