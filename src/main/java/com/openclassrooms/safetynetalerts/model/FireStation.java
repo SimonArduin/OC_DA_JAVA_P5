@@ -33,9 +33,15 @@ public class FireStation {
 	@Override
 	public boolean equals(Object o) {
 		try {
-		if (this.address.equals(((FireStation) o).getAddress()) && this.station == ((FireStation) o).getStation())
-			return true;
-		} catch(Exception e) {
+			if (this.address != null) {
+				if (this.address.equals(((FireStation) o).getAddress())
+						&& this.station == ((FireStation) o).getStation())
+					return true;
+			} else {
+				if (((FireStation) o).getAddress() == null && this.station == ((FireStation) o).getStation())
+					return true;
+			}
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return false;

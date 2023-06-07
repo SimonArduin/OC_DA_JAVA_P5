@@ -20,17 +20,19 @@ public class FireStationService {
 	 * 
 	 * @param - A String representing an address
 	 * 
-	 * @return - A boolean that is false if no fire station with the specified
-	 * address is found
+	 * @return - An ArrayList<FireStation> of all fire stations deleted
 	 */
-	public boolean deleteFireStation(String address) {
+	public List<FireStation> deleteFireStation(String address) {
+		ArrayList<FireStation> result = new ArrayList<FireStation>();
 		ArrayList<FireStation> fireStations = new ArrayList<FireStation>(fireStationRepository.findByAddress(address));
 		if (fireStations.isEmpty())
-			return false;
+			return result;
 		else {
-			for (FireStation fireStation : fireStations)
+			for (FireStation fireStation : fireStations) {
 				fireStationRepository.delete(fireStation);
-			return true;
+				result.add(fireStation);
+			}
+			return result;
 		}
 	}
 
@@ -39,18 +41,19 @@ public class FireStationService {
 	 * 
 	 * @param - An int representing a station number
 	 * 
-	 * @return - A boolean that is false if no fire station with the specified
-	 * station number is found
+	 * @return - An ArrayList<FireStation> of all fire stations deleted
 	 */
-	public boolean deleteFireStation(int station) {
-		ArrayList<FireStation> fireStations = new ArrayList<FireStation>(
-				fireStationRepository.findByStation(station));
+	public List<FireStation> deleteFireStation(int station) {
+		ArrayList<FireStation> result = new ArrayList<FireStation>();
+		ArrayList<FireStation> fireStations = new ArrayList<FireStation>(fireStationRepository.findByStation(station));
 		if (fireStations.isEmpty())
-			return false;
+			return result;
 		else {
-			for (FireStation fireStation : fireStations)
+			for (FireStation fireStation : fireStations) {
 				fireStationRepository.delete(fireStation);
-			return true;
+				result.add(fireStation);
+			}
+			return result;
 		}
 	}
 
@@ -59,16 +62,19 @@ public class FireStationService {
 	 * 
 	 * @param - A FireStation representing a fire station
 	 * 
-	 * @return - A boolean that is false if the fire station is not found
+	 * @return - An ArrayList<FireStation> of all fire stations deleted
 	 */
-	public boolean deleteFireStation(FireStation fireStation) {
+	public List<FireStation> deleteFireStation(FireStation fireStation) {
+		ArrayList<FireStation> result = new ArrayList<FireStation>();
 		ArrayList<FireStation> fireStations = new ArrayList<FireStation>(fireStationRepository.find(fireStation));
 		if (fireStations.isEmpty())
-			return false;
+			return result;
 		else {
-			for (FireStation fireStationInDB : fireStations)
+			for (FireStation fireStationInDB : fireStations) {
 				fireStationRepository.delete(fireStationInDB);
-			return true;
+				result.add(fireStationInDB);
+			}
+			return result;
 		}
 	}
 
@@ -122,7 +128,7 @@ public class FireStationService {
 	 * 
 	 * @return - true if the fire station was correctly saved
 	 */
-	public boolean postFireStation(FireStation fireStation) {
+	public FireStation postFireStation(FireStation fireStation) {
 		return fireStationRepository.save(fireStation);
 	}
 
@@ -136,7 +142,7 @@ public class FireStationService {
 	 * 
 	 * @return - true if the fire station was correctly saved
 	 */
-	public boolean putFireStation(FireStation fireStation) {
+	public FireStation putFireStation(FireStation fireStation) {
 		boolean isInDB = false;
 		for (FireStation fireStationInDB : fireStationRepository.findByAddress(fireStation.getAddress())) {
 			if (fireStationInDB.getAddress() == fireStation.getAddress()) {
@@ -147,6 +153,6 @@ public class FireStationService {
 		if (isInDB)
 			return fireStationRepository.save(fireStation);
 		else
-			return isInDB;
+			return new FireStation();
 	}
 }

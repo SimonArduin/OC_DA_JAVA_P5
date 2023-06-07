@@ -20,6 +20,7 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -188,10 +189,7 @@ public class FireStationController {
 	@PutMapping("/firestation")
 	public FireStation putFireStation(@RequestParam(value = "address") String address,
 			@RequestParam(value = "stationNumber") int stationNumber) {
-		FireStation fireStation = new FireStation(address, stationNumber);
-		if (fireStationService.putFireStation(fireStation))
-			return fireStation;
-		return new FireStation();
+		return fireStationService.putFireStation(new FireStation(address, stationNumber));
 	}
 
 	/**
@@ -203,10 +201,7 @@ public class FireStationController {
 	@PostMapping("/firestation")
 	public FireStation postFireStation(@RequestParam(value = "address") String address,
 			@RequestParam(value = "stationNumber", defaultValue = "0") int stationNumber) {
-		FireStation fireStation = new FireStation(address, stationNumber);
-		if (fireStationService.postFireStation(fireStation))
-			return fireStation;
-		return new FireStation();
+		return fireStationService.postFireStation(new FireStation(address, stationNumber));
 	}
 
 	/**
@@ -216,22 +211,18 @@ public class FireStationController {
 	 *          and an optional int corresponding to the new fire station number
 	 */
 	@DeleteMapping("/firestation")
-	public FireStation deleteFireStation(@RequestParam(value = "address") Optional<String> address,
+	public List<FireStation> deleteFireStation(@RequestParam(value = "address") Optional<String> address,
 			@RequestParam(value = "stationNumber") Optional<Integer> stationNumber) {
 		if (address.isPresent() && stationNumber.isPresent()) {
-			FireStation fireStation = new FireStation(address.get(), stationNumber.get());
-			if (fireStationService.deleteFireStation(fireStation))
-				return fireStation;
+			return fireStationService.deleteFireStation(new FireStation(address.get(), stationNumber.get()));
 		} else {
 			if (address.isPresent()) {
-				if (fireStationService.deleteFireStation(address.get()))
-					return new FireStation(address.get(), 0);
+				return fireStationService.deleteFireStation(address.get());
 			}
 			if (stationNumber.isPresent()) {
-				if (fireStationService.deleteFireStation(stationNumber.get()))
-					return new FireStation(null, stationNumber.get());
-			}
+				return fireStationService.deleteFireStation(stationNumber.get());
+			} else
+				return new ArrayList<FireStation>(Arrays.asList(new FireStation()));
 		}
-		return new FireStation();
 	}
 }

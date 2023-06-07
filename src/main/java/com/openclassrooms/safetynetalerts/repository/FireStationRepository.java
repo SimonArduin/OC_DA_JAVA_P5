@@ -29,7 +29,8 @@ public class FireStationRepository {
 				new FireStation("748 Townings Dr", 3), new FireStation("951 LoneTree Rd", 2)));
 	}
 
-	public boolean delete(FireStation fireStation) {
+	public FireStation delete(FireStation fireStation) {
+		FireStation result = new FireStation();
 		boolean isInDB = false;
 		int i = 0;
 		while (i < fireStations.size() && !isInDB) {
@@ -37,11 +38,12 @@ public class FireStationRepository {
 			if (fireStationInDB.equals(fireStation)) {
 				isInDB = true;
 				fireStations.remove(fireStationInDB);
+				result = fireStationInDB;
 				break;
 			}
 			i++;
 		}
-		return isInDB;
+		return result;
 	}
 
 	public List<FireStation> findAll() {
@@ -75,8 +77,9 @@ public class FireStationRepository {
 		return result;
 	}
 
-	public boolean save(FireStation fireStation) {
+	public FireStation save(FireStation fireStation) {
 		boolean isInDB = false;
+		FireStation result = new FireStation();
 		int i = 0;
 		while (i < fireStations.size() && !isInDB) {
 			FireStation fireStationInDB = fireStations.get(i);
@@ -86,9 +89,11 @@ public class FireStationRepository {
 			}
 			i++;
 		}
-		if (!isInDB)
+		if (!isInDB) {
 			fireStations.add(fireStation);
-		return !isInDB;
+			result = fireStation;
+		}
+		return result;
 	}
 
 }

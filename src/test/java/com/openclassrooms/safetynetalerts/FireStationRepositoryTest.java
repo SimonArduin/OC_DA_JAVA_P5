@@ -37,12 +37,12 @@ public class FireStationRepositoryTest {
 	
 	@Test
 	public void deleteTest() {
-		assertTrue(fireStationRepository.delete(fireStation));
+		assertEquals(fireStation, fireStationRepository.delete(fireStation));
 	}
 	
 	@Test
 	public void deleteTestIfFireStationNotInDB() {
-		assertFalse(fireStationRepository.delete(fireStationOtherAddress));
+		assertFalse(fireStationRepository.delete(fireStationOtherAddress).equals(fireStation));
 	}
 
 	@Test
@@ -109,12 +109,12 @@ public class FireStationRepositoryTest {
 
 	@Test
 	public void saveTest() {
-		assertTrue(fireStationRepository.save(fireStationOtherAddress));
+		assertEquals(fireStationOtherAddress, fireStationRepository.save(fireStationOtherAddress));
 	}
 
 	@Test
 	public void saveTestIfAlreadyInDB() {
-		assertFalse(fireStationRepository.save(fireStation));
+		assertFalse(fireStationRepository.save(fireStation).equals(fireStation));
 	}
 
 }
