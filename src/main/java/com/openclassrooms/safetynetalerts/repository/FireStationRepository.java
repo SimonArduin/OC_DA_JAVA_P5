@@ -16,7 +16,7 @@ import com.openclassrooms.safetynetalerts.model.FireStation;
 @Repository
 public class FireStationRepository {
 
-	private static ArrayList<FireStation> fireStations = new ArrayList<FireStation>();
+	private static ArrayList<FireStation> fireStations;
 	
 	public FireStationRepository() {
 		try {
@@ -30,7 +30,6 @@ public class FireStationRepository {
 		fireStations = new ArrayList<FireStation>();
 		Reader reader = Files.newBufferedReader(Paths.get("src/main/resources/data.json"));
 		ObjectMapper objectMapper = new ObjectMapper();
-		
 		/*
 		 * get all data in data.json
 		 */
