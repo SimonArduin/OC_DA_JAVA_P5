@@ -1,6 +1,5 @@
 package com.openclassrooms.safetynetalerts.controller;
 
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,6 +36,105 @@ public class FireStationController {
 	@Autowired
 	MedicalRecordService medicalRecordService;
 
+	/*
+	 * Collects all the informations to be returned at
+	 * fireStation?stationNumber=<station_number>
+	 */
+	public class FireStationURLInfo {
+		private List<FireStationURLPerson> persons = new ArrayList<FireStationURLPerson>();
+		private Integer numberOfAdults = 0;
+		private Integer numberOfChildren = 0;
+
+		public List<FireStationURLPerson> getPersons() {
+			return persons;
+		}
+
+		public void setPersons(List<FireStationURLPerson> persons) {
+			this.persons = persons;
+		}
+
+		public void addPerson(FireStationURLPerson person) {
+			this.persons.add(person);
+		}
+
+		public Integer getNumberOfAdults() {
+			return numberOfAdults;
+		}
+
+		public void setNumberOfAdults(Integer numberOfAdults) {
+			this.numberOfAdults = numberOfAdults;
+		}
+
+		public void addAdult() {
+			this.numberOfAdults++;
+		}
+
+		public Integer getNumberOfChildren() {
+			return numberOfChildren;
+		}
+
+		public void setNumberOfChildren(Integer numberOfChildren) {
+			this.numberOfChildren = numberOfChildren;
+		}
+
+		public void addChild() {
+			this.numberOfChildren++;
+		}
+	}
+
+	/*
+	 * Collects the informations about a specific person to be returned at
+	 * fireStation?stationNumber=<station_number>
+	 */
+	public class FireStationURLPerson {
+
+		// return first name, last name, address and phone number of the resident
+		private String firstName;
+		private String lastName;
+		private String address;
+		private String phone;
+
+		public String getFirstName() {
+			return firstName;
+		}
+
+		public void setFirstName(String firstName) {
+			this.firstName = firstName;
+		}
+
+		public String getLastName() {
+			return lastName;
+		}
+
+		public void setLastName(String lastName) {
+			this.lastName = lastName;
+		}
+
+		public String getAddress() {
+			return address;
+		}
+
+		public void setAddress(String address) {
+			this.address = address;
+		}
+
+		public String getPhone() {
+			return phone;
+		}
+
+		public void setPhone(String phone) {
+			this.phone = phone;
+		}
+
+		public FireStationURLPerson(Person person) {
+			super();
+			this.firstName = person.getFirstName();
+			this.lastName = person.getLastName();
+			this.address = person.getAddress();
+			this.phone = person.getPhone();
+		}
+	}
+
 	/**
 	 * Read - Get info on residents covered by a certain fire station or get all
 	 * fire stations
@@ -46,10 +144,8 @@ public class FireStationController {
 	 *         filled
 	 */
 	@GetMapping("/firestation")
-	public List<Object> getFireStation(@RequestParam(value = "stationNumber") Optional<Integer> stationNumber) {
-		ArrayList<Object> result = new ArrayList<Object>();
-		int numberOfAdults = 0;
-		int numberOfChildren = 0;
+	public Object getFireStation(@RequestParam(value = "stationNumber") Optional<Integer> stationNumber) {
+		FireStationURLInfo result = new FireStationURLInfo();
 
 		// if a station number is given, return info on residents
 		if (stationNumber.isPresent()) {
@@ -60,13 +156,7 @@ public class FireStationController {
 						personService.getPersonByAddress(fireStation.getAddress()));
 				for (Person person : persons) {
 					// return first name, last name, address and phone number of the resident
-					result.add(person);
-					/*
-					 * result.add(String.format(
-					 * "{\"firstName\":\"%s\",\"lastName\":\"%s\",\"address\":\"%s\",\"phone\":\"%s\"}",
-					 * person.getFirstName(), person.getLastName(), person.getAddress(),
-					 * person.getPhone()));
-					 */
+					result.addPerson(new FireStationURLPerson(person));
 					// get medical record of the patient
 					MedicalRecord medicalRecord = medicalRecordService.getMedicalRecordByName(person.getFirstName(),
 							person.getLastName());
@@ -75,19 +165,11 @@ public class FireStationController {
 							DateTimeFormatter.ofPattern("MM/dd/yyyy"));
 					// count as adult or child
 					if (Period.between(birthdate, LocalDate.now()).getYears() > 18)
-						numberOfAdults++;
+						result.addAdult();
 					else
-						numberOfChildren++;
+						result.addChild();
 				}
 			}
-			// return number of adults and number of children
-			result.add(numberOfAdults);
-			result.add(numberOfChildren);
-			/*
-			 * result.add(new String((String.format(
-			 * "{\"numberofadults\":\"%s\",\"numberofchildren\":\"%s\"}", numberOfAdults,
-			 * numberOfChildren))));
-			 */
 			return result;
 		}
 

@@ -97,18 +97,21 @@ public class FireStationControllerTest {
 	@Test
 	public void getFireStationTest() throws Exception {
 		mockMvc.perform(get(String.format("/firestation?stationNumber=%s", fireStation.getStation()))).andExpect(status().isOk())
-				.andExpect(jsonPath("$[0].firstName", is(person.getFirstName())))
-				.andExpect(jsonPath("$[0].lastName", is(person.getLastName())))
-				.andExpect(jsonPath("$[0].address", is(person.getAddress())))
-				.andExpect(jsonPath("$[0].phone", is(person.getPhone())))
+		
+				.andExpect(jsonPath("persons.[0].firstName", is(person.getFirstName())))
+				.andExpect(jsonPath("persons.[0].lastName", is(person.getLastName())))
+				.andExpect(jsonPath("persons.[0].address", is(person.getAddress())))
+				.andExpect(jsonPath("persons.[0].phone", is(person.getPhone())))
 
-				.andExpect(jsonPath("$[1].firstName", is(personChild.getFirstName())))
-				.andExpect(jsonPath("$[1].lastName", is(personChild.getLastName())))
-				.andExpect(jsonPath("$[1].address", is(personChild.getAddress())))
-				.andExpect(jsonPath("$[1].phone", is(personChild.getPhone())))
+				.andExpect(jsonPath("persons.[1].firstName", is(personChild.getFirstName())))
+				.andExpect(jsonPath("persons.[1].lastName", is(personChild.getLastName())))
+				.andExpect(jsonPath("persons.[1].address", is(personChild.getAddress())))
+				.andExpect(jsonPath("persons.[1].phone", is(personChild.getPhone())))
 				
-				.andExpect(jsonPath("$[2]", is(numberOfAdults)))
-				.andExpect(jsonPath("$[3]", is(numberOfChildren)));
+				.andExpect(jsonPath("numberOfAdults", is(numberOfAdults)))
+				.andExpect(jsonPath("numberOfChildren", is(numberOfChildren)));
+				
+		
 		verify(fireStationService, Mockito.times(1)).getFireStation(anyInt());
 		verify(personService, Mockito.times(numberOfFireStationByStationNumber)).getPersonByAddress(anyString());
 		verify(medicalRecordService, Mockito.times(1)).getMedicalRecordByName(person.getFirstName(), person.getLastName());
