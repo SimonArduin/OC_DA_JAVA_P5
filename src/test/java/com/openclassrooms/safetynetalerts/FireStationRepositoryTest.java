@@ -28,7 +28,11 @@ public class FireStationRepositoryTest {
 	
 	@BeforeEach
 	private void setUpPerTest() {
-		fireStationRepository.resetDataBase();
+		try {
+			fireStationRepository.resetDataBase();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Test

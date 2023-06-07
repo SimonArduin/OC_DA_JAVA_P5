@@ -1,32 +1,52 @@
 package com.openclassrooms.safetynetalerts.repository;
 
+import java.io.Reader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Repository;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.openclassrooms.safetynetalerts.model.FireStation;
 
 @Repository
 public class FireStationRepository {
 
-	private static ArrayList<FireStation> fireStations = new ArrayList<FireStation>(Arrays.asList(
-			new FireStation("1509 Culver St", 3), new FireStation("29 15th St", 2), new FireStation("834 Binoc Ave", 3),
-			new FireStation("644 Gershwin Cir", 1), new FireStation("748 Townings Dr", 3),
-			new FireStation("112 Steppes Pl", 3), new FireStation("489 Manchester St", 4),
-			new FireStation("892 Downing Ct", 2), new FireStation("908 73rd St", 1),
-			new FireStation("112 Steppes Pl", 4), new FireStation("947 E. Rose Dr", 1),
-			new FireStation("748 Townings Dr", 3), new FireStation("951 LoneTree Rd", 2)));
+	private static ArrayList<FireStation> fireStations = new ArrayList<FireStation>();
+	
+	public FireStationRepository() {
+		try {
+			this.resetDataBase();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
-	public void resetDataBase() {
-		fireStations = new ArrayList<FireStation>(Arrays.asList(new FireStation("1509 Culver St", 3),
-				new FireStation("29 15th St", 2), new FireStation("834 Binoc Ave", 3),
-				new FireStation("644 Gershwin Cir", 1), new FireStation("748 Townings Dr", 3),
-				new FireStation("112 Steppes Pl", 3), new FireStation("489 Manchester St", 4),
-				new FireStation("892 Downing Ct", 2), new FireStation("908 73rd St", 1),
-				new FireStation("112 Steppes Pl", 4), new FireStation("947 E. Rose Dr", 1),
-				new FireStation("748 Townings Dr", 3), new FireStation("951 LoneTree Rd", 2)));
+	public void resetDataBase() throws Exception {
+		fireStations = new ArrayList<FireStation>();
+		Reader reader = Files.newBufferedReader(Paths.get("src/main/resources/data.json"));
+		ObjectMapper objectMapper = new ObjectMapper();
+		
+		/*
+		 * get all data in data.json
+		 */
+		Map<String, List<Object>> data = objectMapper.readValue(reader,
+				   new TypeReference<Map<String,  List<Object>>>() { } );
+		/*
+		 * extract all fire station data
+		 */
+		ArrayList<Object> fireStationData = new ArrayList<Object>(data.get("firestations"));
+		/*
+		 * add all fire stations to the list of fire stations
+		 */
+		for(Object o : fireStationData) {
+			FireStation fireStation = objectMapper.convertValue(o, FireStation.class);
+			fireStations.add(fireStation);
+		}
 	}
 
 	public FireStation delete(FireStation fireStation) {
