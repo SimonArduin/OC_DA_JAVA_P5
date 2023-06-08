@@ -37,11 +37,11 @@ public class MedicalRecordRepository {
 		Map<String, List<Object>> data = objectMapper.readValue(reader,
 				   new TypeReference<Map<String,  List<Object>>>() { } );
 		/*
-		 * extract all fire station data
+		 * extract all medical record data
 		 */
 		ArrayList<Object> medicalRecordData = new ArrayList<Object>(data.get("firestations"));
 		/*
-		 * add all fire stations to the list of fire stations
+		 * add all medicalrecords to the list of medical records
 		 */
 		for(Object o : medicalRecordData) {
 			MedicalRecord medicalRecord = objectMapper.convertValue(o, MedicalRecord.class);

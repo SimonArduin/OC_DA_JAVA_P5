@@ -30,6 +30,7 @@ public class FireStationRepository {
 		fireStations = new ArrayList<FireStation>();
 		Reader reader = Files.newBufferedReader(Paths.get("src/main/resources/data.json"));
 		ObjectMapper objectMapper = new ObjectMapper();
+		
 		/*
 		 * get all data in data.json
 		 */

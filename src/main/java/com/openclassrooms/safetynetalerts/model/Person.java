@@ -77,6 +77,13 @@ public class Person {
 		this.email = email;
 	}
 
+	public Person(String firstName, String lastName) {
+		this("John", "Boyd", new String(), new String(), 0, new String(), new String());
+	}
+
+	public Person() {
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		try {

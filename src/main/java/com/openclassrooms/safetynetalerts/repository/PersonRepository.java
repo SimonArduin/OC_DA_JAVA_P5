@@ -37,11 +37,11 @@ public class PersonRepository {
 		Map<String, List<Object>> data = objectMapper.readValue(reader,
 				   new TypeReference<Map<String,  List<Object>>>() { } );
 		/*
-		 * extract all fire station data
+		 * extract all person data
 		 */
 		ArrayList<Object> personData = new ArrayList<Object>(data.get("firestations"));
 		/*
-		 * add all fire stations to the list of fire stations
+		 * add all persons to the list of persons
 		 */
 		for(Object o : personData) {
 			Person person = objectMapper.convertValue(o, Person.class);
@@ -49,7 +49,7 @@ public class PersonRepository {
 		}
 	}
 
-	public boolean delete(Person person) {
+	public Person delete(Person person) {
 		boolean isInDB = false;
 		int i = 0;
 		while (i < persons.size() && !isInDB) {
@@ -57,15 +57,33 @@ public class PersonRepository {
 			if (personInDB.equals(person)) {
 				isInDB = true;
 				persons.remove(personInDB);
-				break;
+				return(personInDB);
 			}
 			i++;
 		}
-		return isInDB;
+		return new Person();
 	}
 
 	public List<Person> findAll() {
 		return persons;
+	}
+	
+	public List<Person> find(Person person) {
+		ArrayList<Person> result = new ArrayList<Person>();
+		for (Person personInDB : persons) {
+			if (person.equals(personInDB))
+				result.add(personInDB);
+		}
+		return result;
+	}
+	
+	public List<Person> findByFullName(String firstName, String lastName) {
+		ArrayList<Person> result = new ArrayList<Person>();
+		for (Person personInDB : persons) {
+			if (firstName.equals(personInDB.getFirstName()) && lastName.equals(personInDB.getLastName()))
+				result.add(personInDB);
+		}
+		return result;
 	}
 
 	public List<Person> findByFirstName(String firstName) {
@@ -131,7 +149,7 @@ public class PersonRepository {
 		return result;
 	}
 
-	public boolean save(Person person) {
+	public Person save(Person person) {
 		boolean isInDB = false;
 		int i = 0;
 		while (i < persons.size() && !isInDB) {
@@ -142,9 +160,11 @@ public class PersonRepository {
 			}
 			i++;
 		}
-		if (!isInDB)
+		if (!isInDB) {
 			persons.add(person);
-		return !isInDB;
+			return person;
+		}
+		return new Person();
 	}
 
 }
