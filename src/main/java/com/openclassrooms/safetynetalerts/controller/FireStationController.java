@@ -144,40 +144,39 @@ public class FireStationController {
 	 * @return - An Iterable object of info on residents or of FireStation full
 	 *         filled
 	 */
-	@GetMapping("/firestation")
-	public Object getFireStation(@RequestParam(value = "stationNumber") Optional<Integer> stationNumber) {
+	@GetMapping(value = "/firestation", params = "stationNumber")
+	public FireStationURLInfo FireStationURL(@RequestParam(value = "stationNumber") String stationNumber) {
 		FireStationURLInfo result = new FireStationURLInfo();
 
-		// if a station number is given, return info on residents
-		if (stationNumber.isPresent()) {
-			ArrayList<FireStation> fireStations = new ArrayList<FireStation>(
-					fireStationService.getFireStation(stationNumber.get()));
-			for (FireStation fireStation : fireStations) {
-				ArrayList<Person> persons = new ArrayList<Person>(
-						personService.getPersonByAddress(fireStation.getAddress()));
-				for (Person person : persons) {
-					// return first name, last name, address and phone number of the resident
-					result.addPerson(new FireStationURLPerson(person));
-					// get medical record of the patient
-					MedicalRecord medicalRecord = medicalRecordService.getMedicalRecordByName(person.getFirstName(),
-							person.getLastName());
-					// get birthdate
-					LocalDate birthdate = LocalDate.parse(medicalRecord.getBirthdate(),
-							DateTimeFormatter.ofPattern("MM/dd/yyyy"));
-					// count as adult or child
-					if (Period.between(birthdate, LocalDate.now()).getYears() > 18)
-						result.addAdult();
-					else
-						result.addChild();
-				}
+		//get fire stations
+		ArrayList<FireStation> fireStations = new ArrayList<FireStation>(
+				fireStationService.getFireStationByStation(stationNumber));
+		//for every person covered by each fire station
+		for (FireStation fireStation : fireStations) {
+			ArrayList<Person> persons = new ArrayList<Person>(
+					personService.getPersonByAddress(fireStation.getAddress()));
+			for (Person person : persons) {
+				// get first name, last name, address and phone number of the resident
+				result.addPerson(new FireStationURLPerson(person));
+				// get medical record of the patient
+				MedicalRecord medicalRecord = medicalRecordService.getMedicalRecordByName(person.getFirstName(),
+						person.getLastName());
+				// get birthdate
+				LocalDate birthdate = LocalDate.parse(medicalRecord.getBirthdate(),
+						DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+				// count as adult or child
+				if (Period.between(birthdate, LocalDate.now()).getYears() > 18)
+					result.addAdult();
+				else
+					result.addChild();
 			}
-			return result;
 		}
+		return result;
+	}
 
-		// is no station number is given, returns a list of all fire stations
-		else {
-			return new ArrayList<Object>(fireStationService.getAllFireStations());
-		}
+	@GetMapping("/firestation")
+	public List<FireStation> getAllFireStations() {
+		return new ArrayList<FireStation>(fireStationService.getAllFireStations());
 	}
 
 	/**
@@ -188,7 +187,7 @@ public class FireStationController {
 	 */
 	@PutMapping("/firestation")
 	public FireStation putFireStation(@RequestParam(value = "address") String address,
-			@RequestParam(value = "stationNumber") int stationNumber) {
+			@RequestParam(value = "stationNumber") String stationNumber) {
 		return fireStationService.putFireStation(new FireStation(address, stationNumber));
 	}
 
@@ -200,7 +199,7 @@ public class FireStationController {
 	 */
 	@PostMapping("/firestation")
 	public FireStation postFireStation(@RequestParam(value = "address") String address,
-			@RequestParam(value = "stationNumber", defaultValue = "0") int stationNumber) {
+			@RequestParam(value = "stationNumber", defaultValue = "0") String stationNumber) {
 		return fireStationService.postFireStation(new FireStation(address, stationNumber));
 	}
 
@@ -212,15 +211,15 @@ public class FireStationController {
 	 */
 	@DeleteMapping("/firestation")
 	public List<FireStation> deleteFireStation(@RequestParam(value = "address") Optional<String> address,
-			@RequestParam(value = "stationNumber") Optional<Integer> stationNumber) {
+			@RequestParam(value = "stationNumber") Optional<String> stationNumber) {
 		if (address.isPresent() && stationNumber.isPresent()) {
 			return fireStationService.deleteFireStation(new FireStation(address.get(), stationNumber.get()));
 		} else {
 			if (address.isPresent()) {
-				return fireStationService.deleteFireStation(address.get());
+				return fireStationService.deleteFireStationByAddress(address.get());
 			}
 			if (stationNumber.isPresent()) {
-				return fireStationService.deleteFireStation(stationNumber.get());
+				return fireStationService.deleteFireStationByStation(stationNumber.get());
 			} else
 				return new ArrayList<FireStation>(Arrays.asList(new FireStation()));
 		}

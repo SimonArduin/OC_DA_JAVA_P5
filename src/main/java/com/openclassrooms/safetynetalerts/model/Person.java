@@ -6,7 +6,7 @@ public class Person {
 	private String lastName;
 	private String address;
 	private String city;
-	private int zip;
+	private String zip;
 	private String phone;
 	private String email;
 
@@ -42,11 +42,11 @@ public class Person {
 		this.city = city;
 	}
 
-	public int getZip() {
+	public String getZip() {
 		return zip;
 	}
 
-	public void setZip(int zip) {
+	public void setZip(String zip) {
 		this.zip = zip;
 	}
 
@@ -66,7 +66,7 @@ public class Person {
 		this.email = email;
 	}
 
-	public Person(String firstName, String lastName, String address, String city, int zip, String phone, String email) {
+	public Person(String firstName, String lastName, String address, String city, String zip, String phone, String email) {
 		super();
 		this.firstName = firstName;
 		this.lastName = lastName;
@@ -78,7 +78,7 @@ public class Person {
 	}
 
 	public Person(String firstName, String lastName) {
-		this("John", "Boyd", new String(), new String(), 0, new String(), new String());
+		this("John", "Boyd", new String(), new String(), new String(), new String(), new String());
 	}
 
 	public Person() {

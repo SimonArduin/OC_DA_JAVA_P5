@@ -22,7 +22,7 @@ public class FireStationService {
 	 * 
 	 * @return - An ArrayList<FireStation> of all fire stations deleted
 	 */
-	public List<FireStation> deleteFireStation(String address) {
+	public List<FireStation> deleteFireStationByAddress(String address) {
 		ArrayList<FireStation> result = new ArrayList<FireStation>();
 		ArrayList<FireStation> fireStations = new ArrayList<FireStation>(fireStationRepository.findByAddress(address));
 		if (fireStations.isEmpty())
@@ -43,7 +43,7 @@ public class FireStationService {
 	 * 
 	 * @return - An ArrayList<FireStation> of all fire stations deleted
 	 */
-	public List<FireStation> deleteFireStation(int station) {
+	public List<FireStation> deleteFireStationByStation(String station) {
 		ArrayList<FireStation> result = new ArrayList<FireStation>();
 		ArrayList<FireStation> fireStations = new ArrayList<FireStation>(fireStationRepository.findByStation(station));
 		if (fireStations.isEmpty())
@@ -85,7 +85,7 @@ public class FireStationService {
 	 * 
 	 * @return - An Iterable<FireStation>
 	 */
-	public List<FireStation> getFireStation(String address) {
+	public List<FireStation> getFireStationByAddress(String address) {
 		return fireStationRepository.findByAddress(address);
 	}
 
@@ -96,7 +96,7 @@ public class FireStationService {
 	 * 
 	 * @return - An Iterable<FireStation>
 	 */
-	public List<FireStation> getFireStation(int station) {
+	public List<FireStation> getFireStationByStation(String station) {
 		return fireStationRepository.findByStation(station);
 	}
 

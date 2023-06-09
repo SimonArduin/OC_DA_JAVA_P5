@@ -32,7 +32,7 @@ public class PersonController {
 	public Person putPerson(@RequestParam(value = "firstName") String firstName,
 			@RequestParam(value = "lastName") String lastName,
 			@RequestParam(value = "address") Optional<String> address,
-			@RequestParam(value = "city") Optional<String> city, @RequestParam(value = "zip") Optional<Integer> zip,
+			@RequestParam(value = "city") Optional<String> city, @RequestParam(value = "zip") Optional<String> zip,
 			@RequestParam(value = "phone") Optional<String> phone,
 			@RequestParam(value = "email") Optional<String> email) {
 		if (address.isPresent() && city.isPresent() && zip.isPresent() && phone.isPresent() && email.isPresent())
@@ -66,12 +66,12 @@ public class PersonController {
 	public Person postPerson(@RequestParam(value = "firstName") String firstName,
 			@RequestParam(value = "lastName") String lastName,
 			@RequestParam(value = "address") Optional<String> address,
-			@RequestParam(value = "city") Optional<String> city, @RequestParam(value = "zip") Optional<Integer> zip,
+			@RequestParam(value = "city") Optional<String> city, @RequestParam(value = "zip") Optional<String> zip,
 			@RequestParam(value = "phone") Optional<String> phone,
 			@RequestParam(value = "email") Optional<String> email) {
 		String resultAddress = new String();
 		String resultCity = new String();
-		int resultZip = 0;
+		String resultZip = new String();
 		String resultPhone = new String();
 		String resultEmail = new String();
 		if (address.isPresent())

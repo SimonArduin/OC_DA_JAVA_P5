@@ -1,17 +1,22 @@
 package com.openclassrooms.safetynetalerts;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import com.openclassrooms.safetynetalerts.model.FireStation;
+import com.openclassrooms.safetynetalerts.repository.DataBase;
 import com.openclassrooms.safetynetalerts.repository.FireStationRepository;
 
 @SpringBootTest(classes = FireStationRepository.class)
@@ -19,20 +24,24 @@ public class FireStationRepositoryTest {
 
 	@Autowired
 	FireStationRepository fireStationRepository;
-	static FireStation fireStation = new FireStation("1509 Culver St", 3);
+	
+	@MockBean
+	DataBase dataBase;
+		
+	static FireStation fireStation = new FireStation("1509 Culver St", "3");
 	static FireStation fireStationOtherAddress = new FireStation("wrong address", fireStation.getStation());
-	static FireStation fireStationOtherStation = new FireStation(fireStation.getAddress(), 421);
+	static FireStation fireStationOtherStation = new FireStation(fireStation.getAddress(), "421");
+	ArrayList<FireStation> fireStations = new ArrayList<FireStation>(Arrays.asList(fireStation));
 	int sizeOfDB = 13;
 	int nbOfFireStationsWithAddress = 1;
 	int nbOfFireStationsWithStation = 5;
-	
+			
 	@BeforeEach
 	private void setUpPerTest() {
-		try {
-			fireStationRepository.resetDataBase();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		Mockito.when(dataBase.getFireStations()).thenReturn(fireStations);
+		Mockito.when(dataBase.getFireStations(any(FireStation.class))).thenReturn(fireStations);
+		Mockito.when(dataBase.addFireStation(any(FireStation.class))).thenReturn(fireStation);
+		Mockito.when(dataBase.removeFireStation(any(FireStation.class))).thenReturn(fireStation);
 	}
 
 	@Test
@@ -42,83 +51,85 @@ public class FireStationRepositoryTest {
 	@Test
 	public void deleteTest() {
 		assertEquals(fireStation, fireStationRepository.delete(fireStation));
+		verify(dataBase, Mockito.times(1)).removeFireStation(any(FireStation.class));
 	}
 	
 	@Test
 	public void deleteTestIfFireStationNotInDB() {
-		assertFalse(fireStationRepository.delete(fireStationOtherAddress).equals(fireStation));
+		Mockito.when(dataBase.removeFireStation(any(FireStation.class))).thenReturn(new FireStation());
+		assertEquals(new FireStation(), fireStationRepository.delete(fireStation));
+		verify(dataBase, Mockito.times(1)).removeFireStation(any(FireStation.class));
 	}
 
 	@Test
 	public void findAllTest() {
 		ArrayList<FireStation> result = new ArrayList<FireStation>(fireStationRepository.findAll());
-		assertEquals(result.size(), sizeOfDB);
+		verify(dataBase, Mockito.times(1)).getFireStations();
+		assertEquals(sizeOfDB, result.size());
 		assertTrue(result.contains(fireStation));
 	}
 
 	@Test
 	public void findTest() {
 		ArrayList<FireStation> result = new ArrayList<FireStation>(fireStationRepository.find(fireStation));
-		boolean wrongFireStation = false;
-		for(FireStation fireStationInResult : result) {
-			if(!fireStationInResult.equals(fireStation))
-				wrongFireStation = true;
-		}
-		assertEquals(result.size(), nbOfFireStationsWithAddress);
+		verify(dataBase, Mockito.times(1)).getFireStations(any(FireStation.class));
+		for(FireStation fireStationInResult : result)
+			assertTrue(fireStation.equals(fireStationInResult));
+		assertEquals(nbOfFireStationsWithAddress, result.size());
 		assertTrue(result.contains(fireStation));
-		assertFalse(wrongFireStation);
 	}
 	
 	@Test
 	public void findIfFireStationNotInDB() {
-		assertEquals(fireStationRepository.find(fireStationOtherAddress).size(), 0);
+		Mockito.when(dataBase.getFireStations()).thenReturn(new ArrayList<FireStation>());
+		assertEquals(new ArrayList<FireStation>(), fireStationRepository.find(fireStationOtherAddress));
+		verify(dataBase, Mockito.times(1)).getFireStations(any(FireStation.class));
 	}
 
 	@Test
 	public void findByAddressTest() {
 		ArrayList<FireStation> result = new ArrayList<FireStation>(fireStationRepository.findByAddress(fireStation.getAddress()));
-		boolean wrongAddress = false;
-		for(FireStation fireStationInResult : result) {
-			if(!fireStationInResult.getAddress().equals(fireStation.getAddress()))
-				wrongAddress = true;
-		}
-		assertEquals(result.size(), nbOfFireStationsWithAddress);
+		verify(dataBase, Mockito.times(1)).getFireStations(any(FireStation.class));
+		for(FireStation fireStationInResult : result)
+			assertTrue(fireStation.getAddress().equals(fireStationInResult.getAddress()));
+		assertEquals(nbOfFireStationsWithAddress, result.size());
 		assertTrue(result.contains(fireStation));
-		assertFalse(wrongAddress);
 	}
 	
 	@Test
 	public void findByAddressTestIfFireStationNotInDB() {
-		assertEquals(fireStationRepository.findByAddress(fireStationOtherAddress.getAddress()).size(), 0);
+		Mockito.when(dataBase.getFireStations(any(FireStation.class))).thenReturn(new ArrayList<FireStation>());
+		assertEquals(new ArrayList<FireStation>(), fireStationRepository.findByAddress(fireStationOtherAddress.getAddress()));
+		verify(dataBase, Mockito.times(1)).getFireStations(any(FireStation.class));
 	}
 
 	@Test
 	public void findByStationTest() {
 		ArrayList<FireStation> result = new ArrayList<FireStation>(fireStationRepository.findByStation(fireStation.getStation()));
-		boolean wrongStation = false;
-		for(FireStation fireStationInResult : result) {
-			if(fireStationInResult.getStation() != fireStation.getStation())
-				wrongStation = true;
-		}
-		assertEquals(result.size(), nbOfFireStationsWithStation);
+		verify(dataBase, Mockito.times(1)).getFireStations(any(FireStation.class));
+		for(FireStation fireStationInResult : result)
+			assertTrue(fireStation.getStation().equals(fireStationInResult.getStation()));
+		assertEquals(nbOfFireStationsWithStation, result.size());
 		assertTrue(result.contains(fireStation));
-		assertFalse(wrongStation);
 	}
 	
 	@Test
 	public void findByStationTestIfFireStationNotInDB() {
-		ArrayList<FireStation> result = new ArrayList<FireStation>(fireStationRepository.findByStation(fireStationOtherStation.getStation()));
-		assertEquals(result.size(), 0);
+		Mockito.when(dataBase.getFireStations(any(FireStation.class))).thenReturn(new ArrayList<FireStation>());
+		assertEquals(new ArrayList<FireStation>(), fireStationRepository.findByStation(fireStationOtherStation.getStation()));
+		verify(dataBase, Mockito.times(1)).getFireStations(any(FireStation.class));
 	}
 
 	@Test
 	public void saveTest() {
 		assertEquals(fireStationOtherAddress, fireStationRepository.save(fireStationOtherAddress));
+		verify(dataBase, Mockito.times(1)).addFireStation(any(FireStation.class));
 	}
 
 	@Test
 	public void saveTestIfAlreadyInDB() {
-		assertFalse(fireStationRepository.save(fireStation).equals(fireStation));
+		Mockito.when(dataBase.addFireStation(any(FireStation.class))).thenReturn(new FireStation());
+		verify(dataBase, Mockito.times(1)).addFireStation(any(FireStation.class));
 	}
 
 }

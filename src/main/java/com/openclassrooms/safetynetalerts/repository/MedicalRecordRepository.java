@@ -39,7 +39,7 @@ public class MedicalRecordRepository {
 		/*
 		 * extract all medical record data
 		 */
-		ArrayList<Object> medicalRecordData = new ArrayList<Object>(data.get("firestations"));
+		ArrayList<Object> medicalRecordData = new ArrayList<Object>(data.get("medicalrecords"));
 		/*
 		 * add all medicalrecords to the list of medical records
 		 */

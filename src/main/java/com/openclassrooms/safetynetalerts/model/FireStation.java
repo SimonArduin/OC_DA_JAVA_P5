@@ -3,7 +3,7 @@ package com.openclassrooms.safetynetalerts.model;
 public class FireStation {
 
 	private String address;
-	private int station;
+	private String station;
 
 	public String getAddress() {
 		return address;
@@ -13,15 +13,15 @@ public class FireStation {
 		this.address = address;
 	}
 
-	public int getStation() {
+	public String getStation() {
 		return station;
 	}
 
-	public void setStation(int stationNumber) {
+	public void setStation(String stationNumber) {
 		this.station = stationNumber;
 	}
 
-	public FireStation(String address, int stationNumber) {
+	public FireStation(String address, String stationNumber) {
 		super();
 		this.address = address;
 		this.station = stationNumber;

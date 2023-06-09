@@ -22,32 +22,33 @@ public class PersonService {
 	public Person putPerson(Person person) {
 		// TODO Auto-generated method stub
 		// if field is empty, don't modify
-		return null;
+		// gérer tous les cas ici
+		return new Person();
 	}
 
 	public Person putPersonAddress(String firstName, String lastName, String string) {
 		// TODO Auto-generated method stub
-		return null;
+		return new Person();
 	}
 
 	public Person putPersonCity(String firstName, String lastName, String string) {
 		// TODO Auto-generated method stub
-		return null;
+		return new Person();
 	}
 
-	public Person putPersonZip(String firstName, String lastName, Integer integer) {
+	public Person putPersonZip(String firstName, String lastName, String integer) {
 		// TODO Auto-generated method stub
-		return null;
+		return new Person();
 	}
 
 	public Person putPersonPhone(String firstName, String lastName, String string) {
 		// TODO Auto-generated method stub
-		return null;
+		return new Person();
 	}
 
 	public Person putPersonEmail(String firstName, String lastName, String string) {
 		// TODO Auto-generated method stub
-		return null;
+		return new Person();
 	}
 
 	public Person postPerson(Person person) {
@@ -56,7 +57,7 @@ public class PersonService {
 
 	public List<Person> deletePerson(String firstName, String lastName) {
 		ArrayList<Person> result = new ArrayList<Person>();
-		for(Person person : personRepository.findByFullName(firstName, lastName)) {
+		for(Person person : personRepository.findByName(firstName, lastName)) {
 			if(personRepository.delete(person) != null)
 				result.add(person);
 		}

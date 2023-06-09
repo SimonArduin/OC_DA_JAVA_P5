@@ -39,7 +39,7 @@ public class PersonRepository {
 		/*
 		 * extract all person data
 		 */
-		ArrayList<Object> personData = new ArrayList<Object>(data.get("firestations"));
+		ArrayList<Object> personData = new ArrayList<Object>(data.get("persons"));
 		/*
 		 * add all persons to the list of persons
 		 */
@@ -77,7 +77,7 @@ public class PersonRepository {
 		return result;
 	}
 	
-	public List<Person> findByFullName(String firstName, String lastName) {
+	public List<Person> findByName(String firstName, String lastName) {
 		ArrayList<Person> result = new ArrayList<Person>();
 		for (Person personInDB : persons) {
 			if (firstName.equals(personInDB.getFirstName()) && lastName.equals(personInDB.getLastName()))
@@ -122,10 +122,10 @@ public class PersonRepository {
 		return result;
 	}
 
-	public List<Person> findByZip(int zip) {
+	public List<Person> findByZip(String zip) {
 		ArrayList<Person> result = new ArrayList<Person>();
 		for (Person person : persons) {
-			if (zip == person.getZip())
+			if (zip.equals(person.getZip()))
 				result.add(person);
 		}
 		return result;

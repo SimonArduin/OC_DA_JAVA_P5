@@ -30,9 +30,9 @@ public class FireStationServiceTest {
 	@MockBean
 	FireStationRepository fireStationRepository;
 
-	static FireStation fireStation = new FireStation("1509 Culver St", 3);
+	static FireStation fireStation = new FireStation("1509 Culver St", "3");
 	static FireStation fireStationOtherAddress = new FireStation("wrong address", fireStation.getStation());
-	static FireStation fireStationOtherStation = new FireStation(fireStation.getAddress(), 421);
+	static FireStation fireStationOtherStation = new FireStation(fireStation.getAddress(), "421");
 
 	@BeforeEach
 	private void setUp() {
@@ -40,7 +40,7 @@ public class FireStationServiceTest {
 		when(fireStationRepository.find(any(FireStation.class))).thenReturn(new ArrayList<FireStation>(Arrays.asList(fireStation)));
 		when(fireStationRepository.findAll()).thenReturn(new ArrayList<FireStation>(Arrays.asList(fireStation)));
 		when(fireStationRepository.findByAddress(anyString())).thenReturn(new ArrayList<FireStation>(Arrays.asList(fireStation)));
-		when(fireStationRepository.findByStation(anyInt())).thenReturn(new ArrayList<FireStation>(Arrays.asList(fireStation)));
+		when(fireStationRepository.findByStation(anyString())).thenReturn(new ArrayList<FireStation>(Arrays.asList(fireStation)));
 		when(fireStationRepository.save(any(FireStation.class))).thenReturn(fireStation);
 	}
 
@@ -58,16 +58,16 @@ public class FireStationServiceTest {
 	 */
 
 	@Test
-	public void deleteFireStationTestByAddress() {
-		assertEquals(new ArrayList<FireStation>(Arrays.asList(fireStation)), fireStationService.deleteFireStation(fireStation.getAddress()));
+	public void deleteFireStationByAddressTest() {
+		assertEquals(new ArrayList<FireStation>(Arrays.asList(fireStation)), fireStationService.deleteFireStationByAddress(fireStation.getAddress()));
 		verify(fireStationRepository, Mockito.times(1)).findByAddress(anyString());
 		verify(fireStationRepository, Mockito.times(1)).delete(any(FireStation.class));
 	}
 
 	@Test
-	public void deleteFireStationTestByAddressIfNotInDB() {
+	public void deleteFireStationByAddressTestIfNotInDB() {
 		when(fireStationRepository.findByAddress(anyString())).thenReturn(new ArrayList<FireStation>());
-		assertFalse(fireStationService.deleteFireStation(fireStationOtherAddress.getAddress()).equals(new ArrayList<FireStation>(Arrays.asList(fireStation))));
+		assertFalse(fireStationService.deleteFireStationByAddress(fireStationOtherAddress.getAddress()).equals(new ArrayList<FireStation>(Arrays.asList(fireStation))));
 		verify(fireStationRepository, Mockito.times(1)).findByAddress(anyString());
 		verify(fireStationRepository, Mockito.times(0)).delete(any(FireStation.class));
 	}
@@ -82,17 +82,17 @@ public class FireStationServiceTest {
 	 */
 
 	@Test
-	public void deleteFireStationTestByStation() {
-		assertEquals(new ArrayList<FireStation>(Arrays.asList(fireStation)), fireStationService.deleteFireStation(fireStation.getStation()));
-		verify(fireStationRepository, Mockito.times(1)).findByStation(anyInt());
+	public void deleteFireStationByStationTest() {
+		assertEquals(new ArrayList<FireStation>(Arrays.asList(fireStation)), fireStationService.deleteFireStationByStation(fireStation.getStation()));
+		verify(fireStationRepository, Mockito.times(1)).findByStation(anyString());
 		verify(fireStationRepository, Mockito.times(1)).delete(any(FireStation.class));
 	}
 
 	@Test
-	public void deleteFireStationTestByStationIfNotInDB() {
-		when(fireStationRepository.findByStation(anyInt())).thenReturn(new ArrayList<FireStation>());
-		assertFalse(fireStationService.deleteFireStation(fireStationOtherStation.getStation()).equals(new ArrayList<FireStation>(Arrays.asList(fireStation))));
-		verify(fireStationRepository, Mockito.times(1)).findByStation(anyInt());
+	public void deleteFireStationByStationIfNotInDBTest() {
+		when(fireStationRepository.findByStation(anyString())).thenReturn(new ArrayList<FireStation>());
+		assertFalse(fireStationService.deleteFireStationByStation(fireStationOtherStation.getStation()).equals(new ArrayList<FireStation>(Arrays.asList(fireStation))));
+		verify(fireStationRepository, Mockito.times(1)).findByStation(anyString());
 		verify(fireStationRepository, Mockito.times(0)).delete(any(FireStation.class));
 	}
 
@@ -129,7 +129,7 @@ public class FireStationServiceTest {
 
 	@Test
 	public void getFireStationTestByAddress() {
-		ArrayList<FireStation> result = new ArrayList<FireStation>(fireStationService.getFireStation(fireStation.getAddress()));
+		ArrayList<FireStation> result = new ArrayList<FireStation>(fireStationService.getFireStationByAddress(fireStation.getAddress()));
 		boolean wrongAddress = false;
 		for(FireStation fireStationInResult : result) {
 			if(fireStationInResult.getAddress()!=fireStation.getAddress())
@@ -145,7 +145,7 @@ public class FireStationServiceTest {
 	@Test
 	public void getFireStationTestByAddressIfNotInDB() {
 		when(fireStationRepository.findByAddress(anyString())).thenReturn(new ArrayList<FireStation>());
-		ArrayList<FireStation> result = new ArrayList<FireStation>(fireStationService.getFireStation(fireStationOtherAddress.getAddress()));
+		ArrayList<FireStation> result = new ArrayList<FireStation>(fireStationService.getFireStationByAddress(fireStationOtherAddress.getAddress()));
 		assertTrue(result.isEmpty());
 		verify(fireStationRepository, Mockito.times(1)).findByAddress(anyString());
 	}
@@ -160,7 +160,7 @@ public class FireStationServiceTest {
 
 	@Test
 	public void getFireStationTestByStation() {
-		ArrayList<FireStation> result = new ArrayList<FireStation>(fireStationService.getFireStation(fireStation.getStation()));
+		ArrayList<FireStation> result = new ArrayList<FireStation>(fireStationService.getFireStationByStation(fireStation.getStation()));
 		boolean wrongStation = false;
 		for(FireStation fireStationInResult : result) {
 			if(!fireStationInResult.equals(fireStation))
@@ -170,15 +170,15 @@ public class FireStationServiceTest {
 		assertEquals(1, result.size());
 		assertTrue(result.contains(fireStation));
 		assertFalse(wrongStation);
-		verify(fireStationRepository, Mockito.times(1)).findByStation(anyInt());
+		verify(fireStationRepository, Mockito.times(1)).findByStation(anyString());
 	}
 
 	@Test
 	public void getFireStationTestByStationIfNotInDB() {
-		when(fireStationRepository.findByStation(anyInt())).thenReturn(new ArrayList<FireStation>());
-		ArrayList<FireStation> result = new ArrayList<FireStation>(fireStationService.getFireStation(fireStationOtherAddress.getStation()));
+		when(fireStationRepository.findByStation(anyString())).thenReturn(new ArrayList<FireStation>());
+		ArrayList<FireStation> result = new ArrayList<FireStation>(fireStationService.getFireStationByStation(fireStationOtherAddress.getStation()));
 		assertTrue(result.isEmpty());
-		verify(fireStationRepository, Mockito.times(1)).findByStation(anyInt());
+		verify(fireStationRepository, Mockito.times(1)).findByStation(anyString());
 	}
 
 	/*
@@ -252,7 +252,8 @@ public class FireStationServiceTest {
 	@Test
 	public void postFireStationTestIfAlreadyInDB() {
 		when(fireStationRepository.save(any(FireStation.class))).thenReturn(new FireStation());
-		assertFalse(fireStationService.postFireStation(fireStation).equals(fireStation));
+		//assertFalse(fireStationService.postFireStation(fireStation).equals(fireStation));
+		assertEquals(fireStationService.postFireStation(fireStation), new FireStation());
 		verify(fireStationRepository, Mockito.times(1)).save(any(FireStation.class));
 	}
 

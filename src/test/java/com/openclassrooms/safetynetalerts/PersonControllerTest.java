@@ -37,7 +37,7 @@ public class PersonControllerTest {
 	@MockBean
 	PersonService personService;
 
-	static Person person = new Person("John", "Boyd", "1509 Culver St", "Culver", 97451, "841-874-6512",
+	static Person person = new Person("John", "Boyd", "1509 Culver St", "Culver", "97451", "841-874-6512",
 			"jaboyd@email.com");
 	static Person personOnlyName = new Person("John", "Boyd");
 
@@ -48,7 +48,7 @@ public class PersonControllerTest {
 		Mockito.when(personService.putPerson(any(Person.class))).thenReturn(person);
 		Mockito.when(personService.putPersonAddress(anyString(), anyString(), anyString())).thenReturn(person);
 		Mockito.when(personService.putPersonCity(anyString(), anyString(), anyString())).thenReturn(person);
-		Mockito.when(personService.putPersonZip(anyString(), anyString(), anyInt())).thenReturn(person);
+		Mockito.when(personService.putPersonZip(anyString(), anyString(), anyString())).thenReturn(person);
 		Mockito.when(personService.putPersonPhone(anyString(), anyString(), anyString())).thenReturn(person);
 		Mockito.when(personService.putPersonEmail(anyString(), anyString(), anyString())).thenReturn(person);
 		Mockito.when(personService.postPerson(any(Person.class))).thenReturn(person);
@@ -79,7 +79,7 @@ public class PersonControllerTest {
 		verify(personService, Mockito.times(1)).putPerson(any(Person.class));
 		verify(personService, Mockito.times(0)).putPersonAddress(anyString(), anyString(), anyString());
 		verify(personService, Mockito.times(0)).putPersonCity(anyString(), anyString(), anyString());
-		verify(personService, Mockito.times(0)).putPersonZip(anyString(), anyString(), anyInt());
+		verify(personService, Mockito.times(0)).putPersonZip(anyString(), anyString(), anyString());
 		verify(personService, Mockito.times(0)).putPersonPhone(anyString(), anyString(), anyString());
 		verify(personService, Mockito.times(0)).putPersonEmail(anyString(), anyString(), anyString());
 	}
@@ -97,7 +97,7 @@ public class PersonControllerTest {
 		verify(personService, Mockito.times(0)).putPerson(any(Person.class));
 		verify(personService, Mockito.times(0)).putPersonAddress(anyString(), anyString(), anyString());
 		verify(personService, Mockito.times(0)).putPersonCity(anyString(), anyString(), anyString());
-		verify(personService, Mockito.times(0)).putPersonZip(anyString(), anyString(), anyInt());
+		verify(personService, Mockito.times(0)).putPersonZip(anyString(), anyString(), anyString());
 		verify(personService, Mockito.times(0)).putPersonPhone(anyString(), anyString(), anyString());
 		verify(personService, Mockito.times(0)).putPersonEmail(anyString(), anyString(), anyString());
 	}
@@ -115,7 +115,7 @@ public class PersonControllerTest {
 		verify(personService, Mockito.times(0)).putPerson(any(Person.class));
 		verify(personService, Mockito.times(1)).putPersonAddress(anyString(), anyString(), anyString());
 		verify(personService, Mockito.times(0)).putPersonCity(anyString(), anyString(), anyString());
-		verify(personService, Mockito.times(0)).putPersonZip(anyString(), anyString(), anyInt());
+		verify(personService, Mockito.times(0)).putPersonZip(anyString(), anyString(), anyString());
 		verify(personService, Mockito.times(0)).putPersonPhone(anyString(), anyString(), anyString());
 		verify(personService, Mockito.times(0)).putPersonEmail(anyString(), anyString(), anyString());
 	}
@@ -133,7 +133,7 @@ public class PersonControllerTest {
 		verify(personService, Mockito.times(0)).putPerson(any(Person.class));
 		verify(personService, Mockito.times(0)).putPersonAddress(anyString(), anyString(), anyString());
 		verify(personService, Mockito.times(1)).putPersonCity(anyString(), anyString(), anyString());
-		verify(personService, Mockito.times(0)).putPersonZip(anyString(), anyString(), anyInt());
+		verify(personService, Mockito.times(0)).putPersonZip(anyString(), anyString(), anyString());
 		verify(personService, Mockito.times(0)).putPersonPhone(anyString(), anyString(), anyString());
 		verify(personService, Mockito.times(0)).putPersonEmail(anyString(), anyString(), anyString());
 	}
@@ -151,7 +151,7 @@ public class PersonControllerTest {
 		verify(personService, Mockito.times(0)).putPerson(any(Person.class));
 		verify(personService, Mockito.times(0)).putPersonAddress(anyString(), anyString(), anyString());
 		verify(personService, Mockito.times(0)).putPersonCity(anyString(), anyString(), anyString());
-		verify(personService, Mockito.times(1)).putPersonZip(anyString(), anyString(), anyInt());
+		verify(personService, Mockito.times(1)).putPersonZip(anyString(), anyString(), anyString());
 		verify(personService, Mockito.times(0)).putPersonPhone(anyString(), anyString(), anyString());
 		verify(personService, Mockito.times(0)).putPersonEmail(anyString(), anyString(), anyString());
 	}
@@ -169,7 +169,7 @@ public class PersonControllerTest {
 		verify(personService, Mockito.times(0)).putPerson(any(Person.class));
 		verify(personService, Mockito.times(0)).putPersonAddress(anyString(), anyString(), anyString());
 		verify(personService, Mockito.times(0)).putPersonCity(anyString(), anyString(), anyString());
-		verify(personService, Mockito.times(0)).putPersonZip(anyString(), anyString(), anyInt());
+		verify(personService, Mockito.times(0)).putPersonZip(anyString(), anyString(), anyString());
 		verify(personService, Mockito.times(1)).putPersonPhone(anyString(), anyString(), anyString());
 		verify(personService, Mockito.times(0)).putPersonEmail(anyString(), anyString(), anyString());
 	}
@@ -187,7 +187,7 @@ public class PersonControllerTest {
 		verify(personService, Mockito.times(0)).putPerson(any(Person.class));
 		verify(personService, Mockito.times(0)).putPersonAddress(anyString(), anyString(), anyString());
 		verify(personService, Mockito.times(0)).putPersonCity(anyString(), anyString(), anyString());
-		verify(personService, Mockito.times(0)).putPersonZip(anyString(), anyString(), anyInt());
+		verify(personService, Mockito.times(0)).putPersonZip(anyString(), anyString(), anyString());
 		verify(personService, Mockito.times(0)).putPersonPhone(anyString(), anyString(), anyString());
 		verify(personService, Mockito.times(1)).putPersonEmail(anyString(), anyString(), anyString());
 	}
@@ -205,7 +205,7 @@ public class PersonControllerTest {
 		verify(personService, Mockito.times(0)).putPerson(any(Person.class));
 		verify(personService, Mockito.times(1)).putPersonAddress(anyString(), anyString(), anyString());
 		verify(personService, Mockito.times(0)).putPersonCity(anyString(), anyString(), anyString());
-		verify(personService, Mockito.times(1)).putPersonZip(anyString(), anyString(), anyInt());
+		verify(personService, Mockito.times(1)).putPersonZip(anyString(), anyString(), anyString());
 		verify(personService, Mockito.times(0)).putPersonPhone(anyString(), anyString(), anyString());
 		verify(personService, Mockito.times(0)).putPersonEmail(anyString(), anyString(), anyString());
 	}
