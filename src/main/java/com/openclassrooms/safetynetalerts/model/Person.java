@@ -102,6 +102,8 @@ public class Person {
 
 	@Override
 	public boolean equals(Object object) {
+		if (!object.getClass().equals(Person.class))
+			return false;
 		if (((Person) object) != null) {
 			try {
 				if (this.isEmpty()) {
@@ -126,7 +128,6 @@ public class Person {
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
-				return false;
 			}
 		}
 		return false;

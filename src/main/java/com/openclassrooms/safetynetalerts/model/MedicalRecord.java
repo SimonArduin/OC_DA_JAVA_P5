@@ -1,5 +1,6 @@
 package com.openclassrooms.safetynetalerts.model;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 public class MedicalRecord {
@@ -59,22 +60,53 @@ public class MedicalRecord {
 		this.medications = medications;
 		this.allergies = allergies;
 	}
-	
+
 	public MedicalRecord() {
 		super();
 	}
 
-	@Override
-	public boolean equals(Object o) {
+	public boolean isEmpty() {
 		try {
-			if (this.firstName.equals(((MedicalRecord) o).getFirstName())
-					&& this.lastName.equals(((MedicalRecord) o).getLastName())
-					&& this.birthdate.equals(((MedicalRecord) o).getBirthdate())
-					&& this.medications.equals(((MedicalRecord) o).getMedications())
-					&& this.allergies.equals(((MedicalRecord) o).getAllergies()))
-				return true;
+			Field[] fields = this.getClass().getDeclaredFields();
+			for (int i = 0; i < fields.length; i++) {
+				if (fields[i].get(this) != null)
+					return false;
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+		return true;
+	}
+
+	@Override
+	public boolean equals(Object object) {
+		if (!object.getClass().equals(MedicalRecord.class))
+			return false;
+		if (((MedicalRecord) object) != null) {
+			try {
+				if (this.isEmpty()) {
+					if (((MedicalRecord) object).isEmpty())
+						return true;
+					else
+						return false;
+				} else {
+					if (this.firstName != null && this.lastName != null) {
+						if (this.firstName.equals(((MedicalRecord) object).getFirstName())
+								&& this.lastName.equals(((MedicalRecord) object).getLastName()))
+							return true;
+						return false;
+					} else {
+						Field[] fields = this.getClass().getDeclaredFields();
+						for (int i = 0; i < fields.length; i++)
+							if (fields[i].get(this) != null
+									&& !fields[i].get(this).equals(fields[i].get(((MedicalRecord) object))))
+								return false;
+						return true;
+					}
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 		return false;
 	}

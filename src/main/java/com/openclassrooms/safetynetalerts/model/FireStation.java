@@ -1,5 +1,7 @@
 package com.openclassrooms.safetynetalerts.model;
 
+import java.lang.reflect.Field;
+
 public class FireStation {
 
 	private String address;
@@ -29,26 +31,41 @@ public class FireStation {
 
 	public FireStation() {
 	}
+	
+	public boolean isEmpty() {
+		try {
+			Field[] fields = this.getClass().getDeclaredFields();
+			for (int i = 0; i < fields.length; i++) {
+				if (fields[i].get(this) != null)
+					return false;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return true;
+	}
 
 	@Override
-	public boolean equals(Object o) {
-		if (o != null) {
+	public boolean equals(Object object) {
+		if (!object.getClass().equals(FireStation.class))
+			return false;
+		if (((FireStation) object) != null) {
 			try {
-				if (this.address != null && this.station != null) {
-					if (this.address.equals(((FireStation) o).getAddress())
-							&& this.station.equals(((FireStation) o).getStation()))
+				if (this.isEmpty()) {
+					if (((FireStation) object).isEmpty())
 						return true;
-					return false;
+					else
+						return false;
 				} else {
-					if (this.address != null && !this.address.equals(((FireStation) o).getAddress()))
-						return false;
-					if (this.station != null && !this.station.equals(((FireStation) o).getStation()))
-						return false;
-					return true;
+						Field[] fields = this.getClass().getDeclaredFields();
+						for (int i = 0; i < fields.length; i++)
+							if (fields[i].get(this) != null
+									&& !fields[i].get(this).equals(fields[i].get(((FireStation) object))))
+								return false;
+						return true;
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
-				return false;
 			}
 		}
 		return false;
