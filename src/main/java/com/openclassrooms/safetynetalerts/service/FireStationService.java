@@ -16,48 +16,6 @@ public class FireStationService {
 	private FireStationRepository fireStationRepository;
 
 	/*
-	 * Deletes every fire station with the specified address
-	 * 
-	 * @param - A String representing an address
-	 * 
-	 * @return - An ArrayList<FireStation> of all fire stations deleted
-	 */
-	public List<FireStation> deleteFireStationByAddress(String address) {
-		ArrayList<FireStation> result = new ArrayList<FireStation>();
-		ArrayList<FireStation> fireStations = new ArrayList<FireStation>(fireStationRepository.findByAddress(address));
-		if (fireStations.isEmpty())
-			return result;
-		else {
-			for (FireStation fireStation : fireStations) {
-				fireStationRepository.delete(fireStation);
-				result.add(fireStation);
-			}
-			return result;
-		}
-	}
-
-	/*
-	 * Deletes every fire station with the specified station number
-	 * 
-	 * @param - An int representing a station number
-	 * 
-	 * @return - An ArrayList<FireStation> of all fire stations deleted
-	 */
-	public List<FireStation> deleteFireStationByStation(String station) {
-		ArrayList<FireStation> result = new ArrayList<FireStation>();
-		ArrayList<FireStation> fireStations = new ArrayList<FireStation>(fireStationRepository.findByStation(station));
-		if (fireStations.isEmpty())
-			return result;
-		else {
-			for (FireStation fireStation : fireStations) {
-				fireStationRepository.delete(fireStation);
-				result.add(fireStation);
-			}
-			return result;
-		}
-	}
-
-	/*
 	 * Deletes every fire station corresponding to the specified fire station
 	 * 
 	 * @param - A FireStation representing a fire station
@@ -66,7 +24,7 @@ public class FireStationService {
 	 */
 	public List<FireStation> deleteFireStation(FireStation fireStation) {
 		ArrayList<FireStation> result = new ArrayList<FireStation>();
-		ArrayList<FireStation> fireStations = new ArrayList<FireStation>(fireStationRepository.find(fireStation));
+		ArrayList<FireStation> fireStations = new ArrayList<FireStation>(fireStationRepository.get(fireStation));
 		if (fireStations.isEmpty())
 			return result;
 		else {
@@ -77,29 +35,7 @@ public class FireStationService {
 			return result;
 		}
 	}
-
-	/*
-	 * Get every fire station corresponding to the specified address
-	 * 
-	 * @param - A String representing an adress
-	 * 
-	 * @return - An Iterable<FireStation>
-	 */
-	public List<FireStation> getFireStationByAddress(String address) {
-		return fireStationRepository.findByAddress(address);
-	}
-
-	/*
-	 * Get every fire station corresponding to the specified station number
-	 * 
-	 * @param - An int representing a station number
-	 * 
-	 * @return - An Iterable<FireStation>
-	 */
-	public List<FireStation> getFireStationByStation(String station) {
-		return fireStationRepository.findByStation(station);
-	}
-
+	
 	/*
 	 * Get every fire station corresponding to the specified fire station
 	 * 
@@ -108,8 +44,7 @@ public class FireStationService {
 	 * @return - An Iterable<FireStation>
 	 */
 	public List<FireStation> getFireStation(FireStation fireStation) {
-		ArrayList<FireStation> result = new ArrayList<FireStation>(fireStationRepository.find(fireStation));
-		return result;
+		return fireStationRepository.get(fireStation);
 	}
 
 	/*
@@ -118,7 +53,7 @@ public class FireStationService {
 	 * @return - An Iterable<FireStation>
 	 */
 	public List<FireStation> getAllFireStations() {
-		return fireStationRepository.findAll();
+		return fireStationRepository.getAll();
 	}
 
 	/*
@@ -144,7 +79,7 @@ public class FireStationService {
 	 */
 	public FireStation putFireStation(FireStation fireStation) {
 		boolean isInDB = false;
-		for (FireStation fireStationInDB : fireStationRepository.findByAddress(fireStation.getAddress())) {
+		for (FireStation fireStationInDB : fireStationRepository.get(new FireStation(fireStation.getAddress(), ""))) {
 			if (fireStationInDB.getAddress() == fireStation.getAddress()) {
 				isInDB = true;
 				fireStationRepository.delete(fireStationInDB);

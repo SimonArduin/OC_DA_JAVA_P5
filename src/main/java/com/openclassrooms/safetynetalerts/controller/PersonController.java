@@ -35,23 +35,18 @@ public class PersonController {
 			@RequestParam(value = "city") Optional<String> city, @RequestParam(value = "zip") Optional<String> zip,
 			@RequestParam(value = "phone") Optional<String> phone,
 			@RequestParam(value = "email") Optional<String> email) {
-		if (address.isPresent() && city.isPresent() && zip.isPresent() && phone.isPresent() && email.isPresent())
-			return personService.putPerson(
-					new Person(firstName, lastName, address.get(), city.get(), zip.get(), phone.get(), email.get()));
-		else {
-			Person result = new Person(firstName, lastName);
-			if (address.isPresent())
-				result = personService.putPersonAddress(firstName, lastName, address.get());
-			if (city.isPresent())
-				result = personService.putPersonCity(firstName, lastName, city.get());
-			if (zip.isPresent())
-				result = personService.putPersonZip(firstName, lastName, zip.get());
-			if (phone.isPresent())
-				result = personService.putPersonPhone(firstName, lastName, phone.get());
-			if (email.isPresent())
-				result = personService.putPersonEmail(firstName, lastName, email.get());
-			return result;
-		}
+		Person person = new Person(firstName, lastName);
+		if (address.isPresent())
+			person.setAddress(address.get());
+		if (city.isPresent())
+			person.setCity(city.get());
+		if (zip.isPresent())
+			person.setZip(zip.get());
+		if (phone.isPresent())
+			person.setPhone(phone.get());
+		if (email.isPresent())
+			person.setEmail(email.get());
+		return personService.putPerson(person);
 	}
 
 	/**
@@ -69,23 +64,18 @@ public class PersonController {
 			@RequestParam(value = "city") Optional<String> city, @RequestParam(value = "zip") Optional<String> zip,
 			@RequestParam(value = "phone") Optional<String> phone,
 			@RequestParam(value = "email") Optional<String> email) {
-		String resultAddress = new String();
-		String resultCity = new String();
-		String resultZip = new String();
-		String resultPhone = new String();
-		String resultEmail = new String();
+		Person person = new Person(firstName, lastName);
 		if (address.isPresent())
-			resultAddress = address.get();
+			person.setAddress(address.get());
 		if (city.isPresent())
-			resultCity = city.get();
+			person.setCity(city.get());
 		if (zip.isPresent())
-			resultZip = zip.get();
+			person.setZip(zip.get());
 		if (phone.isPresent())
-			resultPhone = phone.get();
+			person.setPhone(phone.get());
 		if (email.isPresent())
-			resultEmail = email.get();
-		return personService.postPerson(
-				new Person(firstName, lastName, resultAddress, resultCity, resultZip, resultPhone, resultEmail));
+			person.setEmail(email.get());
+		return personService.postPerson(person);
 	}
 
 	/**

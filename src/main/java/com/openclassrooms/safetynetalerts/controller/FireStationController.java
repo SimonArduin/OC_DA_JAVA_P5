@@ -20,7 +20,6 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -150,7 +149,7 @@ public class FireStationController {
 
 		//get fire stations
 		ArrayList<FireStation> fireStations = new ArrayList<FireStation>(
-				fireStationService.getFireStationByStation(stationNumber));
+				fireStationService.getFireStation(new FireStation("", stationNumber)));
 		//for every person covered by each fire station
 		for (FireStation fireStation : fireStations) {
 			ArrayList<Person> persons = new ArrayList<Person>(
@@ -176,7 +175,7 @@ public class FireStationController {
 
 	@GetMapping("/firestation")
 	public List<FireStation> getAllFireStations() {
-		return new ArrayList<FireStation>(fireStationService.getAllFireStations());
+		return fireStationService.getAllFireStations();
 	}
 
 	/**
@@ -212,16 +211,11 @@ public class FireStationController {
 	@DeleteMapping("/firestation")
 	public List<FireStation> deleteFireStation(@RequestParam(value = "address") Optional<String> address,
 			@RequestParam(value = "stationNumber") Optional<String> stationNumber) {
-		if (address.isPresent() && stationNumber.isPresent()) {
-			return fireStationService.deleteFireStation(new FireStation(address.get(), stationNumber.get()));
-		} else {
-			if (address.isPresent()) {
-				return fireStationService.deleteFireStationByAddress(address.get());
-			}
-			if (stationNumber.isPresent()) {
-				return fireStationService.deleteFireStationByStation(stationNumber.get());
-			} else
-				return new ArrayList<FireStation>(Arrays.asList(new FireStation()));
-		}
+		FireStation fireStation = new FireStation();
+		if (address.isPresent())
+			fireStation.setAddress(address.get());
+		if (stationNumber.isPresent())
+			fireStation.setStation(stationNumber.get());
+		return fireStationService.deleteFireStation(fireStation);
 	}
 }

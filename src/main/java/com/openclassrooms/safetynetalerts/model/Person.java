@@ -78,7 +78,7 @@ public class Person {
 	}
 
 	public Person(String firstName, String lastName) {
-		this("John", "Boyd", new String(), new String(), new String(), new String(), new String());
+		this("John", "Boyd", null, null, null, null, null);
 	}
 
 	public Person() {

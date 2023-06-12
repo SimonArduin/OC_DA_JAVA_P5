@@ -23,22 +23,14 @@ public class FireStationRepository {
 		return dataBase.removeFireStation(fireStation);
 	}
 
-	public List<FireStation> findAll() {
+	public List<FireStation> getAll() {
 		return dataBase.getFireStations();
 	}
 
-	public List<FireStation> find(FireStation fireStation) {
+	public List<FireStation> get(FireStation fireStation) {
 		return dataBase.getFireStations(fireStation);
 	}
-
-	public List<FireStation> findByAddress(String address) {
-		return dataBase.getFireStations(new FireStation(address, ""));
-	}
-
-	public List<FireStation> findByStation(String station) {
-		return dataBase.getFireStations(new FireStation("", station));
-	}
-
+	
 	public FireStation save(FireStation fireStation) {
 		return dataBase.addFireStation(fireStation);
 	}
