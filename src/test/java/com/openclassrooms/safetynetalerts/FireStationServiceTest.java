@@ -30,8 +30,6 @@ public class FireStationServiceTest {
 	FireStationRepository fireStationRepository;
 
 	static FireStation fireStation = new FireStation("1509 Culver St", "3");
-	static FireStation fireStationOtherAddress = new FireStation("wrong address", fireStation.getStation());
-	static FireStation fireStationOtherStation = new FireStation(fireStation.getAddress(), "421");
 
 	@BeforeEach
 	private void setUp() {
@@ -102,7 +100,7 @@ public class FireStationServiceTest {
 	@Test
 	public void getFireStationTestIfNotInDB() {
 		when(fireStationRepository.get(any(FireStation.class))).thenReturn(new ArrayList<FireStation>());
-		ArrayList<FireStation> result = new ArrayList<FireStation>(fireStationService.getFireStation(fireStationOtherAddress));
+		ArrayList<FireStation> result = new ArrayList<FireStation>(fireStationService.getFireStation(fireStation));
 		assertTrue(result.isEmpty());
 		verify(fireStationRepository, Mockito.times(1)).get(any(FireStation.class));
 	}
@@ -147,7 +145,6 @@ public class FireStationServiceTest {
 	@Test
 	public void postFireStationTestIfAlreadyInDB() {
 		when(fireStationRepository.save(any(FireStation.class))).thenReturn(new FireStation());
-		//assertFalse(fireStationService.postFireStation(fireStation).equals(fireStation));
 		assertEquals(fireStationService.postFireStation(fireStation), new FireStation());
 		verify(fireStationRepository, Mockito.times(1)).save(any(FireStation.class));
 	}
@@ -174,7 +171,7 @@ public class FireStationServiceTest {
 	@Test
 	public void putFireStationTestIfNotInDB() {
 		when(fireStationRepository.get(any(FireStation.class))).thenReturn(new ArrayList<FireStation>());
-		assertFalse(fireStationService.putFireStation(fireStationOtherAddress).equals(fireStationOtherAddress));
+		assertEquals(fireStationService.putFireStation(fireStation), new FireStation());
 		verify(fireStationRepository, Mockito.times(1)).get(any(FireStation.class));
 		verify(fireStationRepository, Mockito.times(0)).delete(any(FireStation.class));
 		verify(fireStationRepository, Mockito.times(0)).save(any(FireStation.class));

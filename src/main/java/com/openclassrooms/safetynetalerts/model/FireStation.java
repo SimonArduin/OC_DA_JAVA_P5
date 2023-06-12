@@ -34,15 +34,18 @@ public class FireStation {
 	public boolean equals(Object o) {
 		if (o != null) {
 			try {
-				if (this.address != null || this.station != null) {
-					if (this.address != null && this.address != ((FireStation) o).getAddress())
+				if (this.address != null && this.station != null) {
+					if (this.address.equals(((FireStation) o).getAddress())
+							&& this.station.equals(((FireStation) o).getStation()))
+						return true;
+					return false;
+				} else {
+					if (this.address != null && !this.address.equals(((FireStation) o).getAddress()))
 						return false;
-					if (this.station != null && this.station != ((FireStation) o).getStation())
+					if (this.station != null && !this.station.equals(((FireStation) o).getStation()))
 						return false;
 					return true;
 				}
-				if (((FireStation) o).getAddress() == null && ((FireStation) o).getStation() == null)
-					return true;
 			} catch (Exception e) {
 				e.printStackTrace();
 				return false;

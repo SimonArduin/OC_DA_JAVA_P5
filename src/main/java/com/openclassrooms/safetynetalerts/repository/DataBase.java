@@ -50,8 +50,8 @@ public class DataBase {
 	public List<FireStation> getFireStations(FireStation fireStation) {
 		ArrayList<FireStation> result = new ArrayList<FireStation>(instance.firestations);
 		for (FireStation fireStationInDB : instance.firestations) {
-			if ((!fireStation.getAddress().isBlank() && !fireStation.getAddress().equals(fireStationInDB.getAddress()))
-					|| (!fireStation.getStation().isBlank()
+			if ((fireStation.getAddress() != null && !fireStation.getAddress().equals(fireStationInDB.getAddress()))
+					|| (fireStation.getStation() != null
 							&& !fireStation.getStation().equals(fireStationInDB.getStation())))
 				result.remove(fireStationInDB);
 		}

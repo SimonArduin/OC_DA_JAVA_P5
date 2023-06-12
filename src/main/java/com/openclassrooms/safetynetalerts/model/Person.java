@@ -1,5 +1,7 @@
 package com.openclassrooms.safetynetalerts.model;
 
+import java.lang.reflect.Field;
+
 public class Person {
 
 	private String firstName;
@@ -85,19 +87,43 @@ public class Person {
 	public Person() {
 	}
 
+	public boolean isEmpty() {
+		try {
+			Field[] fields = this.getClass().getDeclaredFields();
+			for (int i = 0; i < fields.length; i++) {
+				if (fields[i].get(this) != null)
+					return false;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return true;
+	}
+
 	@Override
-	public boolean equals(Object o) {
-		if (o != null) {
+	public boolean equals(Object object) {
+		if (((Person) object) != null) {
 			try {
-				if (this.firstName != null || this.lastName != null) {
-					if (this.firstName != null && this.firstName != ((Person) o).getFirstName())
+				if (this.isEmpty()) {
+					if (((Person) object).isEmpty())
+						return true;
+					else
 						return false;
-					if (this.lastName != null && this.lastName != ((Person) o).getLastName())
+				} else {
+					if (this.firstName != null && this.lastName != null) {
+						if (this.firstName.equals(((Person) object).getFirstName())
+								&& this.lastName.equals(((Person) object).getLastName()))
+							return true;
 						return false;
-					return true;
+					} else {
+						Field[] fields = this.getClass().getDeclaredFields();
+						for (int i = 0; i < fields.length; i++)
+							if (fields[i].get(this) != null
+									&& !fields[i].get(this).equals(fields[i].get(((Person) object))))
+								return false;
+						return true;
+					}
 				}
-				if (((Person) o).getFirstName() == null && ((Person) o).getLastName() == null)
-					return true;
 			} catch (Exception e) {
 				e.printStackTrace();
 				return false;
