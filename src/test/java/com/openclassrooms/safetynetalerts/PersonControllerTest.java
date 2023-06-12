@@ -10,9 +10,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -43,8 +40,8 @@ public class PersonControllerTest {
 
 	@BeforeEach
 	private void setUp() {
-		Mockito.when(personService.deletePerson(anyString(), anyString()))
-				.thenReturn(new ArrayList<Person>(Arrays.asList(person)));
+		Mockito.when(personService.deletePerson(person))
+				.thenReturn(person);
 		Mockito.when(personService.putPerson(any(Person.class))).thenReturn(person);
 		Mockito.when(personService.postPerson(any(Person.class))).thenReturn(person);
 	}
@@ -214,6 +211,84 @@ public class PersonControllerTest {
 	}
 
 	@Test
+	public void postPersonTestIfOnlyAddress() throws Exception {
+		mockMvc.perform(post(String.format("/person?firstName=%s&lastName=%s&address=%s", person.getFirstName(),
+				person.getLastName(), person.getAddress()))).andExpect(status().isOk())
+				.andExpect(jsonPath("firstName", is(person.getFirstName())))
+				.andExpect(jsonPath("lastName", is(person.getLastName())))
+				.andExpect(jsonPath("address", is(person.getAddress())))
+				.andExpect(jsonPath("city", is(person.getCity()))).andExpect(jsonPath("zip", is(person.getZip())))
+				.andExpect(jsonPath("phone", is(person.getPhone())))
+				.andExpect(jsonPath("email", is(person.getEmail())));
+		verify(personService, Mockito.times(1)).postPerson(any(Person.class));
+	}
+
+	@Test
+	public void postPersonTestIfOnlyCity() throws Exception {
+		mockMvc.perform(post(String.format("/person?firstName=%s&lastName=%s&city=%s", person.getFirstName(),
+				person.getLastName(), person.getCity()))).andExpect(status().isOk())
+				.andExpect(jsonPath("firstName", is(person.getFirstName())))
+				.andExpect(jsonPath("lastName", is(person.getLastName())))
+				.andExpect(jsonPath("address", is(person.getAddress())))
+				.andExpect(jsonPath("city", is(person.getCity()))).andExpect(jsonPath("zip", is(person.getZip())))
+				.andExpect(jsonPath("phone", is(person.getPhone())))
+				.andExpect(jsonPath("email", is(person.getEmail())));
+		verify(personService, Mockito.times(1)).postPerson(any(Person.class));
+	}
+
+	@Test
+	public void postPersonTestIfOnlyZip() throws Exception {
+		mockMvc.perform(post(String.format("/person?firstName=%s&lastName=%s&zip=%s", person.getFirstName(),
+				person.getLastName(), person.getZip()))).andExpect(status().isOk())
+				.andExpect(jsonPath("firstName", is(person.getFirstName())))
+				.andExpect(jsonPath("lastName", is(person.getLastName())))
+				.andExpect(jsonPath("address", is(person.getAddress())))
+				.andExpect(jsonPath("city", is(person.getCity()))).andExpect(jsonPath("zip", is(person.getZip())))
+				.andExpect(jsonPath("phone", is(person.getPhone())))
+				.andExpect(jsonPath("email", is(person.getEmail())));
+		verify(personService, Mockito.times(1)).postPerson(any(Person.class));
+	}
+
+	@Test
+	public void postPersonTestIfOnlyPhone() throws Exception {
+		mockMvc.perform(post(String.format("/person?firstName=%s&lastName=%s&phone=%s", person.getFirstName(),
+				person.getLastName(), person.getPhone()))).andExpect(status().isOk())
+				.andExpect(jsonPath("firstName", is(person.getFirstName())))
+				.andExpect(jsonPath("lastName", is(person.getLastName())))
+				.andExpect(jsonPath("address", is(person.getAddress())))
+				.andExpect(jsonPath("city", is(person.getCity()))).andExpect(jsonPath("zip", is(person.getZip())))
+				.andExpect(jsonPath("phone", is(person.getPhone())))
+				.andExpect(jsonPath("email", is(person.getEmail())));
+		verify(personService, Mockito.times(1)).postPerson(any(Person.class));
+	}
+
+	@Test
+	public void postPersonTestIfOnlyEmail() throws Exception {
+		mockMvc.perform(post(String.format("/person?firstName=%s&lastName=%s&email=%s", person.getFirstName(),
+				person.getLastName(), person.getEmail()))).andExpect(status().isOk())
+				.andExpect(jsonPath("firstName", is(person.getFirstName())))
+				.andExpect(jsonPath("lastName", is(person.getLastName())))
+				.andExpect(jsonPath("address", is(person.getAddress())))
+				.andExpect(jsonPath("city", is(person.getCity()))).andExpect(jsonPath("zip", is(person.getZip())))
+				.andExpect(jsonPath("phone", is(person.getPhone())))
+				.andExpect(jsonPath("email", is(person.getEmail())));
+		verify(personService, Mockito.times(1)).postPerson(any(Person.class));
+	}
+
+	@Test
+	public void postPersonTestIfAddressAndZip() throws Exception {
+		mockMvc.perform(post(String.format("/person?firstName=%s&lastName=%s&address=%s&zip=%s", person.getFirstName(),
+				person.getLastName(), person.getAddress(), person.getZip()))).andExpect(status().isOk())
+				.andExpect(jsonPath("firstName", is(person.getFirstName())))
+				.andExpect(jsonPath("lastName", is(person.getLastName())))
+				.andExpect(jsonPath("address", is(person.getAddress())))
+				.andExpect(jsonPath("city", is(person.getCity()))).andExpect(jsonPath("zip", is(person.getZip())))
+				.andExpect(jsonPath("phone", is(person.getPhone())))
+				.andExpect(jsonPath("email", is(person.getEmail())));
+		verify(personService, Mockito.times(1)).postPerson(any(Person.class));
+	}
+
+	@Test
 	public void postPersonTestIfError() throws Exception {
 		Mockito.when(personService.postPerson(any(Person.class))).thenReturn(new Person());
 		mockMvc.perform(
@@ -238,27 +313,27 @@ public class PersonControllerTest {
 	public void deletePerson() throws Exception {
 		mockMvc.perform(
 				delete(String.format("/person?firstName=%s&lastName=%s", person.getFirstName(), person.getLastName())))
-				.andExpect(status().isOk()).andExpect(jsonPath("$[0].firstName", is(person.getFirstName())))
-				.andExpect(jsonPath("$[0].lastName", is(person.getLastName())))
-				.andExpect(jsonPath("$[0].address", is(person.getAddress())))
-				.andExpect(jsonPath("$[0].city", is(person.getCity())))
-				.andExpect(jsonPath("$[0].zip", is(person.getZip())))
-				.andExpect(jsonPath("$[0].phone", is(person.getPhone())))
-				.andExpect(jsonPath("$[0].email", is(person.getEmail())));
-		verify(personService, Mockito.times(1)).deletePerson(anyString(), anyString());
+				.andExpect(status().isOk()).andExpect(jsonPath("firstName", is(person.getFirstName())))
+				.andExpect(jsonPath("lastName", is(person.getLastName())))
+				.andExpect(jsonPath("address", is(person.getAddress())))
+				.andExpect(jsonPath("city", is(person.getCity())))
+				.andExpect(jsonPath("zip", is(person.getZip())))
+				.andExpect(jsonPath("phone", is(person.getPhone())))
+				.andExpect(jsonPath("email", is(person.getEmail())));
+		verify(personService, Mockito.times(1)).deletePerson(any(Person.class));
 	}
 
 	@Test
 	public void deletePersonIfError() throws Exception {
-		Mockito.when(personService.deletePerson(anyString(), anyString()))
-				.thenReturn(new ArrayList<Person>(Arrays.asList(new Person())));
+		Mockito.when(personService.deletePerson(any(Person.class)))
+				.thenReturn(new Person());
 		mockMvc.perform(
 				delete(String.format("/person?firstName=%s&lastName=%s", person.getFirstName(), person.getLastName())))
-				.andExpect(status().isOk()).andExpect(jsonPath("$[0].firstName", is(nullValue())))
-				.andExpect(jsonPath("$[0].lastName", is(nullValue())))
-				.andExpect(jsonPath("$[0].address", is(nullValue()))).andExpect(jsonPath("$[0].city", is(nullValue())))
-				.andExpect(jsonPath("$[0].zip", is(nullValue()))).andExpect(jsonPath("$[0].phone", is(nullValue())))
-				.andExpect(jsonPath("$[0].email", is(nullValue())));
-		verify(personService, Mockito.times(1)).deletePerson(anyString(), anyString());
+				.andExpect(status().isOk()).andExpect(jsonPath("firstName", is(nullValue())))
+				.andExpect(jsonPath("lastName", is(nullValue())))
+				.andExpect(jsonPath("address", is(nullValue()))).andExpect(jsonPath("city", is(nullValue())))
+				.andExpect(jsonPath("zip", is(nullValue()))).andExpect(jsonPath("phone", is(nullValue())))
+				.andExpect(jsonPath("email", is(nullValue())));
+		verify(personService, Mockito.times(1)).deletePerson(any(Person.class));
 	}
 }

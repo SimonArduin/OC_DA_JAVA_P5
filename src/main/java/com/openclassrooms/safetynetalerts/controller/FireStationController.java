@@ -146,20 +146,24 @@ public class FireStationController {
 	@GetMapping(value = "/firestation", params = "stationNumber")
 	public FireStationURLInfo FireStationURL(@RequestParam(value = "stationNumber") String stationNumber) {
 		FireStationURLInfo result = new FireStationURLInfo();
+		FireStation fireStationToSearch = new FireStation();
 
 		//get fire stations
+		fireStationToSearch.setStation(stationNumber);
 		ArrayList<FireStation> fireStations = new ArrayList<FireStation>(
-				fireStationService.getFireStation(new FireStation("", stationNumber)));
+				fireStationService.getFireStation(fireStationToSearch));
 		//for every person covered by each fire station
 		for (FireStation fireStation : fireStations) {
+			Person personToSearch = new Person();
+			personToSearch.setAddress(fireStation.getAddress());
 			ArrayList<Person> persons = new ArrayList<Person>(
-					personService.getPersonByAddress(fireStation.getAddress()));
-			for (Person person : persons) {
+					personService.getPerson(personToSearch));
+			for (Person personInFireStation : persons) {
 				// get first name, last name, address and phone number of the resident
-				result.addPerson(new FireStationURLPerson(person));
+				result.addPerson(new FireStationURLPerson(personInFireStation));
 				// get medical record of the patient
-				MedicalRecord medicalRecord = medicalRecordService.getMedicalRecordByName(person.getFirstName(),
-						person.getLastName());
+				MedicalRecord medicalRecord = medicalRecordService.getMedicalRecordByName(personInFireStation.getFirstName(),
+						personInFireStation.getLastName());
 				// get birthdate
 				LocalDate birthdate = LocalDate.parse(medicalRecord.getBirthdate(),
 						DateTimeFormatter.ofPattern("MM/dd/yyyy"));

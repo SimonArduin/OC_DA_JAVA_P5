@@ -64,87 +64,15 @@ public class PersonRepository {
 		return new Person();
 	}
 
-	public List<Person> findAll() {
+	public List<Person> getAll() {
 		return persons;
 	}
 	
-	public List<Person> find(Person person) {
+	public List<Person> get(Person person) {
 		ArrayList<Person> result = new ArrayList<Person>();
 		for (Person personInDB : persons) {
 			if (person.equals(personInDB))
 				result.add(personInDB);
-		}
-		return result;
-	}
-	
-	public List<Person> findByName(String firstName, String lastName) {
-		ArrayList<Person> result = new ArrayList<Person>();
-		for (Person personInDB : persons) {
-			if (firstName.equals(personInDB.getFirstName()) && lastName.equals(personInDB.getLastName()))
-				result.add(personInDB);
-		}
-		return result;
-	}
-
-	public List<Person> findByFirstName(String firstName) {
-		ArrayList<Person> result = new ArrayList<Person>();
-		for (Person person : persons) {
-			if (firstName.equals(person.getFirstName()))
-				result.add(person);
-		}
-		return result;
-	}
-
-	public List<Person> findByLastName(String lastName) {
-		ArrayList<Person> result = new ArrayList<Person>();
-		for (Person person : persons) {
-			if (lastName.equals(person.getLastName()))
-				result.add(person);
-		}
-		return result;
-	}
-
-	public List<Person> findByAddress(String address) {
-		ArrayList<Person> result = new ArrayList<Person>();
-		for (Person person : persons) {
-			if (address.equals(person.getAddress()))
-				result.add(person);
-		}
-		return result;
-	}
-
-	public List<Person> findByCity(String city) {
-		ArrayList<Person> result = new ArrayList<Person>();
-		for (Person person : persons) {
-			if (city.equals(person.getCity()))
-				result.add(person);
-		}
-		return result;
-	}
-
-	public List<Person> findByZip(String zip) {
-		ArrayList<Person> result = new ArrayList<Person>();
-		for (Person person : persons) {
-			if (zip.equals(person.getZip()))
-				result.add(person);
-		}
-		return result;
-	}
-
-	public List<Person> findByPhone(String phone) {
-		ArrayList<Person> result = new ArrayList<Person>();
-		for (Person person : persons) {
-			if (phone.equals(person.getPhone()))
-				result.add(person);
-		}
-		return result;
-	}
-
-	public List<Person> findByEmail(String email) {
-		ArrayList<Person> result = new ArrayList<Person>();
-		for (Person person : persons) {
-			if (email.equals(person.getEmail()))
-				result.add(person);
 		}
 		return result;
 	}

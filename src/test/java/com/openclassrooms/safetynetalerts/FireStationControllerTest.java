@@ -74,7 +74,7 @@ public class FireStationControllerTest {
 		Mockito.when(fireStationService.postFireStation(any(FireStation.class))).thenReturn(fireStation);
 		Mockito.when(fireStationService.getAllFireStations())
 				.thenReturn(new ArrayList<FireStation>(Arrays.asList(fireStation)));
-		Mockito.when(personService.getPersonByAddress(anyString()))
+		Mockito.when(personService.getPerson(any(Person.class)))
 				.thenReturn(new ArrayList<Person>(Arrays.asList(person, personChild)));
 		Mockito.when(medicalRecordService.getMedicalRecordByName(person.getFirstName(), person.getLastName()))
 				.thenReturn(medicalRecord);
@@ -114,7 +114,7 @@ public class FireStationControllerTest {
 				.andExpect(jsonPath("numberOfChildren", is(numberOfChildren)));
 
 		verify(fireStationService, Mockito.times(1)).getFireStation(any(FireStation.class));
-		verify(personService, Mockito.times(numberOfFireStationByStationNumber)).getPersonByAddress(anyString());
+		verify(personService, Mockito.times(numberOfFireStationByStationNumber)).getPerson(any(Person.class));
 		verify(medicalRecordService, Mockito.times(1)).getMedicalRecordByName(person.getFirstName(),
 				person.getLastName());
 		verify(medicalRecordService, Mockito.times(1)).getMedicalRecordByName(personChild.getFirstName(),

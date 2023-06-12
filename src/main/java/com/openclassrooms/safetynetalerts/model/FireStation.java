@@ -32,17 +32,21 @@ public class FireStation {
 
 	@Override
 	public boolean equals(Object o) {
-		try {
-			if (this.address != null) {
-				if (this.address.equals(((FireStation) o).getAddress())
-						&& this.station == ((FireStation) o).getStation())
+		if (o != null) {
+			try {
+				if (this.address != null || this.station != null) {
+					if (this.address != null && this.address != ((FireStation) o).getAddress())
+						return false;
+					if (this.station != null && this.station != ((FireStation) o).getStation())
+						return false;
 					return true;
-			} else {
-				if (((FireStation) o).getAddress() == null && this.station == ((FireStation) o).getStation())
+				}
+				if (((FireStation) o).getAddress() == null && ((FireStation) o).getStation() == null)
 					return true;
+			} catch (Exception e) {
+				e.printStackTrace();
+				return false;
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 		return false;
 	}

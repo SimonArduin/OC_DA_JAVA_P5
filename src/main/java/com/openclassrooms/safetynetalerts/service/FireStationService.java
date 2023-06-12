@@ -28,14 +28,13 @@ public class FireStationService {
 		if (fireStations.isEmpty())
 			return result;
 		else {
-			for (FireStation fireStationInDB : fireStations) {
-				fireStationRepository.delete(fireStationInDB);
-				result.add(fireStationInDB);
-			}
+			for (FireStation fireStationInDB : fireStations)
+				if (fireStationInDB.equals(fireStationRepository.delete(fireStationInDB)))
+					result.add(fireStationInDB);
 			return result;
 		}
 	}
-	
+
 	/*
 	 * Get every fire station corresponding to the specified fire station
 	 * 
@@ -79,7 +78,9 @@ public class FireStationService {
 	 */
 	public FireStation putFireStation(FireStation fireStation) {
 		boolean isInDB = false;
-		for (FireStation fireStationInDB : fireStationRepository.get(new FireStation(fireStation.getAddress(), ""))) {
+		FireStation fireStationToSearch = new FireStation();
+		fireStationToSearch.setAddress(fireStation.getAddress());
+		for (FireStation fireStationInDB : fireStationRepository.get(fireStationToSearch)) {
 			if (fireStationInDB.getAddress() == fireStation.getAddress()) {
 				isInDB = true;
 				fireStationRepository.delete(fireStationInDB);

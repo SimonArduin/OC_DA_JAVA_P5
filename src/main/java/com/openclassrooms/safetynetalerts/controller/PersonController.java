@@ -10,7 +10,6 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import com.openclassrooms.safetynetalerts.model.Person;
 import com.openclassrooms.safetynetalerts.service.PersonService;
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -86,8 +85,8 @@ public class PersonController {
 	 * @return - A List<Person> of all removed persons
 	 */
 	@DeleteMapping("/person")
-	public List<Person> deletePerson(@RequestParam(value = "firstName") String firstName,
+	public Person deletePerson(@RequestParam(value = "firstName") String firstName,
 			@RequestParam(value = "lastName") String lastName) {
-		return personService.deletePerson(firstName, lastName);
+		return personService.deletePerson(new Person(firstName, lastName));
 	}
 }

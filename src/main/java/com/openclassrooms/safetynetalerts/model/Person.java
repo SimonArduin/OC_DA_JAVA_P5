@@ -66,7 +66,8 @@ public class Person {
 		this.email = email;
 	}
 
-	public Person(String firstName, String lastName, String address, String city, String zip, String phone, String email) {
+	public Person(String firstName, String lastName, String address, String city, String zip, String phone,
+			String email) {
 		super();
 		this.firstName = firstName;
 		this.lastName = lastName;
@@ -86,16 +87,22 @@ public class Person {
 
 	@Override
 	public boolean equals(Object o) {
-		try {
-			if (this.firstName.equals(((Person) o).getFirstName()) && this.lastName.equals(((Person) o).getLastName())
-					&& this.address.equals(((Person) o).getAddress()) && this.city.equals(((Person) o).getCity())
-					&& this.zip == ((Person) o).getZip() && this.phone.equals(((Person) o).getPhone())
-					&& this.email.equals(((Person) o).getEmail()))
-				return true;
-		} catch (Exception e) {
-			e.printStackTrace();
+		if (o != null) {
+			try {
+				if (this.firstName != null || this.lastName != null) {
+					if (this.firstName != null && this.firstName != ((Person) o).getFirstName())
+						return false;
+					if (this.lastName != null && this.lastName != ((Person) o).getLastName())
+						return false;
+					return true;
+				}
+				if (((Person) o).getFirstName() == null && ((Person) o).getLastName() == null)
+					return true;
+			} catch (Exception e) {
+				e.printStackTrace();
+				return false;
+			}
 		}
 		return false;
 	}
-
 }
