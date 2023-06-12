@@ -48,12 +48,10 @@ public class DataBase {
 	}
 
 	public List<FireStation> getFireStations(FireStation fireStation) {
-		ArrayList<FireStation> result = new ArrayList<FireStation>(instance.firestations);
+		ArrayList<FireStation> result = new ArrayList<FireStation>();
 		for (FireStation fireStationInDB : instance.firestations) {
-			if ((fireStation.getAddress() != null && !fireStation.getAddress().equals(fireStationInDB.getAddress()))
-					|| (fireStation.getStation() != null
-							&& !fireStation.getStation().equals(fireStationInDB.getStation())))
-				result.remove(fireStationInDB);
+			if (fireStation.equals(fireStationInDB))
+				result.add(fireStationInDB);
 		}
 		return result;
 	}
@@ -69,5 +67,56 @@ public class DataBase {
 		if (instance.firestations.remove(fireStation))
 			return fireStation;
 		return new FireStation();
+	}
+
+	public List<Person> getPersons() {
+		return instance.persons;
+	}
+
+	public List<Person> getPersons(Person person) {
+		ArrayList<Person> result = new ArrayList<Person>();
+		for (Person personInDB : instance.persons) {
+			if (person.equals(personInDB))
+				result.add(personInDB);
+		}
+		return result;
+	}
+
+	public Person addPerson(Person person) {
+		if (!instance.persons.contains(person))
+			if (instance.persons.add(person))
+				return person;
+		return new Person();
+	}
+
+	public Person removePerson(Person person) {
+		if (instance.persons.remove(person))
+			return person;
+		return new Person();
+	}
+
+	public List<MedicalRecord> getMedicalRecords() {
+		return instance.medicalrecords;
+	}
+
+	public MedicalRecord getMedicalRecords(MedicalRecord medicalRecord) {
+		for (MedicalRecord medicalRecordInDB : instance.medicalrecords) {
+			if (medicalRecord.equals(medicalRecordInDB))
+				return medicalRecordInDB;
+		}
+		return new MedicalRecord();
+	}
+
+	public MedicalRecord addMedicalRecord(MedicalRecord medicalRecord) {
+		if (!instance.medicalrecords.contains(medicalRecord))
+			if (instance.medicalrecords.add(medicalRecord))
+				return medicalRecord;
+		return new MedicalRecord();
+	}
+
+	public MedicalRecord removeMedicalRecord(MedicalRecord medicalRecord) {
+		if (instance.medicalrecords.remove(medicalRecord))
+			return medicalRecord;
+		return new MedicalRecord();
 	}
 }

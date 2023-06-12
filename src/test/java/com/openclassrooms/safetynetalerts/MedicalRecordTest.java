@@ -19,13 +19,13 @@ public class MedicalRecordTest {
 	final ArrayList<String> allergies = new ArrayList<String>(Arrays.asList("allergy 1","allergy 2"));
 	final ArrayList<String> otherMedications = new ArrayList<String>(Arrays.asList("otherMedication 1","otherMedication 2"));
 	final ArrayList<String> otherAllergies = new ArrayList<String>(Arrays.asList("otherAllergy 1","otherAllergy 2"));
-	final MedicalRecord person = new MedicalRecord("firstName", "lastName", "birthdate", medications, allergies);
-	final MedicalRecord personOther = new MedicalRecord("otherFirstName", "otherLastName", "otherBirthdate", otherMedications, otherAllergies);
-	MedicalRecord personTest;
+	final MedicalRecord medicalRecord = new MedicalRecord("firstName", "lastName", "birthdate", medications, allergies);
+	final MedicalRecord medicalRecordOther = new MedicalRecord("otherFirstName", "otherLastName", "otherBirthdate", otherMedications, otherAllergies);
+	MedicalRecord medicalRecordTest;
 	
 	@BeforeEach
 	void setUpPerTest() {
-		personTest = new MedicalRecord();
+		medicalRecordTest = new MedicalRecord();
 	}
 	
 	@Test
@@ -34,137 +34,137 @@ public class MedicalRecordTest {
 	
 	@Test
 	void isEmpty() {
-		assertFalse(person.isEmpty());
+		assertFalse(medicalRecord.isEmpty());
 	}
 
 	@Test
 	void isEmptyIfEmpty() {
-		assertTrue(personTest.isEmpty());
+		assertTrue(medicalRecordTest.isEmpty());
 	}
 	
 	@Test
 	void isEmptyIfOnlyBirthdate() {
-		personTest.setBirthdate(person.getBirthdate());
-		assertFalse(personTest.isEmpty());
+		medicalRecordTest.setBirthdate(medicalRecord.getBirthdate());
+		assertFalse(medicalRecordTest.isEmpty());
 	}
 	
 	@Test
 	void equalsTest() {
-		assertTrue(person.equals(person));
+		assertTrue(medicalRecord.equals(medicalRecord));
 	}
 	
 	@Test
 	void equalsTestIfOtherMedicalRecord() {
-		assertFalse(person.equals(personOther));
+		assertFalse(medicalRecord.equals(medicalRecordOther));
 	}
 
 	@Test
 	void equalsTestIfOnlyName() {
-		personTest.setFirstName(person.getFirstName());
-		personTest.setLastName(person.getLastName());
-		assertTrue(personTest.equals(person));
+		medicalRecordTest.setFirstName(medicalRecord.getFirstName());
+		medicalRecordTest.setLastName(medicalRecord.getLastName());
+		assertTrue(medicalRecordTest.equals(medicalRecord));
 	}
 
 	@Test
 	void equalsTestIfOnlyNameAndOtherMedicalRecord() {
-		personTest.setFirstName(person.getFirstName());
-		personTest.setLastName(person.getLastName());
-		assertFalse(personTest.equals(personOther));
+		medicalRecordTest.setFirstName(medicalRecord.getFirstName());
+		medicalRecordTest.setLastName(medicalRecord.getLastName());
+		assertFalse(medicalRecordTest.equals(medicalRecordOther));
 	}
 
 	@Test
 	void equalsTestIfFirstNull() {
-		assertFalse(personTest.equals(person));
+		assertFalse(medicalRecordTest.equals(medicalRecord));
 	}
 	
 	@Test
 	void equalsTestIfSecondNull() {
-		assertFalse(person.equals(personTest));
+		assertFalse(medicalRecord.equals(medicalRecordTest));
 	}
 
 	@Test
 	void equalsTestIfBothNull() {
-		assertTrue(personTest.equals(personTest));
+		assertTrue(medicalRecordTest.equals(medicalRecordTest));
 	}
 	
 	@Test
 	void equalsTestIfOnlyFirstName() {
-		personTest.setFirstName(person.getFirstName());
-		assertTrue(personTest.equals(person));
+		medicalRecordTest.setFirstName(medicalRecord.getFirstName());
+		assertTrue(medicalRecordTest.equals(medicalRecord));
 	}
 
 	@Test
 	void equalsTestIfOnlyFirstNameAndOtherMedicalRecord() {
-		personTest.setFirstName(person.getFirstName());
-		assertFalse(personTest.equals(personOther));
+		medicalRecordTest.setFirstName(medicalRecord.getFirstName());
+		assertFalse(medicalRecordTest.equals(medicalRecordOther));
 	}
 	
 	@Test
 	void equalsTestIfOnlyLastName() {
-		personTest.setLastName(person.getLastName());
-		assertTrue(personTest.equals(person));
+		medicalRecordTest.setLastName(medicalRecord.getLastName());
+		assertTrue(medicalRecordTest.equals(medicalRecord));
 	}
 
 	@Test
 	void equalsTestIfOnlyLastNameAndOtherMedicalRecord() {
-		personTest.setLastName(person.getLastName());
-		assertFalse(personTest.equals(personOther));
+		medicalRecordTest.setLastName(medicalRecord.getLastName());
+		assertFalse(medicalRecordTest.equals(medicalRecordOther));
 	}
 	
 	@Test
 	void equalsTestIfOnlyBirthdate() {
-		personTest.setBirthdate(person.getBirthdate());
-		assertTrue(personTest.equals(person));
+		medicalRecordTest.setBirthdate(medicalRecord.getBirthdate());
+		assertTrue(medicalRecordTest.equals(medicalRecord));
 	}
 
 	@Test
 	void equalsTestIfOnlyBirthdateAndOtherMedicalRecord() {
-		personTest.setBirthdate(person.getBirthdate());
-		assertFalse(personTest.equals(personOther));
+		medicalRecordTest.setBirthdate(medicalRecord.getBirthdate());
+		assertFalse(medicalRecordTest.equals(medicalRecordOther));
 	}
 	
 	@Test
 	void equalsTestIfOnlyMedications() {
-		personTest.setMedications(person.getMedications());
-		assertTrue(personTest.equals(person));
+		medicalRecordTest.setMedications(medicalRecord.getMedications());
+		assertTrue(medicalRecordTest.equals(medicalRecord));
 	}
 
 	@Test
 	void equalsTestIfOnlyMedicationsAndOtherMedicalRecord() {
-		personTest.setMedications(person.getMedications());
-		assertFalse(personTest.equals(personOther));
+		medicalRecordTest.setMedications(medicalRecord.getMedications());
+		assertFalse(medicalRecordTest.equals(medicalRecordOther));
 	}
 	
 	@Test
 	void equalsTestIfOnlyAllergies() {
-		personTest.setAllergies(person.getAllergies());
-		assertTrue(personTest.equals(person));
+		medicalRecordTest.setAllergies(medicalRecord.getAllergies());
+		assertTrue(medicalRecordTest.equals(medicalRecord));
 	}
 
 	@Test
 	void equalsTestIfOnlyAllergiesAndOtherMedicalRecord() {
-		personTest.setAllergies(person.getAllergies());
-		assertFalse(personTest.equals(personOther));
+		medicalRecordTest.setAllergies(medicalRecord.getAllergies());
+		assertFalse(medicalRecordTest.equals(medicalRecordOther));
 	}
 	
 	@Test
 	void equalsTestIfBirthdateAndMedications() {
-		personTest.setBirthdate(person.getBirthdate());
-		personTest.setMedications(person.getMedications());
-		assertTrue(personTest.equals(person));
+		medicalRecordTest.setBirthdate(medicalRecord.getBirthdate());
+		medicalRecordTest.setMedications(medicalRecord.getMedications());
+		assertTrue(medicalRecordTest.equals(medicalRecord));
 	}
 
 	@Test
 	void equalsTestIfBirthdateAndMedicationsAndOtherMedicalRecord() {
-		personTest.setBirthdate(person.getBirthdate());
-		personTest.setMedications(person.getMedications());
-		assertFalse(personTest.equals(personOther));
+		medicalRecordTest.setBirthdate(medicalRecord.getBirthdate());
+		medicalRecordTest.setMedications(medicalRecord.getMedications());
+		assertFalse(medicalRecordTest.equals(medicalRecordOther));
 	}
 
 	@Test
 	void equalsTestIfBirthdateAndMedicationsAndOtherMedicalRecordMedications() {
-		personTest.setBirthdate(person.getBirthdate());
-		personTest.setMedications(personOther.getMedications());
-		assertFalse(personTest.equals(personOther));
+		medicalRecordTest.setBirthdate(medicalRecord.getBirthdate());
+		medicalRecordTest.setMedications(medicalRecordOther.getMedications());
+		assertFalse(medicalRecordTest.equals(medicalRecordOther));
 	}
 }

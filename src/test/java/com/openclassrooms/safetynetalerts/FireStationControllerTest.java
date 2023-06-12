@@ -60,6 +60,8 @@ public class FireStationControllerTest {
 			new ArrayList<String>(Arrays.asList("nillacilan")));
 	static MedicalRecord medicalRecordChild = new MedicalRecord("Young", "Childington", "03/06/2014",
 			new ArrayList<String>(), new ArrayList<String>());
+	static MedicalRecord medicalRecordOnlyName = new MedicalRecord(medicalRecord.getFirstName(), medicalRecord.getLastName());
+	static MedicalRecord medicalRecordChildOnlyName = new MedicalRecord(medicalRecordChild.getFirstName(), medicalRecordChild.getLastName());
 	static int numberOfAdults = 1;
 	static int numberOfChildren = 1;
 	static int numberOfFireStationByStationNumber = 1;
@@ -76,9 +78,9 @@ public class FireStationControllerTest {
 				.thenReturn(new ArrayList<FireStation>(Arrays.asList(fireStation)));
 		Mockito.when(personService.getPerson(any(Person.class)))
 				.thenReturn(new ArrayList<Person>(Arrays.asList(person, personChild)));
-		Mockito.when(medicalRecordService.getMedicalRecordByName(person.getFirstName(), person.getLastName()))
+		Mockito.when(medicalRecordService.getMedicalRecord(medicalRecordOnlyName))
 				.thenReturn(medicalRecord);
-		Mockito.when(medicalRecordService.getMedicalRecordByName(personChild.getFirstName(), personChild.getLastName()))
+		Mockito.when(medicalRecordService.getMedicalRecord(medicalRecordChildOnlyName))
 				.thenReturn(medicalRecordChild);
 	}
 
@@ -115,10 +117,8 @@ public class FireStationControllerTest {
 
 		verify(fireStationService, Mockito.times(1)).getFireStation(any(FireStation.class));
 		verify(personService, Mockito.times(numberOfFireStationByStationNumber)).getPerson(any(Person.class));
-		verify(medicalRecordService, Mockito.times(1)).getMedicalRecordByName(person.getFirstName(),
-				person.getLastName());
-		verify(medicalRecordService, Mockito.times(1)).getMedicalRecordByName(personChild.getFirstName(),
-				personChild.getLastName());
+		verify(medicalRecordService, Mockito.times(1)).getMedicalRecord(medicalRecordOnlyName);
+		verify(medicalRecordService, Mockito.times(1)).getMedicalRecord(medicalRecordChildOnlyName);
 	}
 
 	@Test

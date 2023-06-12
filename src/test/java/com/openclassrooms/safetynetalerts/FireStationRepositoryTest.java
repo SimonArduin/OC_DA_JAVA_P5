@@ -29,9 +29,6 @@ public class FireStationRepositoryTest {
 	static FireStation fireStationOtherAddress = new FireStation("wrong address", fireStation.getStation());
 	static FireStation fireStationOtherStation = new FireStation(fireStation.getAddress(), "421");
 	ArrayList<FireStation> fireStations = new ArrayList<FireStation>(Arrays.asList(fireStation));
-	int sizeOfDB = 1;
-	int nbOfFireStationsWithAddress = 1;
-	int nbOfFireStationsWithStation = 1;
 	
 	@BeforeEach
 	private void setUpPerTest() {
@@ -62,7 +59,7 @@ public class FireStationRepositoryTest {
 	public void getAllTest() {
 		ArrayList<FireStation> result = new ArrayList<FireStation>(fireStationRepository.getAll());
 		verify(dataBase, Mockito.times(1)).getFireStations();
-		assertEquals(sizeOfDB, result.size());
+		assertEquals(fireStations.size(), result.size());
 		assertTrue(result.contains(fireStation));
 	}
 
@@ -72,7 +69,7 @@ public class FireStationRepositoryTest {
 		verify(dataBase, Mockito.times(1)).getFireStations(any(FireStation.class));
 		for(FireStation fireStationInResult : result)
 			assertTrue(fireStation.equals(fireStationInResult));
-		assertEquals(nbOfFireStationsWithAddress, result.size());
+		assertEquals(fireStations.size(), result.size());
 		assertTrue(result.contains(fireStation));
 	}
 	

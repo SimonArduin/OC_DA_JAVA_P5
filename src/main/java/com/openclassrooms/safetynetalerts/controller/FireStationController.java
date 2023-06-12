@@ -162,8 +162,8 @@ public class FireStationController {
 				// get first name, last name, address and phone number of the resident
 				result.addPerson(new FireStationURLPerson(personInFireStation));
 				// get medical record of the patient
-				MedicalRecord medicalRecord = medicalRecordService.getMedicalRecordByName(personInFireStation.getFirstName(),
-						personInFireStation.getLastName());
+				MedicalRecord medicalRecord = medicalRecordService.getMedicalRecord(new MedicalRecord(personInFireStation.getFirstName(),
+						personInFireStation.getLastName()));
 				// get birthdate
 				LocalDate birthdate = LocalDate.parse(medicalRecord.getBirthdate(),
 						DateTimeFormatter.ofPattern("MM/dd/yyyy"));

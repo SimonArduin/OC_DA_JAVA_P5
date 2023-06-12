@@ -60,6 +60,12 @@ public class MedicalRecord {
 		this.medications = medications;
 		this.allergies = allergies;
 	}
+	
+	public MedicalRecord(String firstName, String lastName) {
+		super();
+		this.firstName = firstName;
+		this.lastName = lastName;
+	}
 
 	public MedicalRecord() {
 		super();
