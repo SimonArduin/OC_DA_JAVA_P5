@@ -49,42 +49,40 @@ public class UrlControllerTest {
 
 	final FireStation fireStation = new FireStation("address", "station");
 	final FireStation fireStationOther = new FireStation("otherAdress", "otherStation");
-	
+
 	final Person person = new Person("firstName", "lastName", fireStation.getAddress(), "city", "zip", "phone",
 			"email");
-	final Person personChild = new Person("firstNameChild", "lastNameChild", person.getAddress(), person.getCity(), person.getZip(), person.getPhone(),
-			person.getEmail());
-	
+	final Person personChild = new Person("firstNameChild", "lastNameChild", person.getAddress(), person.getCity(),
+			person.getZip(), person.getPhone(), person.getEmail());
+
 	final ArrayList<String> medications = new ArrayList<String>(Arrays.asList("medication 1", "medication 2"));
 	final ArrayList<String> allergies = new ArrayList<String>(Arrays.asList("allergy 1", "allergy 2"));
-	final MedicalRecord medicalRecord = new MedicalRecord("firstName", "lastName", "06/06/1966", medications, allergies);
-	final MedicalRecord medicalRecordOnlyName = new MedicalRecord(medicalRecord.getFirstName(), medicalRecord.getLastName());
-	final MedicalRecord medicalRecordChild = new MedicalRecord("firstNameChild", "lastNameChild", "06/06/2006", medications, allergies);
-	final MedicalRecord medicalRecordChildOnlyName = new MedicalRecord(medicalRecordChild.getFirstName(), medicalRecordChild.getLastName());
-	
-	final int ageChild = Period.between(LocalDate.parse(medicalRecordChild.getBirthdate(),
-			DateTimeFormatter.ofPattern("MM/dd/yyyy")), LocalDate.now()).getYears();
-	
+	final MedicalRecord medicalRecord = new MedicalRecord("firstName", "lastName", "06/06/1966", medications,
+			allergies);
+	final MedicalRecord medicalRecordOnlyName = new MedicalRecord(medicalRecord.getFirstName(),
+			medicalRecord.getLastName());
+	final MedicalRecord medicalRecordChild = new MedicalRecord("firstNameChild", "lastNameChild", "06/06/2006",
+			medications, allergies);
+	final MedicalRecord medicalRecordChildOnlyName = new MedicalRecord(medicalRecordChild.getFirstName(),
+			medicalRecordChild.getLastName());
+
+	final int ageChild = Period
+			.between(LocalDate.parse(medicalRecordChild.getBirthdate(), DateTimeFormatter.ofPattern("MM/dd/yyyy")),
+					LocalDate.now())
+			.getYears();
+
 	final int numberOfAdults = 1;
 	final int numberOfChildren = 1;
 	final int numberOfFireStationByStationNumber = 1;
 
 	@BeforeEach
 	private void setUp() {
-		Mockito.when(fireStationService.deleteFireStation(any(FireStation.class)))
-				.thenReturn(new ArrayList<FireStation>(Arrays.asList(fireStation)));
 		Mockito.when(fireStationService.getFireStation(any(FireStation.class)))
-				.thenReturn(new ArrayList<FireStation>(Arrays.asList(fireStation)));
-		Mockito.when(fireStationService.putFireStation(any(FireStation.class))).thenReturn(fireStation);
-		Mockito.when(fireStationService.postFireStation(any(FireStation.class))).thenReturn(fireStation);
-		Mockito.when(fireStationService.getAllFireStations())
 				.thenReturn(new ArrayList<FireStation>(Arrays.asList(fireStation)));
 		Mockito.when(personService.getPerson(any(Person.class)))
 				.thenReturn(new ArrayList<Person>(Arrays.asList(person, personChild)));
-		Mockito.when(medicalRecordService.getMedicalRecord(medicalRecordOnlyName))
-				.thenReturn(medicalRecord);
-		Mockito.when(medicalRecordService.getMedicalRecord(medicalRecordChildOnlyName))
-				.thenReturn(medicalRecordChild);
+		Mockito.when(medicalRecordService.getMedicalRecord(medicalRecordOnlyName)).thenReturn(medicalRecord);
+		Mockito.when(medicalRecordService.getMedicalRecord(medicalRecordChildOnlyName)).thenReturn(medicalRecordChild);
 	}
 
 	@Test
@@ -96,8 +94,7 @@ public class UrlControllerTest {
 	 * fire stations
 	 * 
 	 * @param - An int corresponding to the fire station number
-	 * @return - An Iterable object of info on residents or of FireStation full
-	 *         filled
+	 * @return - A FireStationURLInfo object
 	 */
 
 	@Test
@@ -123,17 +120,41 @@ public class UrlControllerTest {
 		verify(medicalRecordService, Mockito.times(2)).getMedicalRecord(any(MedicalRecord.class));
 	}
 
+	@Test
+	public void FireStationURLTestIfNoStation() throws Exception {
+		Mockito.when(fireStationService.getFireStation(any(FireStation.class)))
+				.thenReturn(new ArrayList<FireStation>());
+		mockMvc.perform(get(String.format("/firestation?stationNumber=%s", fireStation.getStation())))
+				.andExpect(status().isOk()).andExpect(jsonPath("numberOfAdults", is(0)))
+				.andExpect(jsonPath("numberOfChildren", is(0)));
+
+		verify(fireStationService, Mockito.times(1)).getFireStation(any(FireStation.class));
+		verify(personService, Mockito.times(0)).getPerson(any(Person.class));
+		verify(medicalRecordService, Mockito.times(0)).getMedicalRecord(any(MedicalRecord.class));
+	}
+
+	@Test
+	public void FireStationURLTestIfNoPersons() throws Exception {
+		Mockito.when(personService.getPerson(any(Person.class))).thenReturn(new ArrayList<Person>());
+		mockMvc.perform(get(String.format("/firestation?stationNumber=%s", fireStation.getStation())))
+				.andExpect(status().isOk()).andExpect(jsonPath("numberOfAdults", is(0)))
+				.andExpect(jsonPath("numberOfChildren", is(0)));
+
+		verify(fireStationService, Mockito.times(1)).getFireStation(any(FireStation.class));
+		verify(personService, Mockito.times(numberOfFireStationByStationNumber)).getPerson(any(Person.class));
+		verify(medicalRecordService, Mockito.times(0)).getMedicalRecord(any(MedicalRecord.class));
+	}
+
 	/**
-	 * Read - Get info on residents covered by a certain fire station or get all
-	 * fire stations
+	 * Read - Get info on children living at a certain address and a list of all
+	 * adults living with them
 	 * 
-	 * @param - An int corresponding to the fire station number
-	 * @return - An Iterable object of info on residents or of FireStation full
-	 *         filled
+	 * @param - A String corresponding to the address
+	 * @return - A ChildAlertURLInfo object
 	 */
 
 	@Test
-	public void childAlertURLTest() throws Exception {
+	public void ChildAlertURLTest() throws Exception {
 		mockMvc.perform(get(String.format("/childAlert?address=%s", personChild.getAddress())))
 				.andExpect(status().isOk())
 
@@ -147,6 +168,67 @@ public class UrlControllerTest {
 				.andExpect(jsonPath("adults.[0].city", is(person.getCity())))
 				.andExpect(jsonPath("adults.[0].zip", is(person.getZip())))
 				.andExpect(jsonPath("adults.[0].phone", is(person.getPhone())));
+
+		verify(personService, Mockito.times(1)).getPerson(any(Person.class));
+		verify(medicalRecordService, Mockito.times(1)).getMedicalRecord(medicalRecordOnlyName);
+		verify(medicalRecordService, Mockito.times(1)).getMedicalRecord(medicalRecordChildOnlyName);
+	}
+
+	@Test
+	public void ChildAlertURLTestIfNoPerson() throws Exception {
+		Mockito.when(personService.getPerson(any(Person.class))).thenReturn(new ArrayList<Person>());
+		mockMvc.perform(get(String.format("/childAlert?address=%s", personChild.getAddress())))
+				.andExpect(status().isOk());
+
+		verify(personService, Mockito.times(1)).getPerson(any(Person.class));
+		verify(medicalRecordService, Mockito.times(0)).getMedicalRecord(medicalRecordOnlyName);
+		verify(medicalRecordService, Mockito.times(0)).getMedicalRecord(medicalRecordChildOnlyName);
+	}
+
+	@Test
+	public void ChildAlertURLTestIfNoMedicalRecord() throws Exception {
+		Mockito.when(medicalRecordService.getMedicalRecord(any(MedicalRecord.class))).thenReturn(new MedicalRecord());
+		mockMvc.perform(get(String.format("/childAlert?address=%s", personChild.getAddress())))
+				.andExpect(status().isOk())
+
+				.andExpect(jsonPath("adults.[0].firstName", is(person.getFirstName())))
+				.andExpect(jsonPath("adults.[0].lastName", is(person.getLastName())))
+				.andExpect(jsonPath("adults.[0].address", is(person.getAddress())))
+				.andExpect(jsonPath("adults.[0].city", is(person.getCity())))
+				.andExpect(jsonPath("adults.[0].zip", is(person.getZip())))
+				.andExpect(jsonPath("adults.[0].phone", is(person.getPhone())))
+
+				.andExpect(jsonPath("adults.[1].firstName", is(personChild.getFirstName())))
+				.andExpect(jsonPath("adults.[1].lastName", is(personChild.getLastName())))
+				.andExpect(jsonPath("adults.[1].address", is(personChild.getAddress())))
+				.andExpect(jsonPath("adults.[1].city", is(personChild.getCity())))
+				.andExpect(jsonPath("adults.[1].zip", is(personChild.getZip())))
+				.andExpect(jsonPath("adults.[1].phone", is(personChild.getPhone())));
+
+		verify(personService, Mockito.times(1)).getPerson(any(Person.class));
+		verify(medicalRecordService, Mockito.times(1)).getMedicalRecord(medicalRecordOnlyName);
+		verify(medicalRecordService, Mockito.times(1)).getMedicalRecord(medicalRecordChildOnlyName);
+	}
+
+	@Test
+	public void ChildAlertURLTestIfNoBirthdate() throws Exception {
+		Mockito.when(medicalRecordService.getMedicalRecord(medicalRecordChildOnlyName)).thenReturn(medicalRecordChildOnlyName);
+		mockMvc.perform(get(String.format("/childAlert?address=%s", personChild.getAddress())))
+				.andExpect(status().isOk())
+
+				.andExpect(jsonPath("adults.[0].firstName", is(person.getFirstName())))
+				.andExpect(jsonPath("adults.[0].lastName", is(person.getLastName())))
+				.andExpect(jsonPath("adults.[0].address", is(person.getAddress())))
+				.andExpect(jsonPath("adults.[0].city", is(person.getCity())))
+				.andExpect(jsonPath("adults.[0].zip", is(person.getZip())))
+				.andExpect(jsonPath("adults.[0].phone", is(person.getPhone())))
+
+				.andExpect(jsonPath("adults.[1].firstName", is(personChild.getFirstName())))
+				.andExpect(jsonPath("adults.[1].lastName", is(personChild.getLastName())))
+				.andExpect(jsonPath("adults.[1].address", is(personChild.getAddress())))
+				.andExpect(jsonPath("adults.[1].city", is(personChild.getCity())))
+				.andExpect(jsonPath("adults.[1].zip", is(personChild.getZip())))
+				.andExpect(jsonPath("adults.[1].phone", is(personChild.getPhone())));
 
 		verify(personService, Mockito.times(1)).getPerson(any(Person.class));
 		verify(medicalRecordService, Mockito.times(1)).getMedicalRecord(medicalRecordOnlyName);

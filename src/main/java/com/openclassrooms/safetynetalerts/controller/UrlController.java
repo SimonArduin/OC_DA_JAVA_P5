@@ -268,11 +268,12 @@ public class UrlController {
 						DateTimeFormatter.ofPattern("MM/dd/yyyy"));
 				// split between children and adults
 				int age = Period.between(birthdate, LocalDate.now()).getYears();
-				if (age > 18)
-					result.addAdult(person);
-				else
+				if (age < 18)
 					result.addChild(person, age);
-			}
+				else
+					result.addAdult(person);
+			} else
+				result.addAdult(person);
 		}
 		return result;
 	}
