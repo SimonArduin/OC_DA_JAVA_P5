@@ -1,6 +1,9 @@
 package com.openclassrooms.safetynetalerts.model;
 
 import java.lang.reflect.Field;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class MedicalRecord {
@@ -60,7 +63,7 @@ public class MedicalRecord {
 		this.medications = medications;
 		this.allergies = allergies;
 	}
-	
+
 	public MedicalRecord(String firstName, String lastName) {
 		super();
 		this.firstName = firstName;
@@ -69,6 +72,15 @@ public class MedicalRecord {
 
 	public MedicalRecord() {
 		super();
+	}
+
+	public int getAge() {
+		if (this.birthdate != null)
+			return Period
+					.between(LocalDate.parse(birthdate, DateTimeFormatter.ofPattern("MM/dd/yyyy")), LocalDate.now())
+					.getYears();
+		else
+			return 999;
 	}
 
 	public boolean isEmpty() {
@@ -124,7 +136,8 @@ public class MedicalRecord {
 			try {
 				Field[] fields = MedicalRecord.class.getDeclaredFields();
 				for (int i = 0; i < fields.length; i++) {
-					if (fields[i].get(medicalRecord) != null && !fields[i].get(medicalRecord).equals(fields[i].get(this))) {
+					if (fields[i].get(medicalRecord) != null
+							&& !fields[i].get(medicalRecord).equals(fields[i].get(this))) {
 						fields[i].set(this, fields[i].get(medicalRecord));
 						result = true;
 					}

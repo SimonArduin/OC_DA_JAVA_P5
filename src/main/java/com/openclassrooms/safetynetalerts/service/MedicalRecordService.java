@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.openclassrooms.safetynetalerts.model.MedicalRecord;
+import com.openclassrooms.safetynetalerts.model.Person;
 import com.openclassrooms.safetynetalerts.repository.MedicalRecordRepository;
 
 @Service
@@ -14,6 +15,10 @@ public class MedicalRecordService {
 
 	public MedicalRecord getMedicalRecord(MedicalRecord medicalRecord) {
 		return medicalRecordRepository.get(medicalRecord);
+	}
+	
+	public MedicalRecord getMedicalRecord(Person person) {
+		return medicalRecordRepository.get(new MedicalRecord(person.getFirstName(), person.getLastName()));
 	}
 
 	public MedicalRecord putMedicalRecord(MedicalRecord medicalRecord) {

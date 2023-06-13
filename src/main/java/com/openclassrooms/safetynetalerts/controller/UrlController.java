@@ -1,8 +1,5 @@
 package com.openclassrooms.safetynetalerts.controller;
 
-import java.time.LocalDate;
-import java.time.Period;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -204,6 +201,121 @@ public class UrlController {
 		}
 	}
 
+	/*
+	 * Collects all the informations to be returned at fire?address=<address>
+	 */
+	public class FireURLInfo {
+		private List<FireURLPerson> persons = new ArrayList<FireURLPerson>();
+		private String fireStationNumber;
+
+		public List<FireURLPerson> getPersons() {
+			return persons;
+		}
+
+		public void setPersons(List<FireURLPerson> persons) {
+			this.persons = persons;
+		}
+
+		public void addPerson(Person person, MedicalRecord medicalRecord) {
+			this.persons.add(new FireURLPerson(person, medicalRecord));
+		}
+
+		public void addPerson(Person person) {
+			this.persons.add(new FireURLPerson(person, new MedicalRecord()));
+		}
+
+		public String getFireStationNumber() {
+			return fireStationNumber;
+		}
+
+		public void setFireStationNumber(String fireStationNumber) {
+			this.fireStationNumber = fireStationNumber;
+		}
+	}
+
+	/*
+	 * Collects the informations about a specific person to be returned at
+	 * fireStation?stationNumber=<station_number>
+	 */
+	public class FireURLPerson {
+
+		// return first name, last name, address and phone number of the resident
+		private String firstName;
+		private String lastName;
+		private String address;
+		private String phone;
+		private int age;
+		private List<String> medications;
+		private List<String> allergies;
+
+		public String getFirstName() {
+			return firstName;
+		}
+
+		public void setFirstName(String firstName) {
+			this.firstName = firstName;
+		}
+
+		public String getLastName() {
+			return lastName;
+		}
+
+		public void setLastName(String lastName) {
+			this.lastName = lastName;
+		}
+
+		public String getAddress() {
+			return address;
+		}
+
+		public void setAddress(String address) {
+			this.address = address;
+		}
+
+		public String getPhone() {
+			return phone;
+		}
+
+		public void setPhone(String phone) {
+			this.phone = phone;
+		}
+
+		public int getAge() {
+			return age;
+		}
+
+		public void setAge(int age) {
+			this.age = age;
+		}
+
+		public List<String> getMedications() {
+			return medications;
+		}
+
+		public void setMedications(List<String> medications) {
+			this.medications = medications;
+		}
+
+		public List<String> getAllergies() {
+			return allergies;
+		}
+
+		public void setAllergies(List<String> allergies) {
+			this.allergies = allergies;
+		}
+
+		public FireURLPerson(Person person, MedicalRecord medicalRecord) {
+			super();
+			this.firstName = person.getFirstName();
+			this.lastName = person.getLastName();
+			this.address = person.getAddress();
+			this.phone = person.getPhone();
+			this.age = medicalRecord.getAge();
+			this.medications = medicalRecord.getMedications();
+			this.allergies = medicalRecord.getAllergies();
+		}
+	}
+
 	/**
 	 * Read - Get info on residents covered by a certain fire station or get all
 	 * fire stations
@@ -230,21 +342,12 @@ public class UrlController {
 				// get first name, last name, address and phone number of the resident
 				result.addPerson(new FireStationURLPerson(personInFireStation));
 				// get medical record of the resident
-				MedicalRecord medicalRecord = medicalRecordService.getMedicalRecord(
-						new MedicalRecord(personInFireStation.getFirstName(), personInFireStation.getLastName()));
-				// get birthdate
-				if (medicalRecord != null && medicalRecord.getBirthdate() != null) {
-					LocalDate birthdate = LocalDate.parse(medicalRecord.getBirthdate(),
-							DateTimeFormatter.ofPattern("MM/dd/yyyy"));
-					// count as adult or child
-					if (Period.between(birthdate, LocalDate.now()).getYears() > 18)
-						result.addAdult();
-					else
-						result.addChild();
-				} else {
-					// if no birthdate, count as adult
+				MedicalRecord medicalRecord = medicalRecordService.getMedicalRecord(personInFireStation);
+				// count as adult or child
+				if (medicalRecord.getAge() > 18)
 					result.addAdult();
-				}
+				else
+					result.addChild();
 			}
 		}
 		return result;
@@ -269,25 +372,20 @@ public class UrlController {
 		for (Person person : persons) {
 			// get medical record of a person
 			MedicalRecord medicalRecord = medicalRecordService
-					.getMedicalRecord(new MedicalRecord(person.getFirstName(), person.getLastName()));
-			// get birthdate
-			if (medicalRecord != null && medicalRecord.getBirthdate() != null) {
-				LocalDate birthdate = LocalDate.parse(medicalRecord.getBirthdate(),
-						DateTimeFormatter.ofPattern("MM/dd/yyyy"));
-				// split between children and adults
-				int age = Period.between(birthdate, LocalDate.now()).getYears();
-				if (age < 18)
-					result.addChild(person, age);
-				else
-					result.addAdult(person);
-			} else
+					.getMedicalRecord(person);
+			// split between children and adults
+			int age = medicalRecord.getAge();
+			if (age < 18)
+				result.addChild(person, age);
+			else
 				result.addAdult(person);
 		}
 		return result;
 	}
 
 	/**
-	 * Read - Get the phone numbers of every person corresponding to the station number
+	 * Read - Get the phone numbers of every person corresponding to the station
+	 * number
 	 * 
 	 * @param - A String corresponding to the station number
 	 * @return - A List<String> containing phone numbers
@@ -301,7 +399,8 @@ public class UrlController {
 
 		// get fire stations
 		fireStationToSearch.setStation(firestation);
-		ArrayList<FireStation> fireStations = new ArrayList<FireStation>(fireStationService.getFireStation(fireStationToSearch));
+		ArrayList<FireStation> fireStations = new ArrayList<FireStation>(
+				fireStationService.getFireStation(fireStationToSearch));
 		for (FireStation fireStationInDB : fireStations) {
 			// get persons
 			personToSearch.setAddress(fireStationInDB.getAddress());
@@ -309,6 +408,39 @@ public class UrlController {
 			for (Person personInDB : persons) {
 				result.add(personInDB.getPhone());
 			}
+		}
+		return result;
+	}
+
+	/**
+	 * Read - Get info on every resident of the corresponding address
+	 * 
+	 * @param - A String corresponding to the address
+	 * @return - A FireURLInfo object
+	 */
+
+	@GetMapping(value = "/fire", params = "address")
+	public FireURLInfo FireURL(@RequestParam(value = "address") String address) {
+		FireURLInfo result = new FireURLInfo();
+		FireStation fireStationToSearch = new FireStation();
+		Person personToSearch = new Person();
+
+		// get fire station
+		fireStationToSearch.setAddress(address);
+		ArrayList<FireStation> fireStations = new ArrayList<FireStation>(
+				fireStationService.getFireStation(fireStationToSearch));
+		if (!fireStations.isEmpty()) {
+			result.setFireStationNumber(fireStations.get(0).getStation());
+		}
+		// get persons
+		personToSearch.setAddress(address);
+		ArrayList<Person> persons = new ArrayList<Person>(personService.getPerson(personToSearch));
+		for (Person person : persons) {
+			MedicalRecord medicalRecord = medicalRecordService.getMedicalRecord(person);
+			if (medicalRecord != null)
+				result.addPerson(person, medicalRecord);
+			else
+				result.addPerson(person);
 		}
 		return result;
 	}
