@@ -73,7 +73,7 @@ public class MedicalRecord {
 
 	public boolean isEmpty() {
 		try {
-			Field[] fields = this.getClass().getDeclaredFields();
+			Field[] fields = MedicalRecord.class.getDeclaredFields();
 			for (int i = 0; i < fields.length; i++) {
 				if (fields[i].get(this) != null)
 					return false;
@@ -102,7 +102,7 @@ public class MedicalRecord {
 							return true;
 						return false;
 					} else {
-						Field[] fields = this.getClass().getDeclaredFields();
+						Field[] fields = MedicalRecord.class.getDeclaredFields();
 						for (int i = 0; i < fields.length; i++)
 							if (fields[i].get(this) != null
 									&& !fields[i].get(this).equals(fields[i].get(((MedicalRecord) object))))
@@ -115,5 +115,24 @@ public class MedicalRecord {
 			}
 		}
 		return false;
+	}
+
+	public boolean update(MedicalRecord medicalRecord) {
+		boolean result = false;
+		if (this.firstName != null && this.firstName.equals(medicalRecord.getFirstName()) && this.lastName != null
+				&& this.lastName.equals(medicalRecord.getLastName())) {
+			try {
+				Field[] fields = MedicalRecord.class.getDeclaredFields();
+				for (int i = 0; i < fields.length; i++) {
+					if (fields[i].get(medicalRecord) != null && !fields[i].get(medicalRecord).equals(fields[i].get(this))) {
+						fields[i].set(this, fields[i].get(medicalRecord));
+						result = true;
+					}
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return result;
 	}
 }

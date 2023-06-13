@@ -20,15 +20,19 @@ public class PersonService {
 
 	public Person putPerson(Person person) {
 		boolean isInDB = false;
-		for (Person personInDB : personRepository.get(person)) {
-			if (personInDB.equals(person)) {
-				isInDB = true;
-				personRepository.delete(personInDB);
+		Person personToPut = new Person();
+		if (person.getFirstName() != null && person.getLastName() != null)
+			for (Person personInDB : personRepository.get(person)) {
+				if (personInDB.equals(person)) {
+					isInDB = true;
+					personToPut = personInDB;
+					personRepository.delete(personInDB);
+				}
 			}
-		}
-		if (isInDB)
-			return personRepository.save(person);
-		else
+		if (isInDB) {
+			personToPut.update(person);
+			return personRepository.save(personToPut);
+		} else
 			return new Person();
 	}
 

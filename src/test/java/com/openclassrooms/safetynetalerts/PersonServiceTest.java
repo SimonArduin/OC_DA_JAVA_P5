@@ -26,7 +26,7 @@ public class PersonServiceTest {
 
 	@MockBean
 	PersonRepository personRepository;
-
+	
 	static Person person = new Person("John", "Boyd", "1509 Culver St", "Culver", "97451", "841-874-6512",
 			"jaboyd@email.com");
 	static Person emptyPerson = new Person();

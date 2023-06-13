@@ -36,7 +36,7 @@ public class DataBase {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static DataBase getDataBase() {
 		if (instance == null)
 			instance = new DataBase();
@@ -90,8 +90,10 @@ public class DataBase {
 	}
 
 	public Person removePerson(Person person) {
-		if (instance.persons.remove(person))
-			return person;
+		for (Person personInDB : instance.persons)
+			if (person.equals(personInDB))
+				if (instance.persons.remove(personInDB))
+					return personInDB;
 		return new Person();
 	}
 
@@ -115,8 +117,10 @@ public class DataBase {
 	}
 
 	public MedicalRecord removeMedicalRecord(MedicalRecord medicalRecord) {
-		if (instance.medicalrecords.remove(medicalRecord))
-			return medicalRecord;
+		for (MedicalRecord medicalRecordInDB : instance.medicalrecords)
+			if (medicalRecord.equals(medicalRecordInDB))
+				if (instance.medicalrecords.remove(medicalRecord))
+					return medicalRecord;
 		return new MedicalRecord();
 	}
 }

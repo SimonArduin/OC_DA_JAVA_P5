@@ -1,5 +1,6 @@
 package com.openclassrooms.safetynetalerts;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -11,13 +12,15 @@ import com.openclassrooms.safetynetalerts.model.FireStation;
 
 @SpringBootTest(classes = FireStation.class)
 public class FireStationTest {
-	
-	final FireStation fireStation = new FireStation("address", "station");
-	final FireStation fireStationOther = new FireStation("otherAddress", "otherStation");
-	FireStation fireStationTest;
-	
+
+	static FireStation fireStation;
+	static FireStation fireStationOther;
+	static FireStation fireStationTest;
+
 	@BeforeEach
 	void setUpPerTest() {
+		fireStation = new FireStation("address", "station");
+		fireStationOther = new FireStation("otherAddress", "otherStation");
 		fireStationTest = new FireStation();
 	}
 	
@@ -95,5 +98,43 @@ public class FireStationTest {
 		fireStationTest.setAddress(fireStation.getAddress());
 		fireStationTest.setStation(fireStationOther.getStation());
 		assertFalse(fireStationTest.equals(fireStationOther));
+	}
+
+	@Test
+	void updateTest() {
+		fireStationTest.setAddress(fireStation.getAddress());
+		fireStationTest.setStation(fireStationOther.getStation());
+		assertTrue(fireStation.update(fireStationTest));
+		assertEquals(fireStationTest.getAddress(), fireStation.getAddress());
+		assertEquals(fireStationTest.getStation(), fireStation.getStation());
+	}
+
+	@Test
+	void updateTestIfFirstNull() {
+		FireStation fireStationBefore = fireStationTest;
+		assertFalse(fireStationTest.update(fireStation));
+		assertEquals(fireStationBefore, fireStationTest);
+	}
+
+	@Test
+	void updateTestIfSecondNull() {
+		FireStation fireStationBefore = fireStation;
+		assertFalse(fireStation.update(fireStationTest));
+		assertEquals(fireStationBefore, fireStation);
+	}
+
+	@Test
+	void updateTestIfSame() {
+		FireStation fireStationBefore = fireStation;
+		fireStationTest = fireStation;
+		assertFalse(fireStation.update(fireStationTest));
+		assertEquals(fireStationBefore, fireStation);
+	}
+
+	@Test
+	void updateTestIfNotSameName() {
+		FireStation fireStationBefore = fireStation;
+		assertFalse(fireStation.update(fireStationOther));
+		assertEquals(fireStationBefore, fireStation);
 	}
 }

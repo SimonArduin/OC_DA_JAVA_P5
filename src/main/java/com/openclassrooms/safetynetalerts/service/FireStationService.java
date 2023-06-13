@@ -76,25 +76,22 @@ public class FireStationService {
 	 * 
 	 * @return - true if the fire station was correctly saved
 	 */
+
 	public FireStation putFireStation(FireStation fireStation) {
 		boolean isInDB = false;
-		FireStation result = new FireStation();
-		FireStation fireStationToSearch = new FireStation();
-		fireStationToSearch.setAddress(fireStation.getAddress());
-		ArrayList<FireStation> fireStations = new ArrayList<FireStation>(fireStationRepository.get(fireStationToSearch));
-		if (fireStations.isEmpty())
-			return result;
-		else {
-			for (FireStation fireStationInDB : fireStations) {
-				if (fireStationInDB.getAddress() == fireStation.getAddress()) {
+		FireStation fireStationToPut = new FireStation();
+		if (fireStation.getAddress() != null)
+			for (FireStation fireStationInDB : fireStationRepository.get(fireStation)) {
+				if (fireStationInDB.equals(fireStation)) {
 					isInDB = true;
+					fireStationToPut = fireStationInDB;
 					fireStationRepository.delete(fireStationInDB);
 				}
 			}
-			if (isInDB)
-				return fireStationRepository.save(fireStation);
-			else
-				return result;
-		}
+		if (isInDB) {
+			fireStationToPut.update(fireStation);
+			return fireStationRepository.save(fireStationToPut);
+		} else
+			return new FireStation();
 	}
 }

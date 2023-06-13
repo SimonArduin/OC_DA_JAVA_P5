@@ -148,30 +148,34 @@ public class FireStationController {
 		FireStationURLInfo result = new FireStationURLInfo();
 		FireStation fireStationToSearch = new FireStation();
 
-		//get fire stations
+		// get fire stations
 		fireStationToSearch.setStation(stationNumber);
 		ArrayList<FireStation> fireStations = new ArrayList<FireStation>(
 				fireStationService.getFireStation(fireStationToSearch));
-		//for every person covered by each fire station
+		// for every person covered by each fire station
 		for (FireStation fireStation : fireStations) {
 			Person personToSearch = new Person();
 			personToSearch.setAddress(fireStation.getAddress());
-			ArrayList<Person> persons = new ArrayList<Person>(
-					personService.getPerson(personToSearch));
+			ArrayList<Person> persons = new ArrayList<Person>(personService.getPerson(personToSearch));
 			for (Person personInFireStation : persons) {
 				// get first name, last name, address and phone number of the resident
 				result.addPerson(new FireStationURLPerson(personInFireStation));
 				// get medical record of the patient
-				MedicalRecord medicalRecord = medicalRecordService.getMedicalRecord(new MedicalRecord(personInFireStation.getFirstName(),
-						personInFireStation.getLastName()));
+				MedicalRecord medicalRecord = medicalRecordService.getMedicalRecord(
+						new MedicalRecord(personInFireStation.getFirstName(), personInFireStation.getLastName()));
 				// get birthdate
-				LocalDate birthdate = LocalDate.parse(medicalRecord.getBirthdate(),
-						DateTimeFormatter.ofPattern("MM/dd/yyyy"));
-				// count as adult or child
-				if (Period.between(birthdate, LocalDate.now()).getYears() > 18)
+				if (medicalRecord.getBirthdate() != null) {
+					LocalDate birthdate = LocalDate.parse(medicalRecord.getBirthdate(),
+							DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+					// count as adult or child
+					if (Period.between(birthdate, LocalDate.now()).getYears() > 18)
+						result.addAdult();
+					else
+						result.addChild();
+				} else {
+					// if no birthdate, count as adult
 					result.addAdult();
-				else
-					result.addChild();
+				}
 			}
 		}
 		return result;

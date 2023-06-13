@@ -1,5 +1,6 @@
 package com.openclassrooms.safetynetalerts;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -14,24 +15,34 @@ import com.openclassrooms.safetynetalerts.model.MedicalRecord;
 
 @SpringBootTest(classes = MedicalRecord.class)
 public class MedicalRecordTest {
-	
-	final ArrayList<String> medications = new ArrayList<String>(Arrays.asList("medication 1","medication 2"));
-	final ArrayList<String> allergies = new ArrayList<String>(Arrays.asList("allergy 1","allergy 2"));
-	final ArrayList<String> otherMedications = new ArrayList<String>(Arrays.asList("otherMedication 1","otherMedication 2"));
-	final ArrayList<String> otherAllergies = new ArrayList<String>(Arrays.asList("otherAllergy 1","otherAllergy 2"));
-	final MedicalRecord medicalRecord = new MedicalRecord("firstName", "lastName", "birthdate", medications, allergies);
-	final MedicalRecord medicalRecordOther = new MedicalRecord("otherFirstName", "otherLastName", "otherBirthdate", otherMedications, otherAllergies);
-	MedicalRecord medicalRecordTest;
-	
+
+	static ArrayList<String> medications;
+	static ArrayList<String> allergies;
+	static ArrayList<String> otherMedications;
+	static ArrayList<String> otherAllergies;
+	static MedicalRecord medicalRecord;
+	static MedicalRecord medicalRecordOther;
+	static MedicalRecord medicalRecordTest;
+
 	@BeforeEach
 	void setUpPerTest() {
+		medications = new ArrayList<String>(Arrays.asList("medication 1", "medication 2"));
+		allergies = new ArrayList<String>(Arrays.asList("allergy 1", "allergy 2"));
+		otherMedications = new ArrayList<String>(
+				Arrays.asList("otherMedication 1", "otherMedication 2"));
+		otherAllergies = new ArrayList<String>(
+				Arrays.asList("otherAllergy 1", "otherAllergy 2"));
+		medicalRecord = new MedicalRecord("firstName", "lastName", "birthdate", medications,
+				allergies);
+		medicalRecordOther = new MedicalRecord("otherFirstName", "otherLastName", "otherBirthdate",
+				otherMedications, otherAllergies);
 		medicalRecordTest = new MedicalRecord();
 	}
-	
+
 	@Test
 	void contextLoads() {
 	}
-	
+
 	@Test
 	void isEmpty() {
 		assertFalse(medicalRecord.isEmpty());
@@ -41,18 +52,18 @@ public class MedicalRecordTest {
 	void isEmptyIfEmpty() {
 		assertTrue(medicalRecordTest.isEmpty());
 	}
-	
+
 	@Test
 	void isEmptyIfOnlyBirthdate() {
 		medicalRecordTest.setBirthdate(medicalRecord.getBirthdate());
 		assertFalse(medicalRecordTest.isEmpty());
 	}
-	
+
 	@Test
 	void equalsTest() {
 		assertTrue(medicalRecord.equals(medicalRecord));
 	}
-	
+
 	@Test
 	void equalsTestIfOtherMedicalRecord() {
 		assertFalse(medicalRecord.equals(medicalRecordOther));
@@ -76,7 +87,7 @@ public class MedicalRecordTest {
 	void equalsTestIfFirstNull() {
 		assertFalse(medicalRecordTest.equals(medicalRecord));
 	}
-	
+
 	@Test
 	void equalsTestIfSecondNull() {
 		assertFalse(medicalRecord.equals(medicalRecordTest));
@@ -86,7 +97,7 @@ public class MedicalRecordTest {
 	void equalsTestIfBothNull() {
 		assertTrue(medicalRecordTest.equals(medicalRecordTest));
 	}
-	
+
 	@Test
 	void equalsTestIfOnlyFirstName() {
 		medicalRecordTest.setFirstName(medicalRecord.getFirstName());
@@ -98,7 +109,7 @@ public class MedicalRecordTest {
 		medicalRecordTest.setFirstName(medicalRecord.getFirstName());
 		assertFalse(medicalRecordTest.equals(medicalRecordOther));
 	}
-	
+
 	@Test
 	void equalsTestIfOnlyLastName() {
 		medicalRecordTest.setLastName(medicalRecord.getLastName());
@@ -110,7 +121,7 @@ public class MedicalRecordTest {
 		medicalRecordTest.setLastName(medicalRecord.getLastName());
 		assertFalse(medicalRecordTest.equals(medicalRecordOther));
 	}
-	
+
 	@Test
 	void equalsTestIfOnlyBirthdate() {
 		medicalRecordTest.setBirthdate(medicalRecord.getBirthdate());
@@ -122,7 +133,7 @@ public class MedicalRecordTest {
 		medicalRecordTest.setBirthdate(medicalRecord.getBirthdate());
 		assertFalse(medicalRecordTest.equals(medicalRecordOther));
 	}
-	
+
 	@Test
 	void equalsTestIfOnlyMedications() {
 		medicalRecordTest.setMedications(medicalRecord.getMedications());
@@ -134,7 +145,7 @@ public class MedicalRecordTest {
 		medicalRecordTest.setMedications(medicalRecord.getMedications());
 		assertFalse(medicalRecordTest.equals(medicalRecordOther));
 	}
-	
+
 	@Test
 	void equalsTestIfOnlyAllergies() {
 		medicalRecordTest.setAllergies(medicalRecord.getAllergies());
@@ -146,7 +157,7 @@ public class MedicalRecordTest {
 		medicalRecordTest.setAllergies(medicalRecord.getAllergies());
 		assertFalse(medicalRecordTest.equals(medicalRecordOther));
 	}
-	
+
 	@Test
 	void equalsTestIfBirthdateAndMedications() {
 		medicalRecordTest.setBirthdate(medicalRecord.getBirthdate());
@@ -166,5 +177,45 @@ public class MedicalRecordTest {
 		medicalRecordTest.setBirthdate(medicalRecord.getBirthdate());
 		medicalRecordTest.setMedications(medicalRecordOther.getMedications());
 		assertFalse(medicalRecordTest.equals(medicalRecordOther));
+	}
+
+	@Test
+	void updateTest() {
+		medicalRecordTest.setFirstName(medicalRecord.getFirstName());
+		medicalRecordTest.setLastName(medicalRecord.getLastName());
+		medicalRecordTest.setBirthdate(medicalRecordOther.getBirthdate());
+		medicalRecordTest.setMedications(medicalRecordOther.getMedications());
+		assertTrue(medicalRecord.update(medicalRecordTest));
+		assertEquals(medicalRecordTest.getBirthdate(), medicalRecord.getBirthdate());
+		assertEquals(medicalRecordTest.getMedications(), medicalRecord.getMedications());
+	}
+
+	@Test
+	void updateTestIfFirstNull() {
+		MedicalRecord medicalRecordBefore = medicalRecordTest;
+		assertFalse(medicalRecordTest.update(medicalRecord));
+		assertEquals(medicalRecordBefore, medicalRecordTest);
+	}
+
+	@Test
+	void updateTestIfSecondNull() {
+		MedicalRecord medicalRecordBefore = medicalRecord;
+		assertFalse(medicalRecord.update(medicalRecordTest));
+		assertEquals(medicalRecordBefore, medicalRecord);
+	}
+
+	@Test
+	void updateTestIfSame() {
+		MedicalRecord medicalRecordBefore = medicalRecord;
+		medicalRecordTest = medicalRecord;
+		assertFalse(medicalRecord.update(medicalRecordTest));
+		assertEquals(medicalRecordBefore, medicalRecord);
+	}
+
+	@Test
+	void updateTestIfNotSameName() {
+		MedicalRecord medicalRecordBefore = medicalRecord;
+		assertFalse(medicalRecord.update(medicalRecordOther));
+		assertEquals(medicalRecordBefore, medicalRecord);
 	}
 }

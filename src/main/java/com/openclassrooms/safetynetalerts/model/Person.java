@@ -81,7 +81,9 @@ public class Person {
 	}
 
 	public Person(String firstName, String lastName) {
-		this("John", "Boyd", null, null, null, null, null);
+		super();
+		this.firstName = firstName;
+		this.lastName = lastName;
 	}
 
 	public Person() {
@@ -118,7 +120,7 @@ public class Person {
 							return true;
 						return false;
 					} else {
-						Field[] fields = this.getClass().getDeclaredFields();
+						Field[] fields = Person.class.getDeclaredFields();
 						for (int i = 0; i < fields.length; i++)
 							if (fields[i].get(this) != null
 									&& !fields[i].get(this).equals(fields[i].get(((Person) object))))
@@ -131,5 +133,24 @@ public class Person {
 			}
 		}
 		return false;
+	}
+
+	public boolean update(Person person) {
+		boolean result = false;
+		if (this.firstName != null && this.firstName.equals(person.getFirstName()) && this.lastName != null
+				&& this.lastName.equals(person.getLastName())) {
+			try {
+				Field[] fields = Person.class.getDeclaredFields();
+				for (int i = 0; i < fields.length; i++) {
+					if (fields[i].get(person) != null && !fields[i].get(person).equals(fields[i].get(this))) {
+						fields[i].set(this, fields[i].get(person));
+						result = true;
+					}
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return result;
 	}
 }

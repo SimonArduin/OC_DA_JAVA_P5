@@ -57,7 +57,7 @@ public class FireStation {
 					else
 						return false;
 				} else {
-						Field[] fields = this.getClass().getDeclaredFields();
+						Field[] fields = FireStation.class.getDeclaredFields();
 						for (int i = 0; i < fields.length; i++)
 							if (fields[i].get(this) != null
 									&& !fields[i].get(this).equals(fields[i].get(((FireStation) object))))
@@ -69,5 +69,23 @@ public class FireStation {
 			}
 		}
 		return false;
+	}
+
+	public boolean update(FireStation fireStation) {
+		boolean result = false;
+		if (this.address != null && this.address.equals(fireStation.getAddress())) {
+			try {
+				Field[] fields = FireStation.class.getDeclaredFields();
+				for (int i = 0; i < fields.length; i++) {
+					if (fields[i].get(fireStation) != null && !fields[i].get(fireStation).equals(fields[i].get(this))) {
+						fields[i].set(this, fields[i].get(fireStation));
+						result = true;
+					}
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return result;
 	}
 }

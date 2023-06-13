@@ -17,9 +17,14 @@ public class MedicalRecordService {
 	}
 
 	public MedicalRecord putMedicalRecord(MedicalRecord medicalRecord) {
-		if (!medicalRecordRepository.get(medicalRecord).isEmpty()) {
-			medicalRecordRepository.delete(medicalRecord);
-			return medicalRecordRepository.save(medicalRecord);
+		if (medicalRecord.getFirstName() != null && medicalRecord.getLastName() != null) {
+			MedicalRecord medicalRecordToPut = medicalRecordRepository.get(medicalRecord);
+			if (!medicalRecordToPut.isEmpty()) {
+				medicalRecordRepository.delete(medicalRecordToPut);
+				medicalRecordToPut.update(medicalRecord);
+				return medicalRecordRepository.save(medicalRecordToPut);
+			} else
+				return new MedicalRecord();
 		} else
 			return new MedicalRecord();
 	}
