@@ -250,6 +250,14 @@ public class UrlController {
 		return result;
 	}
 
+	/**
+	 * Read - Get info on children living at a certain address and a list of all
+	 * adults living with them
+	 * 
+	 * @param - A String corresponding to the address
+	 * @return - A ChildAlertURLInfo object
+	 */
+
 	@GetMapping(value = "/childAlert", params = "address")
 	public ChildAlertURLInfo ChildAlertURL(@RequestParam(value = "address") String address) {
 		ChildAlertURLInfo result = new ChildAlertURLInfo();
@@ -274,6 +282,33 @@ public class UrlController {
 					result.addAdult(person);
 			} else
 				result.addAdult(person);
+		}
+		return result;
+	}
+
+	/**
+	 * Read - Get the phone numbers of every person corresponding to the station number
+	 * 
+	 * @param - A String corresponding to the station number
+	 * @return - A List<String> containing phone numbers
+	 */
+
+	@GetMapping(value = "/phoneAlert", params = "firestation")
+	public List<String> PhoneAlertURL(@RequestParam(value = "firestation") String firestation) {
+		List<String> result = new ArrayList<String>();
+		FireStation fireStationToSearch = new FireStation();
+		Person personToSearch = new Person();
+
+		// get fire stations
+		fireStationToSearch.setStation(firestation);
+		ArrayList<FireStation> fireStations = new ArrayList<FireStation>(fireStationService.getFireStation(fireStationToSearch));
+		for (FireStation fireStationInDB : fireStations) {
+			// get persons
+			personToSearch.setAddress(fireStationInDB.getAddress());
+			ArrayList<Person> persons = new ArrayList<Person>(personService.getPerson(personToSearch));
+			for (Person personInDB : persons) {
+				result.add(personInDB.getPhone());
+			}
 		}
 		return result;
 	}

@@ -121,7 +121,7 @@ public class UrlControllerTest {
 	}
 
 	@Test
-	public void FireStationURLTestIfNoStation() throws Exception {
+	public void FireStationURLTestIfNoFireStation() throws Exception {
 		Mockito.when(fireStationService.getFireStation(any(FireStation.class)))
 				.thenReturn(new ArrayList<FireStation>());
 		mockMvc.perform(get(String.format("/firestation?stationNumber=%s", fireStation.getStation())))
@@ -233,5 +233,55 @@ public class UrlControllerTest {
 		verify(personService, Mockito.times(1)).getPerson(any(Person.class));
 		verify(medicalRecordService, Mockito.times(1)).getMedicalRecord(medicalRecordOnlyName);
 		verify(medicalRecordService, Mockito.times(1)).getMedicalRecord(medicalRecordChildOnlyName);
+	}
+
+	/**
+	 * Read - Get the phone numbers of every person corresponding to the station number
+	 * 
+	 * @param - A String corresponding to the station number
+	 * @return - A List<String> containing phone numbers
+	 */
+
+	@Test
+	public void PhoneAlertURLTest() throws Exception {
+		mockMvc.perform(get(String.format("/phoneAlert?firestation=%s", fireStation.getStation())))
+				.andExpect(status().isOk())
+
+				.andExpect(jsonPath("[0]", is(person.getPhone())))
+
+				.andExpect(jsonPath("[1]", is(personChild.getPhone())));
+
+		verify(fireStationService, Mockito.times(1)).getFireStation(any(FireStation.class));
+		verify(personService, Mockito.times(numberOfFireStationByStationNumber)).getPerson(any(Person.class));
+	}
+
+	@Test
+	public void PhoneAlertURLTestIfNoFireStation() throws Exception {
+		Mockito.when(fireStationService.getFireStation(any(FireStation.class))).thenReturn(new ArrayList<FireStation>());
+		mockMvc.perform(get(String.format("/phoneAlert?firestation=%s", fireStation.getStation())))
+				.andExpect(status().isOk());
+
+		verify(fireStationService, Mockito.times(1)).getFireStation(any(FireStation.class));
+		verify(personService, Mockito.times(0)).getPerson(any(Person.class));
+	}
+
+	@Test
+	public void PhoneAlertURLTestIfNoPerson() throws Exception {
+		Mockito.when(personService.getPerson(any(Person.class))).thenReturn(new ArrayList<Person>());
+		mockMvc.perform(get(String.format("/phoneAlert?firestation=%s", fireStation.getStation())))
+				.andExpect(status().isOk());
+
+		verify(fireStationService, Mockito.times(1)).getFireStation(any(FireStation.class));
+		verify(personService, Mockito.times(numberOfFireStationByStationNumber)).getPerson(any(Person.class));
+	}
+
+	@Test
+	public void PhoneAlertURLTestIfNoPhone() throws Exception {
+		Mockito.when(personService.getPerson(any(Person.class))).thenReturn(new ArrayList<Person>(Arrays.asList(new Person())));
+		mockMvc.perform(get(String.format("/phoneAlert?firestation=%s", fireStation.getStation())))
+				.andExpect(status().isOk());
+
+		verify(fireStationService, Mockito.times(1)).getFireStation(any(FireStation.class));
+		verify(personService, Mockito.times(numberOfFireStationByStationNumber)).getPerson(any(Person.class));
 	}
 }
