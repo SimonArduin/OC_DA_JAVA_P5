@@ -421,6 +421,78 @@ public class UrlController {
 		}
 	}
 
+	/*
+	 * Collects the informations about a specific person to be returned at
+	 * personInfo?firstName=<firstName>&lastName=<lastName>
+	 */
+	public class PersonInfoURLPerson {
+
+		private String firstName;
+		private String lastName;
+		private int age;
+		private String address;
+		private List<String> medications;
+		private List<String> allergies;
+
+		public String getFirstName() {
+			return firstName;
+		}
+
+		public void setFirstName(String firstName) {
+			this.firstName = firstName;
+		}
+
+		public String getLastName() {
+			return lastName;
+		}
+
+		public void setLastName(String lastName) {
+			this.lastName = lastName;
+		}
+
+		public int getAge() {
+			return age;
+		}
+
+		public void setAge(int age) {
+			this.age = age;
+		}
+		
+		public String getAddress() {
+			return address;
+		}
+
+		public void setAddress(String address) {
+			this.address = address;
+		}
+
+		public List<String> getMedications() {
+			return medications;
+		}
+
+		public void setMedications(List<String> medications) {
+			this.medications = medications;
+		}
+
+		public List<String> getAllergies() {
+			return allergies;
+		}
+
+		public void setAllergies(List<String> allergies) {
+			this.allergies = allergies;
+		}
+
+		public PersonInfoURLPerson(Person person, MedicalRecord medicalRecord) {
+			super();
+			this.firstName = person.getFirstName();
+			this.lastName = person.getLastName();
+			this.age = medicalRecord.getAge();
+			this.address = person.getAddress();
+			this.medications = medicalRecord.getMedications();
+			this.allergies = medicalRecord.getAllergies();
+		}
+	}
+
 	/**
 	 * Read - Get info on residents covered by a certain fire station or get all
 	 * fire stations
@@ -578,6 +650,30 @@ public class UrlController {
 				result.add(home);
 			}
 		}
+		return result;
+	}
+
+	/**
+	 * Read - Get info on a person
+	 * 
+	 * @param - Two String corresponding to the first and last name of the person
+	 * @return - A List<personInfoURLPerson> object
+	 */
+
+	@GetMapping(value = "personInfo", params = { "firstName", "lastName" })
+	public List<PersonInfoURLPerson> PersonInfoURL(@RequestParam(value = "firstName") String firstName, @RequestParam(value = "lastName") String lastName) {
+		ArrayList<PersonInfoURLPerson> result = new ArrayList<PersonInfoURLPerson>();
+		Person personToSearch = new Person();
+		personToSearch.setFirstName(firstName);
+		personToSearch.setLastName(lastName);
+			// get persons
+			ArrayList<Person> persons = new ArrayList<Person>(
+					personService.getPerson(personToSearch));
+			//get medical record
+			for (Person person : persons) {
+				MedicalRecord medicalRecord = medicalRecordService.getMedicalRecord(person);
+				result.add(new PersonInfoURLPerson(person, medicalRecord));
+				}
 		return result;
 	}
 }
