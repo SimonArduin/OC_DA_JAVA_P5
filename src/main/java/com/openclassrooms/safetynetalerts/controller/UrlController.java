@@ -316,6 +316,111 @@ public class UrlController {
 		}
 	}
 
+	/*
+	 * Collects the informations about a specific home to be returned at
+	 * flood/stations?stations=<a list of station_numbers>
+	 */
+	public class FloodStationsURLInfo {
+		private List<FloodStationsURLPerson> persons = new ArrayList<FloodStationsURLPerson>();
+		private String fireStationNumber;
+
+		public List<FloodStationsURLPerson> getPersons() {
+			return persons;
+		}
+
+		public void setPersons(List<FloodStationsURLPerson> persons) {
+			this.persons = persons;
+		}
+
+		public String getFireStationNumber() {
+			return fireStationNumber;
+		}
+
+		public void setFireStationNumber(String station) {
+			this.fireStationNumber = station;
+		}
+
+		public void addResident(Person person, MedicalRecord medicalRecord) {
+			this.persons.add(new FloodStationsURLPerson(person, medicalRecord));
+		}
+
+		public void addResident(Person person) {
+			addResident(person, new MedicalRecord());
+		}
+	}
+
+	/*
+	 * Collects the informations about a specific person to be returned at
+	 * flood/stations?stations=<a list of station_numbers>
+	 */
+	public class FloodStationsURLPerson {
+
+		private String firstName;
+		private String lastName;
+		private String phone;
+		private int age;
+		private List<String> medications;
+		private List<String> allergies;
+
+		public String getFirstName() {
+			return firstName;
+		}
+
+		public void setFirstName(String firstName) {
+			this.firstName = firstName;
+		}
+
+		public String getLastName() {
+			return lastName;
+		}
+
+		public void setLastName(String lastName) {
+			this.lastName = lastName;
+		}
+
+		public String getPhone() {
+			return phone;
+		}
+
+		public void setPhone(String phone) {
+			this.phone = phone;
+		}
+
+		public int getAge() {
+			return age;
+		}
+
+		public void setAge(int age) {
+			this.age = age;
+		}
+
+		public List<String> getMedications() {
+			return medications;
+		}
+
+		public void setMedications(List<String> medications) {
+			this.medications = medications;
+		}
+
+		public List<String> getAllergies() {
+			return allergies;
+		}
+
+		public void setAllergies(List<String> allergies) {
+			this.allergies = allergies;
+		}
+
+		public FloodStationsURLPerson(Person person, MedicalRecord medicalRecord) {
+			super();
+			this.firstName = person.getFirstName();
+			this.lastName = person.getLastName();
+			this.phone = person.getPhone();
+			this.age = medicalRecord.getAge();
+			this.medications = medicalRecord.getMedications();
+			this.allergies = medicalRecord.getAllergies();
+		}
+	}
+
 	/**
 	 * Read - Get info on residents covered by a certain fire station or get all
 	 * fire stations
@@ -371,8 +476,7 @@ public class UrlController {
 		ArrayList<Person> persons = new ArrayList<Person>(personService.getPerson(personToSearch));
 		for (Person person : persons) {
 			// get medical record of a person
-			MedicalRecord medicalRecord = medicalRecordService
-					.getMedicalRecord(person);
+			MedicalRecord medicalRecord = medicalRecordService.getMedicalRecord(person);
 			// split between children and adults
 			int age = medicalRecord.getAge();
 			if (age < 18)
@@ -437,10 +541,42 @@ public class UrlController {
 		ArrayList<Person> persons = new ArrayList<Person>(personService.getPerson(personToSearch));
 		for (Person person : persons) {
 			MedicalRecord medicalRecord = medicalRecordService.getMedicalRecord(person);
-			if (medicalRecord != null)
-				result.addPerson(person, medicalRecord);
-			else
-				result.addPerson(person);
+			result.addPerson(person, medicalRecord);
+		}
+		return result;
+	}
+
+	/**
+	 * Read - Get a list of residents corresponding to a list of fire stations
+	 * 
+	 * @param - A List<String> corresponding to the station numbers
+	 * @return - A FloodStationsURLInfo object
+	 */
+
+	@GetMapping(value = "flood/stations", params = "stations")
+	public List<FloodStationsURLInfo> FloodStationsURL(@RequestParam(value = "stations") List<String> stations) {
+		ArrayList<FloodStationsURLInfo> result = new ArrayList<FloodStationsURLInfo>();
+		FireStation fireStationToSearch = new FireStation();
+		Person personToSearch = new Person();
+
+		for (String station : stations) {
+			// get fire stations
+			fireStationToSearch.setStation(station);
+			ArrayList<FireStation> fireStations = new ArrayList<FireStation>(
+					fireStationService.getFireStation(fireStationToSearch));
+			// get homes
+			for (FireStation fireStation : fireStations) {
+				FloodStationsURLInfo home = new FloodStationsURLInfo();
+				home.setFireStationNumber(fireStation.getStation());
+				// get residents
+				personToSearch.setAddress(fireStation.getAddress());
+				ArrayList<Person> persons = new ArrayList<Person>(personService.getPerson(personToSearch));
+				for (Person person : persons) {
+					MedicalRecord medicalRecord = medicalRecordService.getMedicalRecord(person);
+					home.addResident(person, medicalRecord);
+				}
+				result.add(home);
+			}
 		}
 		return result;
 	}
