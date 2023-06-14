@@ -676,4 +676,26 @@ public class UrlController {
 				}
 		return result;
 	}
+
+	/**
+	 * Read - Get info on a person
+	 * 
+	 * @param - Two String corresponding to the first and last name of the person
+	 * @return - A List<personInfoURLPerson> object
+	 */
+
+	@GetMapping(value = "communityEmail", params = "city")
+	public List<String> CommunityEmailURL(@RequestParam(value = "city") String city) {
+		ArrayList<String> result = new ArrayList<String>();
+		Person personToSearch = new Person();
+		personToSearch.setCity(city);
+			// get persons
+			ArrayList<Person> persons = new ArrayList<Person>(
+					personService.getPerson(personToSearch));
+			//get emails
+			for (Person person : persons) {
+				result.add(person.getEmail());
+				}
+		return result;
+	}
 }

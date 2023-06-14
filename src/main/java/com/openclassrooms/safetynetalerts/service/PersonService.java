@@ -13,7 +13,7 @@ public class PersonService {
 
 	@Autowired
 	private PersonRepository personRepository;
-
+	
 	public List<Person> getPerson(Person person) {
 		return personRepository.get(person);
 	}
