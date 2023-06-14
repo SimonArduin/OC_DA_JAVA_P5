@@ -139,12 +139,12 @@ public class MedicalRecord {
 					if (fields[i].get(medicalRecord) != null
 							&& !fields[i].get(medicalRecord).equals(fields[i].get(this))) {
 						fields[i].set(this, fields[i].get(medicalRecord));
-						result = true;
 					}
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+			result = true;
 		}
 		return result;
 	}

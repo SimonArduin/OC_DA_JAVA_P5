@@ -208,7 +208,7 @@ public class MedicalRecordTest {
 	void updateTestIfSame() {
 		MedicalRecord medicalRecordBefore = medicalRecord;
 		medicalRecordTest = medicalRecord;
-		assertFalse(medicalRecord.update(medicalRecordTest));
+		assertTrue(medicalRecord.update(medicalRecordTest));
 		assertEquals(medicalRecordBefore, medicalRecord);
 	}
 

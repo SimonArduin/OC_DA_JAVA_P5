@@ -127,7 +127,7 @@ public class FireStationTest {
 	void updateTestIfSame() {
 		FireStation fireStationBefore = fireStation;
 		fireStationTest = fireStation;
-		assertFalse(fireStation.update(fireStationTest));
+		assertTrue(fireStation.update(fireStationTest));
 		assertEquals(fireStationBefore, fireStation);
 	}
 

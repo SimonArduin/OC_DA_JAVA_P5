@@ -144,12 +144,12 @@ public class Person {
 				for (int i = 0; i < fields.length; i++) {
 					if (fields[i].get(person) != null && !fields[i].get(person).equals(fields[i].get(this))) {
 						fields[i].set(this, fields[i].get(person));
-						result = true;
 					}
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+			result = true;
 		}
 		return result;
 	}

@@ -218,7 +218,7 @@ public class PersonTest {
 	void updateTestIfSame() {
 		Person personBefore = person;
 		personTest = person;
-		assertFalse(person.update(personTest));
+		assertTrue(person.update(personTest));
 		assertEquals(personBefore, person);
 	}
 
