@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,12 +27,12 @@ public class PersonServiceTest {
 
 	@MockBean
 	PersonRepository personRepository;
-	
-	static Person person = new Person("John", "Boyd", "1509 Culver St", "Culver", "97451", "841-874-6512",
-			"jaboyd@email.com");
-	static Person emptyPerson = new Person();
-	static ArrayList<Person> personList = new ArrayList<Person>(Arrays.asList(person));
-	static ArrayList<Person> emptyList = new ArrayList<Person>();
+
+	final Person person = new Person("firstName", "lastName", "address", "city", "zip", "phone",
+			"email");
+	final Person emptyPerson = new Person();
+	final ArrayList<Person> personList = new ArrayList<Person>(Arrays.asList(person));
+	final ArrayList<Person> emptyList = new ArrayList<Person>();
 
 	@BeforeEach
 	private void SetUp() {
@@ -43,60 +44,76 @@ public class PersonServiceTest {
 	@Test
 	void contextLoads() {
 	}
-	
-	@Test
-	public void getPersonTest() {
-		assertEquals(personList, personService.getPerson(person));
-		verify(personRepository, Mockito.times(1)).get(any(Person.class));
-	}
 
-	@Test
-	public void getPersonTestIfNotInDB() {
-		Mockito.when(personRepository.get(any(Person.class))).thenReturn(emptyList);
-		assertEquals(emptyList, personService.getPerson(person));
-		verify(personRepository, Mockito.times(1)).get(any(Person.class));
-	}
+	@Nested
+	class getPersonTests {
 
-	@Test
-	public void putPersonTest() {
-		assertEquals(person, personService.putPerson(person));
-		verify(personRepository, Mockito.times(1)).get(any(Person.class));
-		verify(personRepository, Mockito.times(1)).delete(person);
-		verify(personRepository, Mockito.times(1)).save(person);
+		@Test
+		public void getPersonTest() {
+			assertEquals(personList, personService.getPerson(person));
+			verify(personRepository, Mockito.times(1)).get(any(Person.class));
 		}
 
-	@Test
-	public void putPersonTestIfNotInDB() {
-		Mockito.when(personRepository.get(any(Person.class))).thenReturn(emptyList);
-		assertEquals(emptyPerson, personService.putPerson(person));
-		verify(personRepository, Mockito.times(1)).get(any(Person.class));
-		verify(personRepository, Mockito.times(0)).delete(person);
-		verify(personRepository, Mockito.times(0)).save(person);
+		@Test
+		public void getPersonTestIfNotInDB() {
+			Mockito.when(personRepository.get(any(Person.class))).thenReturn(emptyList);
+			assertEquals(emptyList, personService.getPerson(person));
+			verify(personRepository, Mockito.times(1)).get(any(Person.class));
 		}
-	
-	@Test
-	public void postPersonTest() {
-		assertEquals(person, personService.postPerson(person));
-		verify(personRepository, Mockito.times(1)).save(person);
 	}
 
-	@Test
-	public void postPersonTestIfAlreadyInDB() {
-		Mockito.when(personRepository.save(any(Person.class))).thenReturn(emptyPerson);
-		assertEquals(emptyPerson, personService.postPerson(person));
-		verify(personRepository, Mockito.times(1)).save(person);
+	@Nested
+	class putPersonTests {
+
+		@Test
+		public void putPersonTest() {
+			assertEquals(person, personService.putPerson(person));
+			verify(personRepository, Mockito.times(1)).get(any(Person.class));
+			verify(personRepository, Mockito.times(1)).delete(person);
+			verify(personRepository, Mockito.times(1)).save(person);
+		}
+
+		@Test
+		public void putPersonTestIfNotInDB() {
+			Mockito.when(personRepository.get(any(Person.class))).thenReturn(emptyList);
+			assertEquals(emptyPerson, personService.putPerson(person));
+			verify(personRepository, Mockito.times(1)).get(any(Person.class));
+			verify(personRepository, Mockito.times(0)).delete(person);
+			verify(personRepository, Mockito.times(0)).save(person);
+		}
 	}
 
-	@Test
-	public void deletePersonTest() {
-		assertEquals(person, personService.deletePerson(person));
-		verify(personRepository, Mockito.times(1)).delete(person);
+	@Nested
+	class postPersonTests {
+
+		@Test
+		public void postPersonTest() {
+			assertEquals(person, personService.postPerson(person));
+			verify(personRepository, Mockito.times(1)).save(person);
+		}
+
+		@Test
+		public void postPersonTestIfAlreadyInDB() {
+			Mockito.when(personRepository.save(any(Person.class))).thenReturn(emptyPerson);
+			assertEquals(emptyPerson, personService.postPerson(person));
+			verify(personRepository, Mockito.times(1)).save(person);
+		}
 	}
 
-	@Test
-	public void deletePersonTestIfNotInDB() {
-		Mockito.when(personRepository.delete(any(Person.class))).thenReturn(emptyPerson);
-		assertEquals(emptyPerson, personService.deletePerson(person));
-		verify(personRepository, Mockito.times(1)).delete(person);
+	@Nested
+	class deletePersonTests {
+
+		@Test
+		public void deletePersonTest() {
+			assertEquals(person, personService.deletePerson(person));
+			verify(personRepository, Mockito.times(1)).delete(person);
+		}
+
+		@Test
+		public void deletePersonTestIfNotInDB() {
+			Mockito.when(personRepository.delete(any(Person.class))).thenReturn(emptyPerson);
+			assertEquals(emptyPerson, personService.deletePerson(person));
+			verify(personRepository, Mockito.times(1)).delete(person);
+		}
 	}
 }

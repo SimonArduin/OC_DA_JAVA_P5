@@ -310,7 +310,7 @@ public class UrlController {
 			this.lastName = person.getLastName();
 			this.address = person.getAddress();
 			this.phone = person.getPhone();
-			this.age = medicalRecord.getAge();
+			this.age = medicalRecord.calculateAge();
 			this.medications = medicalRecord.getMedications();
 			this.allergies = medicalRecord.getAllergies();
 		}
@@ -415,7 +415,7 @@ public class UrlController {
 			this.firstName = person.getFirstName();
 			this.lastName = person.getLastName();
 			this.phone = person.getPhone();
-			this.age = medicalRecord.getAge();
+			this.age = medicalRecord.calculateAge();
 			this.medications = medicalRecord.getMedications();
 			this.allergies = medicalRecord.getAllergies();
 		}
@@ -486,7 +486,7 @@ public class UrlController {
 			super();
 			this.firstName = person.getFirstName();
 			this.lastName = person.getLastName();
-			this.age = medicalRecord.getAge();
+			this.age = medicalRecord.calculateAge();
 			this.address = person.getAddress();
 			this.medications = medicalRecord.getMedications();
 			this.allergies = medicalRecord.getAllergies();
@@ -521,7 +521,7 @@ public class UrlController {
 				// get medical record of the resident
 				MedicalRecord medicalRecord = medicalRecordService.getMedicalRecord(personInFireStation);
 				// count as adult or child
-				if (medicalRecord.getAge() > 18)
+				if (medicalRecord.calculateAge() > 18)
 					result.addAdult();
 				else
 					result.addChild();
@@ -550,7 +550,7 @@ public class UrlController {
 			// get medical record of a person
 			MedicalRecord medicalRecord = medicalRecordService.getMedicalRecord(person);
 			// split between children and adults
-			int age = medicalRecord.getAge();
+			int age = medicalRecord.calculateAge();
 			if (age < 18)
 				result.addChild(person, age);
 			else

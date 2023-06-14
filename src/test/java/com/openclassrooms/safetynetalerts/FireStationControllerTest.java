@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,12 +38,9 @@ public class FireStationControllerTest {
 	@MockBean
 	FireStationService fireStationService;
 
-	static FireStation fireStation = new FireStation("1509 Culver St", "3");
-	static FireStation fireStationOtherAddress = new FireStation("wrong address", fireStation.getStation());
-	static FireStation fireStationOtherStationNumber = new FireStation(fireStation.getAddress(), "421");
-	static int numberOfAdults = 1;
-	static int numberOfChildren = 1;
-	static int numberOfFireStationByStationNumber = 1;
+	final FireStation fireStation = new FireStation("address", "station");
+	final FireStation fireStationOtherAddress = new FireStation("otherAddress", fireStation.getStation());
+	final int numberOfFireStationByStationNumber = 1;
 
 	@BeforeEach
 	private void setUp() {
@@ -56,122 +54,115 @@ public class FireStationControllerTest {
 	void contextLoads() {
 	}
 
-	/**
-	 * Put - Changes the station number of a firestation in the database
-	 * 
-	 * @param - A String corresponding to the address of the fire station and an
-	 *          optional int corresponding to the new fire station number
-	 */
-	@Test
-	public void putFireStationTest() throws Exception {
-		mockMvc.perform(put(String.format("/firestation?address=%s&stationNumber=%s", fireStation.getAddress(),
-				fireStation.getStation()))).andExpect(status().isOk())
-				.andExpect(jsonPath("address", is(fireStation.getAddress())))
-				.andExpect(jsonPath("station", is(fireStation.getStation())));
-		verify(fireStationService, Mockito.times(1)).putFireStation(any(FireStation.class));
+	@Nested
+	class putFireStationTests {
+
+		@Test
+		public void putFireStationTest() throws Exception {
+			mockMvc.perform(put(String.format("/firestation?address=%s&stationNumber=%s", fireStation.getAddress(),
+					fireStation.getStation()))).andExpect(status().isOk())
+					.andExpect(jsonPath("address", is(fireStation.getAddress())))
+					.andExpect(jsonPath("station", is(fireStation.getStation())));
+			verify(fireStationService, Mockito.times(1)).putFireStation(any(FireStation.class));
+		}
+
+		@Test
+		public void putFireStationTestIfError() throws Exception {
+			Mockito.when(fireStationService.putFireStation(any(FireStation.class))).thenReturn(new FireStation());
+			mockMvc.perform(put(String.format("/firestation?address=%s&stationNumber=%s", fireStation.getAddress(),
+					fireStation.getStation()))).andExpect(status().isOk()).andExpect(jsonPath("address", nullValue()))
+					.andExpect(jsonPath("station", nullValue()));
+			verify(fireStationService, Mockito.times(1)).putFireStation(any(FireStation.class));
+		}
 	}
 
-	@Test
-	public void putFireStationTestIfError() throws Exception {
-		Mockito.when(fireStationService.putFireStation(any(FireStation.class))).thenReturn(new FireStation());
-		mockMvc.perform(put(String.format("/firestation?address=%s&stationNumber=%s", fireStation.getAddress(),
-				fireStation.getStation()))).andExpect(status().isOk()).andExpect(jsonPath("address", nullValue()))
-				.andExpect(jsonPath("station", nullValue()));
-		verify(fireStationService, Mockito.times(1)).putFireStation(any(FireStation.class));
+	@Nested
+	class postFireStationTests {
+		
+		@Test
+		public void postFireStation() throws Exception {
+			mockMvc.perform(post(String.format("/firestation?address=%s&stationNumber=%s", fireStation.getAddress(),
+					fireStation.getStation()))).andExpect(status().isOk())
+					.andExpect(jsonPath("address", is(fireStation.getAddress())))
+					.andExpect(jsonPath("station", is(fireStation.getStation())));
+			verify(fireStationService, Mockito.times(1)).postFireStation(any(FireStation.class));
+		}
+
+		@Test
+		public void postFireStationTestIfError() throws Exception {
+			Mockito.when(fireStationService.postFireStation(any(FireStation.class))).thenReturn(new FireStation());
+			mockMvc.perform(post(String.format("/firestation?address=%s&stationNumber=%s", fireStation.getAddress(),
+					fireStation.getStation()))).andExpect(status().isOk()).andExpect(jsonPath("address", nullValue()))
+					.andExpect(jsonPath("station", nullValue()));
+			verify(fireStationService, Mockito.times(1)).postFireStation(any(FireStation.class));
+		}
 	}
 
-	/**
-	 * Post - Adds a new firestation to the database
-	 * 
-	 * @param - A String corresponding to the address of the fire station and an int
-	 *          corresponding to the fire station number
-	 */
-	@Test
-	public void postFireStation() throws Exception {
-		mockMvc.perform(post(String.format("/firestation?address=%s&stationNumber=%s", fireStation.getAddress(),
-				fireStation.getStation()))).andExpect(status().isOk())
-				.andExpect(jsonPath("address", is(fireStation.getAddress())))
-				.andExpect(jsonPath("station", is(fireStation.getStation())));
-		verify(fireStationService, Mockito.times(1)).postFireStation(any(FireStation.class));
-	}
+	@Nested
+	class deleteFireStationTests {
 
-	@Test
-	public void postFireStationTestIfError() throws Exception {
-		Mockito.when(fireStationService.postFireStation(any(FireStation.class))).thenReturn(new FireStation());
-		mockMvc.perform(post(String.format("/firestation?address=%s&stationNumber=%s", fireStation.getAddress(),
-				fireStation.getStation()))).andExpect(status().isOk()).andExpect(jsonPath("address", nullValue()))
-				.andExpect(jsonPath("station", nullValue()));
-		verify(fireStationService, Mockito.times(1)).postFireStation(any(FireStation.class));
-	}
+		@Test
+		public void deleteFireStation() throws Exception {
+			mockMvc.perform(delete(String.format("/firestation?address=%s&stationNumber=%s", fireStation.getAddress(),
+					fireStation.getStation()))).andExpect(status().isOk())
+					.andExpect(jsonPath("$[0].address", is(fireStation.getAddress())))
+					.andExpect(jsonPath("$[0].station", is(fireStation.getStation())));
+			verify(fireStationService, Mockito.times(1)).deleteFireStation(any(FireStation.class));
+		}
 
-	/**
-	 * Delete - Removes a firestation from the database
-	 * 
-	 * @param - An optional String corresponding to the address of the fire station
-	 *          and an optional int corresponding to the new fire station number
-	 */
+		@Test
+		public void deleteFireStationIfError() throws Exception {
+			Mockito.when(fireStationService.deleteFireStation(any(FireStation.class)))
+					.thenReturn(new ArrayList<FireStation>(Arrays.asList(new FireStation())));
+			mockMvc.perform(delete(String.format("/firestation?address=%s&stationNumber=%s", fireStation.getAddress(),
+					fireStation.getStation()))).andExpect(status().isOk())
+					.andExpect(jsonPath("$[0].address", nullValue())).andExpect(jsonPath("$[0].station", nullValue()));
+			verify(fireStationService, Mockito.times(1)).deleteFireStation(any(FireStation.class));
+		}
 
-	@Test
-	public void deleteFireStation() throws Exception {
-		mockMvc.perform(delete(String.format("/firestation?address=%s&stationNumber=%s", fireStation.getAddress(),
-				fireStation.getStation()))).andExpect(status().isOk())
-				.andExpect(jsonPath("$[0].address", is(fireStation.getAddress())))
-				.andExpect(jsonPath("$[0].station", is(fireStation.getStation())));
-		verify(fireStationService, Mockito.times(1)).deleteFireStation(any(FireStation.class));
-	}
+		@Test
+		public void deleteFireStationByAddress() throws Exception {
+			mockMvc.perform(delete(String.format("/firestation?address=%s", fireStation.getAddress())))
+					.andExpect(status().isOk()).andExpect(jsonPath("$[0].address", is(fireStation.getAddress())))
+					.andExpect(jsonPath("$[0].station", is(fireStation.getStation())));
+			verify(fireStationService, Mockito.times(1)).deleteFireStation(any(FireStation.class));
+		}
 
-	@Test
-	public void deleteFireStationIfError() throws Exception {
-		Mockito.when(fireStationService.deleteFireStation(any(FireStation.class)))
-				.thenReturn(new ArrayList<FireStation>(Arrays.asList(new FireStation())));
-		mockMvc.perform(delete(String.format("/firestation?address=%s&stationNumber=%s", fireStation.getAddress(),
-				fireStation.getStation()))).andExpect(status().isOk()).andExpect(jsonPath("$[0].address", nullValue()))
-				.andExpect(jsonPath("$[0].station", nullValue()));
-		verify(fireStationService, Mockito.times(1)).deleteFireStation(any(FireStation.class));
-	}
+		@Test
+		public void deleteFireStationByAddressIfError() throws Exception {
+			Mockito.when(fireStationService.deleteFireStation(any(FireStation.class)))
+					.thenReturn(new ArrayList<FireStation>(Arrays.asList(new FireStation())));
+			mockMvc.perform(delete(String.format("/firestation?address=%s", fireStation.getAddress())))
+					.andExpect(status().isOk()).andExpect(jsonPath("$[0].address", nullValue()))
+					.andExpect(jsonPath("$[0].station", nullValue()));
+			verify(fireStationService, Mockito.times(1)).deleteFireStation(any(FireStation.class));
+		}
 
-	@Test
-	public void deleteFireStationByAddress() throws Exception {
-		mockMvc.perform(delete(String.format("/firestation?address=%s", fireStation.getAddress())))
-				.andExpect(status().isOk()).andExpect(jsonPath("$[0].address", is(fireStation.getAddress())))
-				.andExpect(jsonPath("$[0].station", is(fireStation.getStation())));
-		verify(fireStationService, Mockito.times(1)).deleteFireStation(any(FireStation.class));
-	}
+		@Test
+		public void deleteFireStationByStation() throws Exception {
+			mockMvc.perform(delete(String.format("/firestation?stationNumber=%s", fireStation.getStation())))
+					.andExpect(status().isOk()).andExpect(jsonPath("$[0].address", is(fireStation.getAddress())))
+					.andExpect(jsonPath("$[0].station", is(fireStation.getStation())));
+			verify(fireStationService, Mockito.times(1)).deleteFireStation(any(FireStation.class));
+		}
 
-	@Test
-	public void deleteFireStationByAddressIfError() throws Exception {
-		Mockito.when(fireStationService.deleteFireStation(any(FireStation.class)))
-		.thenReturn(new ArrayList<FireStation>(Arrays.asList(new FireStation())));
-		mockMvc.perform(delete(String.format("/firestation?address=%s", fireStation.getAddress())))
-				.andExpect(status().isOk()).andExpect(jsonPath("$[0].address", nullValue()))
-				.andExpect(jsonPath("$[0].station", nullValue()));
-		verify(fireStationService, Mockito.times(1)).deleteFireStation(any(FireStation.class));
-	}
+		@Test
+		public void deleteFireStationByStationIfError() throws Exception {
+			Mockito.when(fireStationService.deleteFireStation(any(FireStation.class)))
+					.thenReturn(new ArrayList<FireStation>(Arrays.asList(new FireStation())));
+			mockMvc.perform(delete(String.format("/firestation?stationNumber=%s", fireStation.getStation())))
+					.andExpect(status().isOk()).andExpect(jsonPath("$[0].address", nullValue()))
+					.andExpect(jsonPath("$[0].station", nullValue()));
+			verify(fireStationService, Mockito.times(1)).deleteFireStation(any(FireStation.class));
+		}
 
-	@Test
-	public void deleteFireStationByStation() throws Exception {
-		mockMvc.perform(delete(String.format("/firestation?stationNumber=%s", fireStation.getStation())))
-				.andExpect(status().isOk()).andExpect(jsonPath("$[0].address", is(fireStation.getAddress())))
-				.andExpect(jsonPath("$[0].station", is(fireStation.getStation())));
-		verify(fireStationService, Mockito.times(1)).deleteFireStation(any(FireStation.class));
-	}
-
-	@Test
-	public void deleteFireStationByStationIfError() throws Exception {
-		Mockito.when(fireStationService.deleteFireStation(any(FireStation.class)))
-		.thenReturn(new ArrayList<FireStation>(Arrays.asList(new FireStation())));
-		mockMvc.perform(delete(String.format("/firestation?stationNumber=%s", fireStation.getStation())))
-				.andExpect(status().isOk()).andExpect(jsonPath("$[0].address", nullValue()))
-				.andExpect(jsonPath("$[0].station", nullValue()));
-		verify(fireStationService, Mockito.times(1)).deleteFireStation(any(FireStation.class));
-	}
-
-	@Test
-	public void deleteFireStationIfNoParam() throws Exception {
-		Mockito.when(fireStationService.deleteFireStation(any(FireStation.class)))
-		.thenReturn(new ArrayList<FireStation>(Arrays.asList(new FireStation())));
-		mockMvc.perform(delete(String.format("/firestation"))).andExpect(status().isOk())
-				.andExpect(jsonPath("$[0].address", nullValue())).andExpect(jsonPath("$[0].station", nullValue()));
-		verify(fireStationService, Mockito.times(1)).deleteFireStation(any(FireStation.class));
+		@Test
+		public void deleteFireStationIfNoParam() throws Exception {
+			Mockito.when(fireStationService.deleteFireStation(any(FireStation.class)))
+					.thenReturn(new ArrayList<FireStation>(Arrays.asList(new FireStation())));
+			mockMvc.perform(delete(String.format("/firestation"))).andExpect(status().isOk())
+					.andExpect(jsonPath("$[0].address", nullValue())).andExpect(jsonPath("$[0].station", nullValue()));
+			verify(fireStationService, Mockito.times(1)).deleteFireStation(any(FireStation.class));
+		}
 	}
 }

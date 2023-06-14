@@ -119,8 +119,8 @@ public class DataBase {
 	public MedicalRecord removeMedicalRecord(MedicalRecord medicalRecord) {
 		for (MedicalRecord medicalRecordInDB : instance.medicalrecords)
 			if (medicalRecord.equals(medicalRecordInDB))
-				if (instance.medicalrecords.remove(medicalRecord))
-					return medicalRecord;
+				if (instance.medicalrecords.remove(medicalRecordInDB))
+					return medicalRecordInDB;
 		return new MedicalRecord();
 	}
 }

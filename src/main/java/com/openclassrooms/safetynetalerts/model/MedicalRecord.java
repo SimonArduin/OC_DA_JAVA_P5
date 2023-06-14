@@ -74,7 +74,7 @@ public class MedicalRecord {
 		super();
 	}
 
-	public int getAge() {
+	public int calculateAge() {
 		if (this.birthdate != null)
 			return Period
 					.between(LocalDate.parse(birthdate, DateTimeFormatter.ofPattern("MM/dd/yyyy")), LocalDate.now())

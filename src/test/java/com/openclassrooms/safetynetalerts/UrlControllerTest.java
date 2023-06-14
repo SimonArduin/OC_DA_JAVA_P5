@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,517 +87,493 @@ public class UrlControllerTest {
 	void contextLoads() {
 	}
 
-	/**
-	 * Read - Get info on residents covered by a certain fire station or get all
-	 * fire stations
-	 * 
-	 * @param - An int corresponding to the fire station number
-	 * @return - A FireStationURLInfo object
-	 */
+	@Nested
+	class FireStationURLTests {
+		
+		@Test
+		public void FireStationURLTest() throws Exception {
+			mockMvc.perform(get(String.format("/firestation?stationNumber=%s", fireStation.getStation())))
+					.andExpect(status().isOk())
 
-	@Test
-	public void FireStationURLTest() throws Exception {
-		mockMvc.perform(get(String.format("/firestation?stationNumber=%s", fireStation.getStation())))
-				.andExpect(status().isOk())
+					.andExpect(jsonPath("persons.[0].firstName", is(person.getFirstName())))
+					.andExpect(jsonPath("persons.[0].lastName", is(person.getLastName())))
+					.andExpect(jsonPath("persons.[0].address", is(person.getAddress())))
+					.andExpect(jsonPath("persons.[0].phone", is(person.getPhone())))
 
-				.andExpect(jsonPath("persons.[0].firstName", is(person.getFirstName())))
-				.andExpect(jsonPath("persons.[0].lastName", is(person.getLastName())))
-				.andExpect(jsonPath("persons.[0].address", is(person.getAddress())))
-				.andExpect(jsonPath("persons.[0].phone", is(person.getPhone())))
+					.andExpect(jsonPath("persons.[1].firstName", is(personChild.getFirstName())))
+					.andExpect(jsonPath("persons.[1].lastName", is(personChild.getLastName())))
+					.andExpect(jsonPath("persons.[1].address", is(personChild.getAddress())))
+					.andExpect(jsonPath("persons.[1].phone", is(personChild.getPhone())))
 
-				.andExpect(jsonPath("persons.[1].firstName", is(personChild.getFirstName())))
-				.andExpect(jsonPath("persons.[1].lastName", is(personChild.getLastName())))
-				.andExpect(jsonPath("persons.[1].address", is(personChild.getAddress())))
-				.andExpect(jsonPath("persons.[1].phone", is(personChild.getPhone())))
+					.andExpect(jsonPath("numberOfAdults", is(numberOfAdults)))
+					.andExpect(jsonPath("numberOfChildren", is(numberOfChildren)));
 
-				.andExpect(jsonPath("numberOfAdults", is(numberOfAdults)))
-				.andExpect(jsonPath("numberOfChildren", is(numberOfChildren)));
+			verify(fireStationService, Mockito.times(1)).getFireStation(any(FireStation.class));
+			verify(personService, Mockito.times(numberOfFireStationByStationNumber)).getPerson(any(Person.class));
+			verify(medicalRecordService, Mockito.times(2)).getMedicalRecord(any(Person.class));
+		}
 
-		verify(fireStationService, Mockito.times(1)).getFireStation(any(FireStation.class));
-		verify(personService, Mockito.times(numberOfFireStationByStationNumber)).getPerson(any(Person.class));
-		verify(medicalRecordService, Mockito.times(2)).getMedicalRecord(any(Person.class));
+		@Test
+		public void FireStationURLTestIfNoFireStation() throws Exception {
+			Mockito.when(fireStationService.getFireStation(any(FireStation.class)))
+					.thenReturn(new ArrayList<FireStation>());
+			mockMvc.perform(get(String.format("/firestation?stationNumber=%s", fireStation.getStation())))
+					.andExpect(status().isOk()).andExpect(jsonPath("numberOfAdults", is(0)))
+					.andExpect(jsonPath("numberOfChildren", is(0)));
+
+			verify(fireStationService, Mockito.times(1)).getFireStation(any(FireStation.class));
+			verify(personService, Mockito.times(0)).getPerson(any(Person.class));
+			verify(medicalRecordService, Mockito.times(0)).getMedicalRecord(any(Person.class));
+		}
+
+		@Test
+		public void FireStationURLTestIfNoPersons() throws Exception {
+			Mockito.when(personService.getPerson(any(Person.class))).thenReturn(new ArrayList<Person>());
+			mockMvc.perform(get(String.format("/firestation?stationNumber=%s", fireStation.getStation())))
+					.andExpect(status().isOk()).andExpect(jsonPath("numberOfAdults", is(0)))
+					.andExpect(jsonPath("numberOfChildren", is(0)));
+
+			verify(fireStationService, Mockito.times(1)).getFireStation(any(FireStation.class));
+			verify(personService, Mockito.times(numberOfFireStationByStationNumber)).getPerson(any(Person.class));
+			verify(medicalRecordService, Mockito.times(0)).getMedicalRecord(any(Person.class));
+		}
 	}
 
-	@Test
-	public void FireStationURLTestIfNoFireStation() throws Exception {
-		Mockito.when(fireStationService.getFireStation(any(FireStation.class)))
-				.thenReturn(new ArrayList<FireStation>());
-		mockMvc.perform(get(String.format("/firestation?stationNumber=%s", fireStation.getStation())))
-				.andExpect(status().isOk()).andExpect(jsonPath("numberOfAdults", is(0)))
-				.andExpect(jsonPath("numberOfChildren", is(0)));
+	@Nested
+	class ChildAlertURLTests {
 
-		verify(fireStationService, Mockito.times(1)).getFireStation(any(FireStation.class));
-		verify(personService, Mockito.times(0)).getPerson(any(Person.class));
-		verify(medicalRecordService, Mockito.times(0)).getMedicalRecord(any(Person.class));
+		@Test
+		public void ChildAlertURLTest() throws Exception {
+			mockMvc.perform(get(String.format("/childAlert?address=%s", personChild.getAddress())))
+					.andExpect(status().isOk())
+
+					.andExpect(jsonPath("children.[0].firstName", is(personChild.getFirstName())))
+					.andExpect(jsonPath("children.[0].lastName", is(personChild.getLastName())))
+					.andExpect(jsonPath("children.[0].age", is(medicalRecordChild.calculateAge())))
+
+					.andExpect(jsonPath("adults.[0].firstName", is(person.getFirstName())))
+					.andExpect(jsonPath("adults.[0].lastName", is(person.getLastName())))
+					.andExpect(jsonPath("adults.[0].address", is(person.getAddress())))
+					.andExpect(jsonPath("adults.[0].city", is(person.getCity())))
+					.andExpect(jsonPath("adults.[0].zip", is(person.getZip())))
+					.andExpect(jsonPath("adults.[0].phone", is(person.getPhone())));
+
+			verify(personService, Mockito.times(1)).getPerson(any(Person.class));
+			verify(medicalRecordService, Mockito.times(1)).getMedicalRecord(person);
+			verify(medicalRecordService, Mockito.times(1)).getMedicalRecord(personChild);
+		}
+
+		@Test
+		public void ChildAlertURLTestIfNoPerson() throws Exception {
+			Mockito.when(personService.getPerson(any(Person.class))).thenReturn(new ArrayList<Person>());
+			mockMvc.perform(get(String.format("/childAlert?address=%s", personChild.getAddress())))
+					.andExpect(status().isOk());
+
+			verify(personService, Mockito.times(1)).getPerson(any(Person.class));
+			verify(medicalRecordService, Mockito.times(0)).getMedicalRecord(person);
+			verify(medicalRecordService, Mockito.times(0)).getMedicalRecord(personChild);
+		}
+
+		@Test
+		public void ChildAlertURLTestIfNoMedicalRecord() throws Exception {
+			Mockito.when(medicalRecordService.getMedicalRecord(any(Person.class))).thenReturn(new MedicalRecord());
+			mockMvc.perform(get(String.format("/childAlert?address=%s", personChild.getAddress())))
+					.andExpect(status().isOk())
+
+					.andExpect(jsonPath("adults.[0].firstName", is(person.getFirstName())))
+					.andExpect(jsonPath("adults.[0].lastName", is(person.getLastName())))
+					.andExpect(jsonPath("adults.[0].address", is(person.getAddress())))
+					.andExpect(jsonPath("adults.[0].city", is(person.getCity())))
+					.andExpect(jsonPath("adults.[0].zip", is(person.getZip())))
+					.andExpect(jsonPath("adults.[0].phone", is(person.getPhone())))
+
+					.andExpect(jsonPath("adults.[1].firstName", is(personChild.getFirstName())))
+					.andExpect(jsonPath("adults.[1].lastName", is(personChild.getLastName())))
+					.andExpect(jsonPath("adults.[1].address", is(personChild.getAddress())))
+					.andExpect(jsonPath("adults.[1].city", is(personChild.getCity())))
+					.andExpect(jsonPath("adults.[1].zip", is(personChild.getZip())))
+					.andExpect(jsonPath("adults.[1].phone", is(personChild.getPhone())));
+
+			verify(personService, Mockito.times(1)).getPerson(any(Person.class));
+			verify(medicalRecordService, Mockito.times(1)).getMedicalRecord(person);
+			verify(medicalRecordService, Mockito.times(1)).getMedicalRecord(personChild);
+		}
+
+		@Test
+		public void ChildAlertURLTestIfNoBirthdate() throws Exception {
+			Mockito.when(medicalRecordService.getMedicalRecord(personChild)).thenReturn(medicalRecordChildOnlyName);
+			mockMvc.perform(get(String.format("/childAlert?address=%s", personChild.getAddress())))
+					.andExpect(status().isOk())
+
+					.andExpect(jsonPath("adults.[0].firstName", is(person.getFirstName())))
+					.andExpect(jsonPath("adults.[0].lastName", is(person.getLastName())))
+					.andExpect(jsonPath("adults.[0].address", is(person.getAddress())))
+					.andExpect(jsonPath("adults.[0].city", is(person.getCity())))
+					.andExpect(jsonPath("adults.[0].zip", is(person.getZip())))
+					.andExpect(jsonPath("adults.[0].phone", is(person.getPhone())))
+
+					.andExpect(jsonPath("adults.[1].firstName", is(personChild.getFirstName())))
+					.andExpect(jsonPath("adults.[1].lastName", is(personChild.getLastName())))
+					.andExpect(jsonPath("adults.[1].address", is(personChild.getAddress())))
+					.andExpect(jsonPath("adults.[1].city", is(personChild.getCity())))
+					.andExpect(jsonPath("adults.[1].zip", is(personChild.getZip())))
+					.andExpect(jsonPath("adults.[1].phone", is(personChild.getPhone())));
+
+			verify(personService, Mockito.times(1)).getPerson(any(Person.class));
+			verify(medicalRecordService, Mockito.times(1)).getMedicalRecord(person);
+			verify(medicalRecordService, Mockito.times(1)).getMedicalRecord(personChild);
+		}
 	}
 
-	@Test
-	public void FireStationURLTestIfNoPersons() throws Exception {
-		Mockito.when(personService.getPerson(any(Person.class))).thenReturn(new ArrayList<Person>());
-		mockMvc.perform(get(String.format("/firestation?stationNumber=%s", fireStation.getStation())))
-				.andExpect(status().isOk()).andExpect(jsonPath("numberOfAdults", is(0)))
-				.andExpect(jsonPath("numberOfChildren", is(0)));
+	@Nested
+	class PhoneAlertURLTests {
 
-		verify(fireStationService, Mockito.times(1)).getFireStation(any(FireStation.class));
-		verify(personService, Mockito.times(numberOfFireStationByStationNumber)).getPerson(any(Person.class));
-		verify(medicalRecordService, Mockito.times(0)).getMedicalRecord(any(Person.class));
+		@Test
+		public void PhoneAlertURLTest() throws Exception {
+			mockMvc.perform(get(String.format("/phoneAlert?firestation=%s", fireStation.getStation())))
+					.andExpect(status().isOk())
+
+					.andExpect(jsonPath("[0]", is(person.getPhone())))
+
+					.andExpect(jsonPath("[1]", is(personChild.getPhone())));
+
+			verify(fireStationService, Mockito.times(1)).getFireStation(any(FireStation.class));
+			verify(personService, Mockito.times(numberOfFireStationByStationNumber)).getPerson(any(Person.class));
+		}
+
+		@Test
+		public void PhoneAlertURLTestIfNoFireStation() throws Exception {
+			Mockito.when(fireStationService.getFireStation(any(FireStation.class)))
+					.thenReturn(new ArrayList<FireStation>());
+			mockMvc.perform(get(String.format("/phoneAlert?firestation=%s", fireStation.getStation())))
+					.andExpect(status().isOk());
+
+			verify(fireStationService, Mockito.times(1)).getFireStation(any(FireStation.class));
+			verify(personService, Mockito.times(0)).getPerson(any(Person.class));
+		}
+
+		@Test
+		public void PhoneAlertURLTestIfNoPerson() throws Exception {
+			Mockito.when(personService.getPerson(any(Person.class))).thenReturn(new ArrayList<Person>());
+			mockMvc.perform(get(String.format("/phoneAlert?firestation=%s", fireStation.getStation())))
+					.andExpect(status().isOk());
+
+			verify(fireStationService, Mockito.times(1)).getFireStation(any(FireStation.class));
+			verify(personService, Mockito.times(numberOfFireStationByStationNumber)).getPerson(any(Person.class));
+		}
+
+		@Test
+		public void PhoneAlertURLTestIfNoPhone() throws Exception {
+			Mockito.when(personService.getPerson(any(Person.class)))
+					.thenReturn(new ArrayList<Person>(Arrays.asList(new Person())));
+			mockMvc.perform(get(String.format("/phoneAlert?firestation=%s", fireStation.getStation())))
+					.andExpect(status().isOk());
+
+			verify(fireStationService, Mockito.times(1)).getFireStation(any(FireStation.class));
+			verify(personService, Mockito.times(numberOfFireStationByStationNumber)).getPerson(any(Person.class));
+		}
 	}
 
-	/**
-	 * Read - Get info on children living at a certain address and a list of all
-	 * adults living with them
-	 * 
-	 * @param - A String corresponding to the address
-	 * @return - A ChildAlertURLInfo object
-	 */
+	@Nested
+	class FireURLTests {
 
-	@Test
-	public void ChildAlertURLTest() throws Exception {
-		mockMvc.perform(get(String.format("/childAlert?address=%s", personChild.getAddress())))
-				.andExpect(status().isOk())
+		@Test
+		public void FireURLTest() throws Exception {
+			mockMvc.perform(get(String.format("/fire?address=%s", fireStation.getAddress()))).andExpect(status().isOk())
 
-				.andExpect(jsonPath("children.[0].firstName", is(personChild.getFirstName())))
-				.andExpect(jsonPath("children.[0].lastName", is(personChild.getLastName())))
-				.andExpect(jsonPath("children.[0].age", is(medicalRecordChild.getAge())))
+					.andExpect(jsonPath("persons.[0].firstName", is(person.getFirstName())))
+					.andExpect(jsonPath("persons.[0].lastName", is(person.getLastName())))
+					.andExpect(jsonPath("persons.[0].phone", is(person.getPhone())))
+					.andExpect(jsonPath("persons.[0].age", is(medicalRecord.calculateAge())))
+					.andExpect(jsonPath("persons.[0].medications", is(medicalRecord.getMedications())))
+					.andExpect(jsonPath("persons.[0].allergies", is(medicalRecord.getAllergies())))
 
-				.andExpect(jsonPath("adults.[0].firstName", is(person.getFirstName())))
-				.andExpect(jsonPath("adults.[0].lastName", is(person.getLastName())))
-				.andExpect(jsonPath("adults.[0].address", is(person.getAddress())))
-				.andExpect(jsonPath("adults.[0].city", is(person.getCity())))
-				.andExpect(jsonPath("adults.[0].zip", is(person.getZip())))
-				.andExpect(jsonPath("adults.[0].phone", is(person.getPhone())));
+					.andExpect(jsonPath("persons.[1].firstName", is(personChild.getFirstName())))
+					.andExpect(jsonPath("persons.[1].lastName", is(personChild.getLastName())))
+					.andExpect(jsonPath("persons.[1].phone", is(personChild.getPhone())))
+					.andExpect(jsonPath("persons.[1].age", is(medicalRecordChild.calculateAge())))
+					.andExpect(jsonPath("persons.[1].medications", is(medicalRecordChild.getMedications())))
+					.andExpect(jsonPath("persons.[1].allergies", is(medicalRecordChild.getAllergies())))
 
-		verify(personService, Mockito.times(1)).getPerson(any(Person.class));
-		verify(medicalRecordService, Mockito.times(1)).getMedicalRecord(person);
-		verify(medicalRecordService, Mockito.times(1)).getMedicalRecord(personChild);
+					.andExpect(jsonPath("fireStationNumber", is(fireStation.getStation())));
+
+			verify(fireStationService, Mockito.times(1)).getFireStation(any(FireStation.class));
+			verify(personService, Mockito.times(1)).getPerson(any(Person.class));
+			verify(medicalRecordService, Mockito.times(numberOfPersons)).getMedicalRecord(any(Person.class));
+		}
+
+		@Test
+		public void FireURLTestIfNoFireStation() throws Exception {
+			Mockito.when(fireStationService.getFireStation(any(FireStation.class)))
+					.thenReturn(new ArrayList<FireStation>());
+			mockMvc.perform(get(String.format("/fire?address=%s", fireStation.getAddress()))).andExpect(status().isOk())
+
+					.andExpect(jsonPath("persons.[0].firstName", is(person.getFirstName())))
+					.andExpect(jsonPath("persons.[0].lastName", is(person.getLastName())))
+					.andExpect(jsonPath("persons.[0].phone", is(person.getPhone())))
+					.andExpect(jsonPath("persons.[0].age", is(medicalRecord.calculateAge())))
+					.andExpect(jsonPath("persons.[0].medications", is(medicalRecord.getMedications())))
+					.andExpect(jsonPath("persons.[0].allergies", is(medicalRecord.getAllergies())))
+
+					.andExpect(jsonPath("persons.[1].firstName", is(personChild.getFirstName())))
+					.andExpect(jsonPath("persons.[1].lastName", is(personChild.getLastName())))
+					.andExpect(jsonPath("persons.[1].phone", is(personChild.getPhone())))
+					.andExpect(jsonPath("persons.[1].age", is(medicalRecordChild.calculateAge())))
+					.andExpect(jsonPath("persons.[1].medications", is(medicalRecordChild.getMedications())))
+					.andExpect(jsonPath("persons.[1].allergies", is(medicalRecordChild.getAllergies())));
+
+			verify(fireStationService, Mockito.times(1)).getFireStation(any(FireStation.class));
+			verify(personService, Mockito.times(1)).getPerson(any(Person.class));
+			verify(medicalRecordService, Mockito.times(numberOfPersons)).getMedicalRecord(any(Person.class));
+		}
+
+		@Test
+		public void FireURLTestIfNoPerson() throws Exception {
+			Mockito.when(personService.getPerson(any(Person.class))).thenReturn(new ArrayList<Person>());
+			mockMvc.perform(get(String.format("/fire?address=%s", fireStation.getAddress()))).andExpect(status().isOk())
+
+					.andExpect(jsonPath("fireStationNumber", is(fireStation.getStation())));
+
+			verify(fireStationService, Mockito.times(1)).getFireStation(any(FireStation.class));
+			verify(personService, Mockito.times(1)).getPerson(any(Person.class));
+			verify(medicalRecordService, Mockito.times(0)).getMedicalRecord(any(Person.class));
+		}
+
+		@Test
+		public void FireURLTestIfNoMedicalRecord() throws Exception {
+			Mockito.when(medicalRecordService.getMedicalRecord(any(Person.class))).thenReturn(new MedicalRecord());
+			mockMvc.perform(get(String.format("/fire?address=%s", fireStation.getAddress()))).andExpect(status().isOk())
+
+					.andExpect(jsonPath("persons.[0].firstName", is(person.getFirstName())))
+					.andExpect(jsonPath("persons.[0].lastName", is(person.getLastName())))
+					.andExpect(jsonPath("persons.[0].phone", is(person.getPhone())))
+					.andExpect(jsonPath("persons.[0].age", is(ageIfNoBirthdate)))
+					.andExpect(jsonPath("persons.[0].medications", nullValue()))
+					.andExpect(jsonPath("persons.[0].allergies", nullValue()))
+
+					.andExpect(jsonPath("persons.[1].firstName", is(personChild.getFirstName())))
+					.andExpect(jsonPath("persons.[1].lastName", is(personChild.getLastName())))
+					.andExpect(jsonPath("persons.[1].phone", is(personChild.getPhone())))
+					.andExpect(jsonPath("persons.[1].age", is(ageIfNoBirthdate)))
+					.andExpect(jsonPath("persons.[1].medications", nullValue()))
+					.andExpect(jsonPath("persons.[1].allergies", nullValue()))
+
+					.andExpect(jsonPath("fireStationNumber", is(fireStation.getStation())));
+
+			verify(fireStationService, Mockito.times(1)).getFireStation(any(FireStation.class));
+			verify(personService, Mockito.times(1)).getPerson(any(Person.class));
+			verify(medicalRecordService, Mockito.times(numberOfPersons)).getMedicalRecord(any(Person.class));
+		}
 	}
 
-	@Test
-	public void ChildAlertURLTestIfNoPerson() throws Exception {
-		Mockito.when(personService.getPerson(any(Person.class))).thenReturn(new ArrayList<Person>());
-		mockMvc.perform(get(String.format("/childAlert?address=%s", personChild.getAddress())))
-				.andExpect(status().isOk());
+	@Nested
+	class FloodStationsURLTests {
 
-		verify(personService, Mockito.times(1)).getPerson(any(Person.class));
-		verify(medicalRecordService, Mockito.times(0)).getMedicalRecord(person);
-		verify(medicalRecordService, Mockito.times(0)).getMedicalRecord(personChild);
+		@Test
+		public void FloodStationsURLTest() throws Exception {
+			mockMvc.perform(get(String.format("/flood/stations?stations=%s", fireStationStationsList)))
+					.andExpect(status().isOk())
+
+					.andExpect(jsonPath("[0].persons.[0].firstName", is(person.getFirstName())))
+					.andExpect(jsonPath("[0].persons.[0].lastName", is(person.getLastName())))
+					.andExpect(jsonPath("[0].persons.[0].phone", is(person.getPhone())))
+					.andExpect(jsonPath("[0].persons.[0].age", is(medicalRecord.calculateAge())))
+					.andExpect(jsonPath("[0].persons.[0].medications", is(medicalRecord.getMedications())))
+					.andExpect(jsonPath("[0].persons.[0].allergies", is(medicalRecord.getAllergies())))
+
+					.andExpect(jsonPath("[0].persons.[1].firstName", is(personChild.getFirstName())))
+					.andExpect(jsonPath("[0].persons.[1].lastName", is(personChild.getLastName())))
+					.andExpect(jsonPath("[0].persons.[1].phone", is(personChild.getPhone())))
+					.andExpect(jsonPath("[0].persons.[1].age", is(medicalRecordChild.calculateAge())))
+					.andExpect(jsonPath("[0].persons.[1].medications", is(medicalRecordChild.getMedications())))
+					.andExpect(jsonPath("[0].persons.[1].allergies", is(medicalRecordChild.getAllergies())))
+
+					.andExpect(jsonPath("[0].fireStationNumber", is(fireStation.getStation())))
+
+					.andExpect(jsonPath("[1].persons.[0].firstName", is(person.getFirstName())))
+					.andExpect(jsonPath("[1].persons.[0].lastName", is(person.getLastName())))
+					.andExpect(jsonPath("[1].persons.[0].phone", is(person.getPhone())))
+					.andExpect(jsonPath("[1].persons.[0].age", is(medicalRecord.calculateAge())))
+					.andExpect(jsonPath("[1].persons.[0].medications", is(medicalRecord.getMedications())))
+					.andExpect(jsonPath("[1].persons.[0].allergies", is(medicalRecord.getAllergies())))
+
+					.andExpect(jsonPath("[1].persons.[1].firstName", is(personChild.getFirstName())))
+					.andExpect(jsonPath("[1].persons.[1].lastName", is(personChild.getLastName())))
+					.andExpect(jsonPath("[1].persons.[1].phone", is(personChild.getPhone())))
+					.andExpect(jsonPath("[1].persons.[1].age", is(medicalRecordChild.calculateAge())))
+					.andExpect(jsonPath("[1].persons.[1].medications", is(medicalRecordChild.getMedications())))
+					.andExpect(jsonPath("[1].persons.[1].allergies", is(medicalRecordChild.getAllergies())))
+
+					.andExpect(jsonPath("[1].fireStationNumber", is(fireStation.getStation())));
+
+			verify(fireStationService, Mockito.times(fireStationStationsList.size()))
+					.getFireStation(any(FireStation.class));
+			verify(personService, Mockito.times(fireStationStationsList.size())).getPerson(any(Person.class));
+			verify(medicalRecordService, Mockito.times(fireStationStationsList.size() * (numberOfPersons)))
+					.getMedicalRecord(any(Person.class));
+		}
+
+		@Test
+		public void FloodStationsURLTestIfNoFireStation() throws Exception {
+			Mockito.when(fireStationService.getFireStation(any(FireStation.class)))
+					.thenReturn(new ArrayList<FireStation>());
+			mockMvc.perform(get(String.format("/flood/stations?stations=%s", fireStationStationsList)))
+					.andExpect(status().isOk());
+
+			verify(fireStationService, Mockito.times(fireStationStationsList.size()))
+					.getFireStation(any(FireStation.class));
+			verify(personService, Mockito.times(0)).getPerson(any(Person.class));
+			verify(medicalRecordService, Mockito.times(0)).getMedicalRecord(any(Person.class));
+		}
+
+		@Test
+		public void FloodStationsURLTestIfNoPerson() throws Exception {
+			Mockito.when(personService.getPerson(any(Person.class))).thenReturn(new ArrayList<Person>());
+			mockMvc.perform(get(String.format("/flood/stations?stations=%s", fireStationStationsList)))
+					.andExpect(status().isOk())
+
+					.andExpect(jsonPath("[0].fireStationNumber", is(fireStation.getStation())))
+
+					.andExpect(jsonPath("[1].fireStationNumber", is(fireStation.getStation())));
+
+			verify(fireStationService, Mockito.times(fireStationStationsList.size()))
+					.getFireStation(any(FireStation.class));
+			verify(personService, Mockito.times(fireStationStationsList.size())).getPerson(any(Person.class));
+			verify(medicalRecordService, Mockito.times(0)).getMedicalRecord(any(Person.class));
+		}
+
+		@Test
+		public void FloodStationsURLTestIfNoMedicalRecord() throws Exception {
+			Mockito.when(medicalRecordService.getMedicalRecord(any(Person.class))).thenReturn(new MedicalRecord());
+			mockMvc.perform(get(String.format("/flood/stations?stations=%s", fireStationStationsList)))
+					.andExpect(status().isOk())
+
+					.andExpect(jsonPath("[0].persons.[0].firstName", is(person.getFirstName())))
+					.andExpect(jsonPath("[0].persons.[0].lastName", is(person.getLastName())))
+					.andExpect(jsonPath("[0].persons.[0].phone", is(person.getPhone())))
+					.andExpect(jsonPath("[0].persons.[0].age", is(ageIfNoBirthdate)))
+					.andExpect(jsonPath("[0].persons.[0].medications", nullValue()))
+					.andExpect(jsonPath("[0].persons.[0].allergies", nullValue()))
+
+					.andExpect(jsonPath("[0].persons.[1].firstName", is(personChild.getFirstName())))
+					.andExpect(jsonPath("[0].persons.[1].lastName", is(personChild.getLastName())))
+					.andExpect(jsonPath("[0].persons.[1].phone", is(personChild.getPhone())))
+					.andExpect(jsonPath("[0].persons.[1].age", is(ageIfNoBirthdate)))
+					.andExpect(jsonPath("[0].persons.[1].medications", nullValue()))
+					.andExpect(jsonPath("[0].persons.[1].allergies", nullValue()))
+
+					.andExpect(jsonPath("[0].fireStationNumber", is(fireStation.getStation())))
+
+					.andExpect(jsonPath("[1].persons.[0].firstName", is(person.getFirstName())))
+					.andExpect(jsonPath("[1].persons.[0].lastName", is(person.getLastName())))
+					.andExpect(jsonPath("[1].persons.[0].phone", is(person.getPhone())))
+					.andExpect(jsonPath("[1].persons.[0].age", is(ageIfNoBirthdate)))
+					.andExpect(jsonPath("[1].persons.[0].medications", nullValue()))
+					.andExpect(jsonPath("[1].persons.[0].allergies", nullValue()))
+
+					.andExpect(jsonPath("[1].persons.[1].firstName", is(personChild.getFirstName())))
+					.andExpect(jsonPath("[1].persons.[1].lastName", is(personChild.getLastName())))
+					.andExpect(jsonPath("[1].persons.[1].phone", is(personChild.getPhone())))
+					.andExpect(jsonPath("[1].persons.[1].age", is(ageIfNoBirthdate)))
+					.andExpect(jsonPath("[1].persons.[1].medications", nullValue()))
+					.andExpect(jsonPath("[1].persons.[1].allergies", nullValue()))
+
+					.andExpect(jsonPath("[1].fireStationNumber", is(fireStation.getStation())));
+
+			verify(fireStationService, Mockito.times(fireStationStationsList.size()))
+					.getFireStation(any(FireStation.class));
+			verify(personService, Mockito.times(fireStationStationsList.size())).getPerson(any(Person.class));
+			verify(medicalRecordService, Mockito.times(fireStationStationsList.size() * (numberOfPersons)))
+					.getMedicalRecord(any(Person.class));
+		}
 	}
 
-	@Test
-	public void ChildAlertURLTestIfNoMedicalRecord() throws Exception {
-		Mockito.when(medicalRecordService.getMedicalRecord(any(Person.class))).thenReturn(new MedicalRecord());
-		mockMvc.perform(get(String.format("/childAlert?address=%s", personChild.getAddress())))
-				.andExpect(status().isOk())
+	@Nested
+	class PersonInfoURLTests {
 
-				.andExpect(jsonPath("adults.[0].firstName", is(person.getFirstName())))
-				.andExpect(jsonPath("adults.[0].lastName", is(person.getLastName())))
-				.andExpect(jsonPath("adults.[0].address", is(person.getAddress())))
-				.andExpect(jsonPath("adults.[0].city", is(person.getCity())))
-				.andExpect(jsonPath("adults.[0].zip", is(person.getZip())))
-				.andExpect(jsonPath("adults.[0].phone", is(person.getPhone())))
+		@Test
+		public void PersonInfoURLTest() throws Exception {
+			mockMvc.perform(get(
+					String.format("/personInfo?firstName=%s&lastName=%s", person.getFirstName(), person.getLastName())))
+					.andExpect(status().isOk())
 
-				.andExpect(jsonPath("adults.[1].firstName", is(personChild.getFirstName())))
-				.andExpect(jsonPath("adults.[1].lastName", is(personChild.getLastName())))
-				.andExpect(jsonPath("adults.[1].address", is(personChild.getAddress())))
-				.andExpect(jsonPath("adults.[1].city", is(personChild.getCity())))
-				.andExpect(jsonPath("adults.[1].zip", is(personChild.getZip())))
-				.andExpect(jsonPath("adults.[1].phone", is(personChild.getPhone())));
+					.andExpect(jsonPath("[0].firstName", is(person.getFirstName())))
+					.andExpect(jsonPath("[0].lastName", is(person.getLastName())))
+					.andExpect(jsonPath("[0].age", is(medicalRecord.calculateAge())))
+					.andExpect(jsonPath("[0].address", is(person.getAddress())))
+					.andExpect(jsonPath("[0].medications", is(medicalRecord.getMedications())))
+					.andExpect(jsonPath("[0].allergies", is(medicalRecord.getAllergies())))
 
-		verify(personService, Mockito.times(1)).getPerson(any(Person.class));
-		verify(medicalRecordService, Mockito.times(1)).getMedicalRecord(person);
-		verify(medicalRecordService, Mockito.times(1)).getMedicalRecord(personChild);
+					.andExpect(jsonPath("[1].firstName", is(personChild.getFirstName())))
+					.andExpect(jsonPath("[1].lastName", is(personChild.getLastName())))
+					.andExpect(jsonPath("[1].age", is(medicalRecordChild.calculateAge())))
+					.andExpect(jsonPath("[1].address", is(personChild.getAddress())))
+					.andExpect(jsonPath("[1].medications", is(medicalRecordChild.getMedications())))
+					.andExpect(jsonPath("[1].allergies", is(medicalRecordChild.getAllergies())));
+
+			verify(personService, Mockito.times(1)).getPerson(any(Person.class));
+			verify(medicalRecordService, Mockito.times(numberOfPersons)).getMedicalRecord(any(Person.class));
+		}
+
+		@Test
+		public void PersonInfoURLTestIfNoPerson() throws Exception {
+			Mockito.when(personService.getPerson(any(Person.class))).thenReturn(new ArrayList<Person>());
+			mockMvc.perform(get(
+					String.format("/personInfo?firstName=%s&lastName=%s", person.getFirstName(), person.getLastName())))
+					.andExpect(status().isOk());
+
+			verify(personService, Mockito.times(1)).getPerson(any(Person.class));
+			verify(medicalRecordService, Mockito.times(0)).getMedicalRecord(any(Person.class));
+		}
+
+		@Test
+		public void PersonInfoURLTestIfNoMedicalRecord() throws Exception {
+			Mockito.when(medicalRecordService.getMedicalRecord(any(Person.class))).thenReturn(new MedicalRecord());
+			mockMvc.perform(get(
+					String.format("/personInfo?firstName=%s&lastName=%s", person.getFirstName(), person.getLastName())))
+					.andExpect(status().isOk())
+
+					.andExpect(jsonPath("[0].firstName", is(person.getFirstName())))
+					.andExpect(jsonPath("[0].lastName", is(person.getLastName())))
+					.andExpect(jsonPath("[0].age", is(ageIfNoBirthdate)))
+					.andExpect(jsonPath("[0].address", is(person.getAddress())))
+					.andExpect(jsonPath("[0].medications", nullValue()))
+					.andExpect(jsonPath("[0].allergies", nullValue()));
+
+			verify(personService, Mockito.times(1)).getPerson(any(Person.class));
+			verify(medicalRecordService, Mockito.times(numberOfPersons)).getMedicalRecord(any(Person.class));
+		}
 	}
 
-	@Test
-	public void ChildAlertURLTestIfNoBirthdate() throws Exception {
-		Mockito.when(medicalRecordService.getMedicalRecord(personChild)).thenReturn(medicalRecordChildOnlyName);
-		mockMvc.perform(get(String.format("/childAlert?address=%s", personChild.getAddress())))
-				.andExpect(status().isOk())
+	@Nested
+	class CommunityEmailURLTests {
 
-				.andExpect(jsonPath("adults.[0].firstName", is(person.getFirstName())))
-				.andExpect(jsonPath("adults.[0].lastName", is(person.getLastName())))
-				.andExpect(jsonPath("adults.[0].address", is(person.getAddress())))
-				.andExpect(jsonPath("adults.[0].city", is(person.getCity())))
-				.andExpect(jsonPath("adults.[0].zip", is(person.getZip())))
-				.andExpect(jsonPath("adults.[0].phone", is(person.getPhone())))
+		@Test
+		public void CommunityEmailURLTest() throws Exception {
+			mockMvc.perform(get(String.format("/communityEmail?city=%s", person.getCity()))).andExpect(status().isOk())
 
-				.andExpect(jsonPath("adults.[1].firstName", is(personChild.getFirstName())))
-				.andExpect(jsonPath("adults.[1].lastName", is(personChild.getLastName())))
-				.andExpect(jsonPath("adults.[1].address", is(personChild.getAddress())))
-				.andExpect(jsonPath("adults.[1].city", is(personChild.getCity())))
-				.andExpect(jsonPath("adults.[1].zip", is(personChild.getZip())))
-				.andExpect(jsonPath("adults.[1].phone", is(personChild.getPhone())));
+					.andExpect(jsonPath("[0]", is(person.getEmail())))
 
-		verify(personService, Mockito.times(1)).getPerson(any(Person.class));
-		verify(medicalRecordService, Mockito.times(1)).getMedicalRecord(person);
-		verify(medicalRecordService, Mockito.times(1)).getMedicalRecord(personChild);
-	}
+					.andExpect(jsonPath("[1]", is(personChild.getEmail())));
 
-	/**
-	 * Read - Get the phone numbers of every person corresponding to the station
-	 * number
-	 * 
-	 * @param - A String corresponding to the station number
-	 * @return - A List<String> containing phone numbers
-	 */
+			verify(personService, Mockito.times(1)).getPerson(any(Person.class));
+		}
 
-	@Test
-	public void PhoneAlertURLTest() throws Exception {
-		mockMvc.perform(get(String.format("/phoneAlert?firestation=%s", fireStation.getStation())))
-				.andExpect(status().isOk())
+		@Test
+		public void CommunityEmailURLTestIfNoPerson() throws Exception {
+			Mockito.when(personService.getPerson(any(Person.class))).thenReturn(new ArrayList<Person>());
+			mockMvc.perform(get(String.format("/communityEmail?city=%s", person.getCity()))).andExpect(status().isOk());
 
-				.andExpect(jsonPath("[0]", is(person.getPhone())))
+			verify(personService, Mockito.times(1)).getPerson(any(Person.class));
+		}
 
-				.andExpect(jsonPath("[1]", is(personChild.getPhone())));
+		@Test
+		public void CommunityEmailURLTestIfNoEmail() throws Exception {
+			Mockito.when(personService.getPerson(any(Person.class))).thenReturn(
+					new ArrayList<Person>(Arrays.asList(new Person(person.getFirstName(), person.getLastName()))));
+			mockMvc.perform(get(String.format("/communityEmail?city=%s", person.getCity()))).andExpect(status().isOk());
 
-		verify(fireStationService, Mockito.times(1)).getFireStation(any(FireStation.class));
-		verify(personService, Mockito.times(numberOfFireStationByStationNumber)).getPerson(any(Person.class));
-	}
-
-	@Test
-	public void PhoneAlertURLTestIfNoFireStation() throws Exception {
-		Mockito.when(fireStationService.getFireStation(any(FireStation.class)))
-				.thenReturn(new ArrayList<FireStation>());
-		mockMvc.perform(get(String.format("/phoneAlert?firestation=%s", fireStation.getStation())))
-				.andExpect(status().isOk());
-
-		verify(fireStationService, Mockito.times(1)).getFireStation(any(FireStation.class));
-		verify(personService, Mockito.times(0)).getPerson(any(Person.class));
-	}
-
-	@Test
-	public void PhoneAlertURLTestIfNoPerson() throws Exception {
-		Mockito.when(personService.getPerson(any(Person.class))).thenReturn(new ArrayList<Person>());
-		mockMvc.perform(get(String.format("/phoneAlert?firestation=%s", fireStation.getStation())))
-				.andExpect(status().isOk());
-
-		verify(fireStationService, Mockito.times(1)).getFireStation(any(FireStation.class));
-		verify(personService, Mockito.times(numberOfFireStationByStationNumber)).getPerson(any(Person.class));
-	}
-
-	@Test
-	public void PhoneAlertURLTestIfNoPhone() throws Exception {
-		Mockito.when(personService.getPerson(any(Person.class)))
-				.thenReturn(new ArrayList<Person>(Arrays.asList(new Person())));
-		mockMvc.perform(get(String.format("/phoneAlert?firestation=%s", fireStation.getStation())))
-				.andExpect(status().isOk());
-
-		verify(fireStationService, Mockito.times(1)).getFireStation(any(FireStation.class));
-		verify(personService, Mockito.times(numberOfFireStationByStationNumber)).getPerson(any(Person.class));
-	}
-
-	/**
-	 * Read - Get info on residents of an address and the number of corresponding
-	 * fire station
-	 * 
-	 * @param - A String corresponding to the address
-	 * @return - A FireURLInfo object
-	 */
-
-	@Test
-	public void FireURLTest() throws Exception {
-		mockMvc.perform(get(String.format("/fire?address=%s", fireStation.getAddress()))).andExpect(status().isOk())
-
-				.andExpect(jsonPath("persons.[0].firstName", is(person.getFirstName())))
-				.andExpect(jsonPath("persons.[0].lastName", is(person.getLastName())))
-				.andExpect(jsonPath("persons.[0].phone", is(person.getPhone())))
-				.andExpect(jsonPath("persons.[0].age", is(medicalRecord.getAge())))
-				.andExpect(jsonPath("persons.[0].medications", is(medicalRecord.getMedications())))
-				.andExpect(jsonPath("persons.[0].allergies", is(medicalRecord.getAllergies())))
-
-				.andExpect(jsonPath("persons.[1].firstName", is(personChild.getFirstName())))
-				.andExpect(jsonPath("persons.[1].lastName", is(personChild.getLastName())))
-				.andExpect(jsonPath("persons.[1].phone", is(personChild.getPhone())))
-				.andExpect(jsonPath("persons.[1].age", is(medicalRecordChild.getAge())))
-				.andExpect(jsonPath("persons.[1].medications", is(medicalRecordChild.getMedications())))
-				.andExpect(jsonPath("persons.[1].allergies", is(medicalRecordChild.getAllergies())))
-
-				.andExpect(jsonPath("fireStationNumber", is(fireStation.getStation())));
-
-		verify(fireStationService, Mockito.times(1)).getFireStation(any(FireStation.class));
-		verify(personService, Mockito.times(1)).getPerson(any(Person.class));
-		verify(medicalRecordService, Mockito.times(numberOfPersons)).getMedicalRecord(any(Person.class));
-	}
-
-	@Test
-	public void FireURLTestIfNoFireStation() throws Exception {
-		Mockito.when(fireStationService.getFireStation(any(FireStation.class)))
-				.thenReturn(new ArrayList<FireStation>());
-		mockMvc.perform(get(String.format("/fire?address=%s", fireStation.getAddress()))).andExpect(status().isOk())
-
-				.andExpect(jsonPath("persons.[0].firstName", is(person.getFirstName())))
-				.andExpect(jsonPath("persons.[0].lastName", is(person.getLastName())))
-				.andExpect(jsonPath("persons.[0].phone", is(person.getPhone())))
-				.andExpect(jsonPath("persons.[0].age", is(medicalRecord.getAge())))
-				.andExpect(jsonPath("persons.[0].medications", is(medicalRecord.getMedications())))
-				.andExpect(jsonPath("persons.[0].allergies", is(medicalRecord.getAllergies())))
-
-				.andExpect(jsonPath("persons.[1].firstName", is(personChild.getFirstName())))
-				.andExpect(jsonPath("persons.[1].lastName", is(personChild.getLastName())))
-				.andExpect(jsonPath("persons.[1].phone", is(personChild.getPhone())))
-				.andExpect(jsonPath("persons.[1].age", is(medicalRecordChild.getAge())))
-				.andExpect(jsonPath("persons.[1].medications", is(medicalRecordChild.getMedications())))
-				.andExpect(jsonPath("persons.[1].allergies", is(medicalRecordChild.getAllergies())));
-
-		verify(fireStationService, Mockito.times(1)).getFireStation(any(FireStation.class));
-		verify(personService, Mockito.times(1)).getPerson(any(Person.class));
-		verify(medicalRecordService, Mockito.times(numberOfPersons)).getMedicalRecord(any(Person.class));
-	}
-
-	@Test
-	public void FireURLTestIfNoPerson() throws Exception {
-		Mockito.when(personService.getPerson(any(Person.class))).thenReturn(new ArrayList<Person>());
-		mockMvc.perform(get(String.format("/fire?address=%s", fireStation.getAddress()))).andExpect(status().isOk())
-
-				.andExpect(jsonPath("fireStationNumber", is(fireStation.getStation())));
-
-		verify(fireStationService, Mockito.times(1)).getFireStation(any(FireStation.class));
-		verify(personService, Mockito.times(1)).getPerson(any(Person.class));
-		verify(medicalRecordService, Mockito.times(0)).getMedicalRecord(any(Person.class));
-	}
-
-	@Test
-	public void FireURLTestIfNoMedicalRecord() throws Exception {
-		Mockito.when(medicalRecordService.getMedicalRecord(any(Person.class))).thenReturn(new MedicalRecord());
-		mockMvc.perform(get(String.format("/fire?address=%s", fireStation.getAddress()))).andExpect(status().isOk())
-
-				.andExpect(jsonPath("persons.[0].firstName", is(person.getFirstName())))
-				.andExpect(jsonPath("persons.[0].lastName", is(person.getLastName())))
-				.andExpect(jsonPath("persons.[0].phone", is(person.getPhone())))
-				.andExpect(jsonPath("persons.[0].age", is(ageIfNoBirthdate)))
-				.andExpect(jsonPath("persons.[0].medications", nullValue()))
-				.andExpect(jsonPath("persons.[0].allergies", nullValue()))
-
-				.andExpect(jsonPath("persons.[1].firstName", is(personChild.getFirstName())))
-				.andExpect(jsonPath("persons.[1].lastName", is(personChild.getLastName())))
-				.andExpect(jsonPath("persons.[1].phone", is(personChild.getPhone())))
-				.andExpect(jsonPath("persons.[1].age", is(ageIfNoBirthdate)))
-				.andExpect(jsonPath("persons.[1].medications", nullValue()))
-				.andExpect(jsonPath("persons.[1].allergies", nullValue()))
-
-				.andExpect(jsonPath("fireStationNumber", is(fireStation.getStation())));
-
-		verify(fireStationService, Mockito.times(1)).getFireStation(any(FireStation.class));
-		verify(personService, Mockito.times(1)).getPerson(any(Person.class));
-		verify(medicalRecordService, Mockito.times(numberOfPersons)).getMedicalRecord(any(Person.class));
-	}
-
-	/**
-	 * Read - Get a list of residents corresponding to a list of fire stations
-	 * 
-	 * @param - A List<String> corresponding to the station numbers
-	 * @return - A FloodStationsURLInfo object
-	 */
-
-	@Test
-	public void FloodStationsURLTest() throws Exception {
-		mockMvc.perform(get(String.format("/flood/stations?stations=%s", fireStationStationsList)))
-				.andExpect(status().isOk())
-
-				.andExpect(jsonPath("[0].persons.[0].firstName", is(person.getFirstName())))
-				.andExpect(jsonPath("[0].persons.[0].lastName", is(person.getLastName())))
-				.andExpect(jsonPath("[0].persons.[0].phone", is(person.getPhone())))
-				.andExpect(jsonPath("[0].persons.[0].age", is(medicalRecord.getAge())))
-				.andExpect(jsonPath("[0].persons.[0].medications", is(medicalRecord.getMedications())))
-				.andExpect(jsonPath("[0].persons.[0].allergies", is(medicalRecord.getAllergies())))
-
-				.andExpect(jsonPath("[0].persons.[1].firstName", is(personChild.getFirstName())))
-				.andExpect(jsonPath("[0].persons.[1].lastName", is(personChild.getLastName())))
-				.andExpect(jsonPath("[0].persons.[1].phone", is(personChild.getPhone())))
-				.andExpect(jsonPath("[0].persons.[1].age", is(medicalRecordChild.getAge())))
-				.andExpect(jsonPath("[0].persons.[1].medications", is(medicalRecordChild.getMedications())))
-				.andExpect(jsonPath("[0].persons.[1].allergies", is(medicalRecordChild.getAllergies())))
-
-				.andExpect(jsonPath("[0].fireStationNumber", is(fireStation.getStation())))
-
-				.andExpect(jsonPath("[1].persons.[0].firstName", is(person.getFirstName())))
-				.andExpect(jsonPath("[1].persons.[0].lastName", is(person.getLastName())))
-				.andExpect(jsonPath("[1].persons.[0].phone", is(person.getPhone())))
-				.andExpect(jsonPath("[1].persons.[0].age", is(medicalRecord.getAge())))
-				.andExpect(jsonPath("[1].persons.[0].medications", is(medicalRecord.getMedications())))
-				.andExpect(jsonPath("[1].persons.[0].allergies", is(medicalRecord.getAllergies())))
-
-				.andExpect(jsonPath("[1].persons.[1].firstName", is(personChild.getFirstName())))
-				.andExpect(jsonPath("[1].persons.[1].lastName", is(personChild.getLastName())))
-				.andExpect(jsonPath("[1].persons.[1].phone", is(personChild.getPhone())))
-				.andExpect(jsonPath("[1].persons.[1].age", is(medicalRecordChild.getAge())))
-				.andExpect(jsonPath("[1].persons.[1].medications", is(medicalRecordChild.getMedications())))
-				.andExpect(jsonPath("[1].persons.[1].allergies", is(medicalRecordChild.getAllergies())))
-
-				.andExpect(jsonPath("[1].fireStationNumber", is(fireStation.getStation())));
-
-		verify(fireStationService, Mockito.times(fireStationStationsList.size()))
-				.getFireStation(any(FireStation.class));
-		verify(personService, Mockito.times(fireStationStationsList.size())).getPerson(any(Person.class));
-		verify(medicalRecordService, Mockito.times(fireStationStationsList.size() * (numberOfPersons)))
-				.getMedicalRecord(any(Person.class));
-	}
-
-	@Test
-	public void FloodStationsURLTestIfNoFireStation() throws Exception {
-		Mockito.when(fireStationService.getFireStation(any(FireStation.class)))
-				.thenReturn(new ArrayList<FireStation>());
-		mockMvc.perform(get(String.format("/flood/stations?stations=%s", fireStationStationsList)))
-				.andExpect(status().isOk());
-
-		verify(fireStationService, Mockito.times(fireStationStationsList.size()))
-				.getFireStation(any(FireStation.class));
-		verify(personService, Mockito.times(0)).getPerson(any(Person.class));
-		verify(medicalRecordService, Mockito.times(0)).getMedicalRecord(any(Person.class));
-	}
-
-	@Test
-	public void FloodStationsURLTestIfNoPerson() throws Exception {
-		Mockito.when(personService.getPerson(any(Person.class))).thenReturn(new ArrayList<Person>());
-		mockMvc.perform(get(String.format("/flood/stations?stations=%s", fireStationStationsList)))
-				.andExpect(status().isOk())
-
-				.andExpect(jsonPath("[0].fireStationNumber", is(fireStation.getStation())))
-
-				.andExpect(jsonPath("[1].fireStationNumber", is(fireStation.getStation())));
-
-		verify(fireStationService, Mockito.times(fireStationStationsList.size()))
-				.getFireStation(any(FireStation.class));
-		verify(personService, Mockito.times(fireStationStationsList.size())).getPerson(any(Person.class));
-		verify(medicalRecordService, Mockito.times(0)).getMedicalRecord(any(Person.class));
-	}
-
-	@Test
-	public void FloodStationsURLTestIfNoMedicalRecord() throws Exception {
-		Mockito.when(medicalRecordService.getMedicalRecord(any(Person.class))).thenReturn(new MedicalRecord());
-		mockMvc.perform(get(String.format("/flood/stations?stations=%s", fireStationStationsList)))
-				.andExpect(status().isOk())
-
-				.andExpect(jsonPath("[0].persons.[0].firstName", is(person.getFirstName())))
-				.andExpect(jsonPath("[0].persons.[0].lastName", is(person.getLastName())))
-				.andExpect(jsonPath("[0].persons.[0].phone", is(person.getPhone())))
-				.andExpect(jsonPath("[0].persons.[0].age", is(ageIfNoBirthdate)))
-				.andExpect(jsonPath("[0].persons.[0].medications", nullValue()))
-				.andExpect(jsonPath("[0].persons.[0].allergies", nullValue()))
-
-				.andExpect(jsonPath("[0].persons.[1].firstName", is(personChild.getFirstName())))
-				.andExpect(jsonPath("[0].persons.[1].lastName", is(personChild.getLastName())))
-				.andExpect(jsonPath("[0].persons.[1].phone", is(personChild.getPhone())))
-				.andExpect(jsonPath("[0].persons.[1].age", is(ageIfNoBirthdate)))
-				.andExpect(jsonPath("[0].persons.[1].medications", nullValue()))
-				.andExpect(jsonPath("[0].persons.[1].allergies", nullValue()))
-
-				.andExpect(jsonPath("[0].fireStationNumber", is(fireStation.getStation())))
-
-				.andExpect(jsonPath("[1].persons.[0].firstName", is(person.getFirstName())))
-				.andExpect(jsonPath("[1].persons.[0].lastName", is(person.getLastName())))
-				.andExpect(jsonPath("[1].persons.[0].phone", is(person.getPhone())))
-				.andExpect(jsonPath("[1].persons.[0].age", is(ageIfNoBirthdate)))
-				.andExpect(jsonPath("[1].persons.[0].medications", nullValue()))
-				.andExpect(jsonPath("[1].persons.[0].allergies", nullValue()))
-
-				.andExpect(jsonPath("[1].persons.[1].firstName", is(personChild.getFirstName())))
-				.andExpect(jsonPath("[1].persons.[1].lastName", is(personChild.getLastName())))
-				.andExpect(jsonPath("[1].persons.[1].phone", is(personChild.getPhone())))
-				.andExpect(jsonPath("[1].persons.[1].age", is(ageIfNoBirthdate)))
-				.andExpect(jsonPath("[1].persons.[1].medications", nullValue()))
-				.andExpect(jsonPath("[1].persons.[1].allergies", nullValue()))
-
-				.andExpect(jsonPath("[1].fireStationNumber", is(fireStation.getStation())));
-
-		verify(fireStationService, Mockito.times(fireStationStationsList.size()))
-				.getFireStation(any(FireStation.class));
-		verify(personService, Mockito.times(fireStationStationsList.size())).getPerson(any(Person.class));
-		verify(medicalRecordService, Mockito.times(fireStationStationsList.size() * (numberOfPersons)))
-				.getMedicalRecord(any(Person.class));
-	}
-
-	/**
-	 * Read - Get info on a person
-	 * 
-	 * @param - Two String corresponding to the first and last name of the person
-	 * @return - A List<personInfoURLPerson> object
-	 */
-
-	@Test
-	public void PersonInfoURLTest() throws Exception {
-		mockMvc.perform(
-				get(String.format("/personInfo?firstName=%s&lastName=%s", person.getFirstName(), person.getLastName())))
-				.andExpect(status().isOk())
-
-				.andExpect(jsonPath("[0].firstName", is(person.getFirstName())))
-				.andExpect(jsonPath("[0].lastName", is(person.getLastName())))
-				.andExpect(jsonPath("[0].age", is(medicalRecord.getAge())))
-				.andExpect(jsonPath("[0].address", is(person.getAddress())))
-				.andExpect(jsonPath("[0].medications", is(medicalRecord.getMedications())))
-				.andExpect(jsonPath("[0].allergies", is(medicalRecord.getAllergies())))
-
-				.andExpect(jsonPath("[1].firstName", is(personChild.getFirstName())))
-				.andExpect(jsonPath("[1].lastName", is(personChild.getLastName())))
-				.andExpect(jsonPath("[1].age", is(medicalRecordChild.getAge())))
-				.andExpect(jsonPath("[1].address", is(personChild.getAddress())))
-				.andExpect(jsonPath("[1].medications", is(medicalRecordChild.getMedications())))
-				.andExpect(jsonPath("[1].allergies", is(medicalRecordChild.getAllergies())));
-
-		verify(personService, Mockito.times(1)).getPerson(any(Person.class));
-		verify(medicalRecordService, Mockito.times(numberOfPersons)).getMedicalRecord(any(Person.class));
-	}
-
-	@Test
-	public void PersonInfoURLTestIfNoPerson() throws Exception {
-		Mockito.when(personService.getPerson(any(Person.class))).thenReturn(new ArrayList<Person>());
-		mockMvc.perform(
-				get(String.format("/personInfo?firstName=%s&lastName=%s", person.getFirstName(), person.getLastName())))
-				.andExpect(status().isOk());
-
-		verify(personService, Mockito.times(1)).getPerson(any(Person.class));
-		verify(medicalRecordService, Mockito.times(0)).getMedicalRecord(any(Person.class));
-	}
-
-	@Test
-	public void PersonInfoURLTestIfNoMedicalRecord() throws Exception {
-		Mockito.when(medicalRecordService.getMedicalRecord(any(Person.class))).thenReturn(new MedicalRecord());
-		mockMvc.perform(
-				get(String.format("/personInfo?firstName=%s&lastName=%s", person.getFirstName(), person.getLastName())))
-				.andExpect(status().isOk())
-
-				.andExpect(jsonPath("[0].firstName", is(person.getFirstName())))
-				.andExpect(jsonPath("[0].lastName", is(person.getLastName())))
-				.andExpect(jsonPath("[0].age", is(ageIfNoBirthdate)))
-				.andExpect(jsonPath("[0].address", is(person.getAddress())))
-				.andExpect(jsonPath("[0].medications", nullValue())).andExpect(jsonPath("[0].allergies", nullValue()));
-
-		verify(personService, Mockito.times(1)).getPerson(any(Person.class));
-		verify(medicalRecordService, Mockito.times(numberOfPersons)).getMedicalRecord(any(Person.class));
-	}
-
-	/**
-	 * Read - Get emails of all persons in a city
-	 * 
-	 * @param - A String corresponding to the city
-	 * @return - A List<String> object
-	 */
-
-	@Test
-	public void CommunityEmailURLTest() throws Exception {
-		mockMvc.perform(get(String.format("/communityEmail?city=%s", person.getCity()))).andExpect(status().isOk())
-
-				.andExpect(jsonPath("[0]", is(person.getEmail())))
-
-				.andExpect(jsonPath("[1]", is(personChild.getEmail())));
-
-		verify(personService, Mockito.times(1)).getPerson(any(Person.class));
-	}
-
-	@Test
-	public void CommunityEmailURLTestIfNoPerson() throws Exception {
-		Mockito.when(personService.getPerson(any(Person.class))).thenReturn(new ArrayList<Person>());
-		mockMvc.perform(get(String.format("/communityEmail?city=%s", person.getCity()))).andExpect(status().isOk());
-
-		verify(personService, Mockito.times(1)).getPerson(any(Person.class));
-	}
-
-	@Test
-	public void CommunityEmailURLTestIfNoEmail() throws Exception {
-		Mockito.when(personService.getPerson(any(Person.class))).thenReturn(
-				new ArrayList<Person>(Arrays.asList(new Person(person.getFirstName(), person.getLastName()))));
-		mockMvc.perform(get(String.format("/communityEmail?city=%s", person.getCity()))).andExpect(status().isOk());
-
-		verify(personService, Mockito.times(1)).getPerson(any(Person.class));
+			verify(personService, Mockito.times(1)).getPerson(any(Person.class));
+		}
 	}
 }
