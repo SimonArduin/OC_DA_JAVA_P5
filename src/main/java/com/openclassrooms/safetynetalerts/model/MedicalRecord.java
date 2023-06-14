@@ -98,9 +98,9 @@ public class MedicalRecord {
 
 	@Override
 	public boolean equals(Object object) {
-		if (!object.getClass().equals(MedicalRecord.class))
-			return false;
-		if (((MedicalRecord) object) != null) {
+		if (object != null) {
+			if (!object.getClass().equals(MedicalRecord.class))
+				return false;
 			try {
 				if (this.isEmpty()) {
 					if (((MedicalRecord) object).isEmpty())

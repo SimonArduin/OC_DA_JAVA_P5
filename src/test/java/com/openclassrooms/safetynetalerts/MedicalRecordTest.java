@@ -70,6 +70,16 @@ public class MedicalRecordTest {
 		}
 
 		@Test
+		void equalsTestIfNotMedicalRecord() {
+			assertFalse(medicalRecord.equals(new Object()));
+		}
+
+		@Test
+		void equalsTestIfEmpty() {
+			assertFalse(medicalRecord.equals(null));
+		}
+
+		@Test
 		void equalsTestIfOtherMedicalRecord() {
 			assertFalse(medicalRecord.equals(medicalRecordOther));
 		}

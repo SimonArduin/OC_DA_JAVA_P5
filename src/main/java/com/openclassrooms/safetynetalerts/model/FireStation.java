@@ -47,9 +47,9 @@ public class FireStation {
 
 	@Override
 	public boolean equals(Object object) {
-		if (!object.getClass().equals(FireStation.class))
-			return false;
-		if (((FireStation) object) != null) {
+		if (object != null) {
+			if (!object.getClass().equals(FireStation.class))
+				return false;
 			try {
 				if (this.isEmpty()) {
 					if (((FireStation) object).isEmpty())

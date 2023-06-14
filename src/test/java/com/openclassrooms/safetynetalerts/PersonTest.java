@@ -59,6 +59,16 @@ public class PersonTest {
 		}
 
 		@Test
+		void equalsTestIfNotPerson() {
+			assertFalse(person.equals(new Object()));
+		}
+
+		@Test
+		void equalsTestIfEmpty() {
+			assertFalse(person.equals(null));
+		}
+
+		@Test
 		void equalsTestIfOtherPerson() {
 			assertFalse(person.equals(personOther));
 		}

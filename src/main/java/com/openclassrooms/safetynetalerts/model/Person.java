@@ -104,9 +104,9 @@ public class Person {
 
 	@Override
 	public boolean equals(Object object) {
-		if (!object.getClass().equals(Person.class))
-			return false;
-		if (((Person) object) != null) {
+		if (object != null) {
+			if (!object.getClass().equals(Person.class))
+				return false;
 			try {
 				if (this.isEmpty()) {
 					if (((Person) object).isEmpty())

@@ -58,6 +58,16 @@ public class FireStationTest {
 		}
 
 		@Test
+		void equalsTestIfNotFireStation() {
+			assertFalse(fireStation.equals(new Object()));
+		}
+
+		@Test
+		void equalsTestIfEmpty() {
+			assertFalse(fireStation.equals(null));
+		}
+
+		@Test
 		void equalsTestIfOtherFireStation() {
 			assertFalse(fireStation.equals(fireStationOther));
 		}
