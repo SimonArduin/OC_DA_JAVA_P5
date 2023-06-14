@@ -29,11 +29,13 @@ public class UrlController {
 	@Autowired
 	MedicalRecordService medicalRecordService;
 
-	/*
-	 * Collects all the informations to be returned at
-	 * fireStation?stationNumber=<station_number>
-	 */
 	public class FireStationURLInfo {
+
+		/*
+		 * Collects all the informations to be returned at
+		 * fireStation?stationNumber=<station_number>
+		 */
+
 		private List<FireStationURLPerson> persons = new ArrayList<FireStationURLPerson>();
 		private Integer numberOfAdults = 0;
 		private Integer numberOfChildren = 0;
@@ -75,13 +77,13 @@ public class UrlController {
 		}
 	}
 
-	/*
-	 * Collects the informations about a specific person to be returned at
-	 * fireStation?stationNumber=<station_number>
-	 */
 	public class FireStationURLPerson {
 
-		// return first name, last name, address and phone number of the resident
+		/*
+		 * Collects the informations about a specific person to be returned at
+		 * fireStation?stationNumber=<station_number>
+		 */
+
 		private String firstName;
 		private String lastName;
 		private String address;
@@ -128,10 +130,12 @@ public class UrlController {
 		}
 	}
 
-	/*
-	 * Collects all the informations to be returned at childAlert?address=<address>
-	 */
 	public class ChildAlertURLInfo {
+
+		/*
+		 * Collects all the informations to be returned at childAlert?address=<address>
+		 */
+
 		private List<ChildAlertURLChild> children = new ArrayList<ChildAlertURLChild>();
 		private List<Person> adults = new ArrayList<Person>();
 
@@ -160,11 +164,13 @@ public class UrlController {
 		}
 	}
 
-	/*
-	 * Collects the informations about a specific child to be returned at
-	 * childAlert?address=<address>
-	 */
 	public class ChildAlertURLChild {
+
+		/*
+		 * Collects the informations about a specific child to be returned at
+		 * childAlert?address=<address>
+		 */
+
 		private String firstName;
 		private String lastName;
 		private int age;
@@ -201,10 +207,12 @@ public class UrlController {
 		}
 	}
 
-	/*
-	 * Collects all the informations to be returned at fire?address=<address>
-	 */
 	public class FireURLInfo {
+
+		/*
+		 * Collects all the informations to be returned at fire?address=<address>
+		 */
+
 		private List<FireURLPerson> persons = new ArrayList<FireURLPerson>();
 		private String fireStationNumber;
 
@@ -220,10 +228,6 @@ public class UrlController {
 			this.persons.add(new FireURLPerson(person, medicalRecord));
 		}
 
-		public void addPerson(Person person) {
-			this.persons.add(new FireURLPerson(person, new MedicalRecord()));
-		}
-
 		public String getFireStationNumber() {
 			return fireStationNumber;
 		}
@@ -233,13 +237,13 @@ public class UrlController {
 		}
 	}
 
-	/*
-	 * Collects the informations about a specific person to be returned at
-	 * fireStation?stationNumber=<station_number>
-	 */
 	public class FireURLPerson {
 
-		// return first name, last name, address and phone number of the resident
+		/*
+		 * Collects the informations about a specific person to be returned at
+		 * fireStation?stationNumber=<station_number>
+		 */
+
 		private String firstName;
 		private String lastName;
 		private String address;
@@ -316,11 +320,13 @@ public class UrlController {
 		}
 	}
 
-	/*
-	 * Collects the informations about a specific home to be returned at
-	 * flood/stations?stations=<a list of station_numbers>
-	 */
 	public class FloodStationsURLInfo {
+
+		/*
+		 * Collects the informations about a specific home to be returned at
+		 * flood/stations?stations=<a list of station_numbers>
+		 */
+
 		private List<FloodStationsURLPerson> persons = new ArrayList<FloodStationsURLPerson>();
 		private String fireStationNumber;
 
@@ -343,17 +349,14 @@ public class UrlController {
 		public void addResident(Person person, MedicalRecord medicalRecord) {
 			this.persons.add(new FloodStationsURLPerson(person, medicalRecord));
 		}
-
-		public void addResident(Person person) {
-			addResident(person, new MedicalRecord());
-		}
 	}
 
-	/*
-	 * Collects the informations about a specific person to be returned at
-	 * flood/stations?stations=<a list of station_numbers>
-	 */
 	public class FloodStationsURLPerson {
+
+		/*
+		 * Collects the informations about a specific person to be returned at
+		 * flood/stations?stations=<a list of station_numbers>
+		 */
 
 		private String firstName;
 		private String lastName;
@@ -421,11 +424,12 @@ public class UrlController {
 		}
 	}
 
-	/*
-	 * Collects the informations about a specific person to be returned at
-	 * personInfo?firstName=<firstName>&lastName=<lastName>
-	 */
 	public class PersonInfoURLPerson {
+
+		/*
+		 * Collects the informations about a specific person to be returned at
+		 * personInfo?firstName=<firstName>&lastName=<lastName>
+		 */
 
 		private String firstName;
 		private String lastName;
@@ -457,7 +461,7 @@ public class UrlController {
 		public void setAge(int age) {
 			this.age = age;
 		}
-		
+
 		public String getAddress() {
 			return address;
 		}
@@ -493,16 +497,18 @@ public class UrlController {
 		}
 	}
 
-	/**
-	 * Read - Get info on residents covered by a certain fire station or get all
-	 * fire stations
-	 * 
-	 * @param - An int corresponding to the fire station number
-	 * @return - An Iterable object of info on residents or of FireStation full
-	 *         filled
-	 */
 	@GetMapping(value = "/firestation", params = "stationNumber")
 	public FireStationURLInfo FireStationURL(@RequestParam(value = "stationNumber") String stationNumber) {
+
+		/**
+		 * Read - Get info on residents covered by a certain fire station or get all
+		 * fire stations
+		 * 
+		 * @param - An int corresponding to the fire station number
+		 * @return - An Iterable object of info on residents or of FireStation full
+		 *         filled
+		 */
+
 		FireStationURLInfo result = new FireStationURLInfo();
 		FireStation fireStationToSearch = new FireStation();
 
@@ -530,16 +536,17 @@ public class UrlController {
 		return result;
 	}
 
-	/**
-	 * Read - Get info on children living at a certain address and a list of all
-	 * adults living with them
-	 * 
-	 * @param - A String corresponding to the address
-	 * @return - A ChildAlertURLInfo object
-	 */
-
 	@GetMapping(value = "/childAlert", params = "address")
 	public ChildAlertURLInfo ChildAlertURL(@RequestParam(value = "address") String address) {
+
+		/**
+		 * Read - Get info on children living at a certain address and a list of all
+		 * adults living with them
+		 * 
+		 * @param - A String corresponding to the address
+		 * @return - A ChildAlertURLInfo object
+		 */
+
 		ChildAlertURLInfo result = new ChildAlertURLInfo();
 		Person personToSearch = new Person();
 
@@ -559,16 +566,17 @@ public class UrlController {
 		return result;
 	}
 
-	/**
-	 * Read - Get the phone numbers of every person corresponding to the station
-	 * number
-	 * 
-	 * @param - A String corresponding to the station number
-	 * @return - A List<String> containing phone numbers
-	 */
-
 	@GetMapping(value = "/phoneAlert", params = "firestation")
 	public List<String> PhoneAlertURL(@RequestParam(value = "firestation") String firestation) {
+
+		/**
+		 * Read - Get the phone numbers of every person corresponding to the station
+		 * number
+		 * 
+		 * @param - A String corresponding to the station number
+		 * @return - A List<String> containing phone numbers
+		 */
+
 		List<String> result = new ArrayList<String>();
 		FireStation fireStationToSearch = new FireStation();
 		Person personToSearch = new Person();
@@ -588,15 +596,16 @@ public class UrlController {
 		return result;
 	}
 
-	/**
-	 * Read - Get info on every resident of the corresponding address
-	 * 
-	 * @param - A String corresponding to the address
-	 * @return - A FireURLInfo object
-	 */
-
 	@GetMapping(value = "/fire", params = "address")
 	public FireURLInfo FireURL(@RequestParam(value = "address") String address) {
+
+		/**
+		 * Read - Get info on every resident of the corresponding address
+		 * 
+		 * @param - A String corresponding to the address
+		 * @return - A FireURLInfo object
+		 */
+
 		FireURLInfo result = new FireURLInfo();
 		FireStation fireStationToSearch = new FireStation();
 		Person personToSearch = new Person();
@@ -618,15 +627,16 @@ public class UrlController {
 		return result;
 	}
 
-	/**
-	 * Read - Get a list of residents corresponding to a list of fire stations
-	 * 
-	 * @param - A List<String> corresponding to the station numbers
-	 * @return - A FloodStationsURLInfo object
-	 */
-
 	@GetMapping(value = "flood/stations", params = "stations")
 	public List<FloodStationsURLInfo> FloodStationsURL(@RequestParam(value = "stations") List<String> stations) {
+
+		/**
+		 * Read - Get a list of residents corresponding to a list of fire stations
+		 * 
+		 * @param - A List<String> corresponding to the station numbers
+		 * @return - A FloodStationsURLInfo object
+		 */
+
 		ArrayList<FloodStationsURLInfo> result = new ArrayList<FloodStationsURLInfo>();
 		FireStation fireStationToSearch = new FireStation();
 		Person personToSearch = new Person();
@@ -653,49 +663,50 @@ public class UrlController {
 		return result;
 	}
 
-	/**
-	 * Read - Get info on a person
-	 * 
-	 * @param - Two String corresponding to the first and last name of the person
-	 * @return - A List<personInfoURLPerson> object
-	 */
-
 	@GetMapping(value = "personInfo", params = { "firstName", "lastName" })
-	public List<PersonInfoURLPerson> PersonInfoURL(@RequestParam(value = "firstName") String firstName, @RequestParam(value = "lastName") String lastName) {
+	public List<PersonInfoURLPerson> PersonInfoURL(@RequestParam(value = "firstName") String firstName,
+			@RequestParam(value = "lastName") String lastName) {
+
+		/**
+		 * Read - Get info on a person
+		 * 
+		 * @param - Two String corresponding to the first and last name of the person
+		 * @return - A List<personInfoURLPerson> object
+		 */
+
 		ArrayList<PersonInfoURLPerson> result = new ArrayList<PersonInfoURLPerson>();
 		Person personToSearch = new Person();
 		personToSearch.setFirstName(firstName);
 		personToSearch.setLastName(lastName);
-			// get persons
-			ArrayList<Person> persons = new ArrayList<Person>(
-					personService.getPerson(personToSearch));
-			//get medical record
-			for (Person person : persons) {
-				MedicalRecord medicalRecord = medicalRecordService.getMedicalRecord(person);
-				result.add(new PersonInfoURLPerson(person, medicalRecord));
-				}
+		// get persons
+		ArrayList<Person> persons = new ArrayList<Person>(personService.getPerson(personToSearch));
+		// get medical record
+		for (Person person : persons) {
+			MedicalRecord medicalRecord = medicalRecordService.getMedicalRecord(person);
+			result.add(new PersonInfoURLPerson(person, medicalRecord));
+		}
 		return result;
 	}
 
-	/**
-	 * Read - Get info on a person
-	 * 
-	 * @param - Two String corresponding to the first and last name of the person
-	 * @return - A List<personInfoURLPerson> object
-	 */
-
 	@GetMapping(value = "communityEmail", params = "city")
 	public List<String> CommunityEmailURL(@RequestParam(value = "city") String city) {
+
+		/**
+		 * Read - Get info on a person
+		 * 
+		 * @param - Two String corresponding to the first and last name of the person
+		 * @return - A List<personInfoURLPerson> object
+		 */
+
 		ArrayList<String> result = new ArrayList<String>();
 		Person personToSearch = new Person();
 		personToSearch.setCity(city);
-			// get persons
-			ArrayList<Person> persons = new ArrayList<Person>(
-					personService.getPerson(personToSearch));
-			//get emails
-			for (Person person : persons) {
-				result.add(person.getEmail());
-				}
+		// get persons
+		ArrayList<Person> persons = new ArrayList<Person>(personService.getPerson(personToSearch));
+		// get emails
+		for (Person person : persons) {
+			result.add(person.getEmail());
+		}
 		return result;
 	}
 }
