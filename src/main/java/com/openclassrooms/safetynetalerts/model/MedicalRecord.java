@@ -131,21 +131,22 @@ public class MedicalRecord {
 
 	public boolean update(MedicalRecord medicalRecord) {
 		boolean result = false;
-		if (this.firstName != null && this.firstName.equals(medicalRecord.getFirstName()) && this.lastName != null
-				&& this.lastName.equals(medicalRecord.getLastName())) {
-			try {
-				Field[] fields = MedicalRecord.class.getDeclaredFields();
-				for (int i = 0; i < fields.length; i++) {
-					if (fields[i].get(medicalRecord) != null
-							&& !fields[i].get(medicalRecord).equals(fields[i].get(this))) {
-						fields[i].set(this, fields[i].get(medicalRecord));
+		if (medicalRecord != null)
+			if (this.firstName != null && this.firstName.equals(medicalRecord.getFirstName()) && this.lastName != null
+					&& this.lastName.equals(medicalRecord.getLastName())) {
+				try {
+					Field[] fields = MedicalRecord.class.getDeclaredFields();
+					for (int i = 0; i < fields.length; i++) {
+						if (fields[i].get(medicalRecord) != null
+								&& !fields[i].get(medicalRecord).equals(fields[i].get(this))) {
+							fields[i].set(this, fields[i].get(medicalRecord));
+						}
 					}
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
-			} catch (Exception e) {
-				e.printStackTrace();
+				result = true;
 			}
-			result = true;
-		}
 		return result;
 	}
 }

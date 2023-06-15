@@ -75,7 +75,22 @@ public class MedicalRecordTest {
 		}
 
 		@Test
-		void equalsTestIfEmpty() {
+		void equalsTestIfFirstEmpty() {
+			assertFalse(medicalRecordTest.equals(medicalRecord));
+		}
+
+		@Test
+		void equalsTestIfSecondEmpty() {
+			assertFalse(medicalRecord.equals(medicalRecordTest));
+		}
+
+		@Test
+		void equalsTestIfBothEmpty() {
+			assertTrue(medicalRecordTest.equals(medicalRecordTest));
+		}
+
+		@Test
+		void equalsTestIfNull() {
 			assertFalse(medicalRecord.equals(null));
 		}
 
@@ -97,22 +112,7 @@ public class MedicalRecordTest {
 			medicalRecordTest.setLastName(medicalRecord.getLastName());
 			assertFalse(medicalRecordTest.equals(medicalRecordOther));
 		}
-
-		@Test
-		void equalsTestIfFirstNull() {
-			assertFalse(medicalRecordTest.equals(medicalRecord));
-		}
-
-		@Test
-		void equalsTestIfSecondNull() {
-			assertFalse(medicalRecord.equals(medicalRecordTest));
-		}
-
-		@Test
-		void equalsTestIfBothNull() {
-			assertTrue(medicalRecordTest.equals(medicalRecordTest));
-		}
-
+		
 		@Test
 		void equalsTestIfOnlyFirstName() {
 			medicalRecordTest.setFirstName(medicalRecord.getFirstName());
@@ -210,16 +210,23 @@ public class MedicalRecordTest {
 		}
 
 		@Test
-		void updateTestIfFirstNull() {
+		void updateTestIfFirstEmpty() {
 			MedicalRecord medicalRecordBefore = medicalRecordTest;
 			assertFalse(medicalRecordTest.update(medicalRecord));
 			assertEquals(medicalRecordBefore, medicalRecordTest);
 		}
 
 		@Test
-		void updateTestIfSecondNull() {
+		void updateTestIfSecondEmpty() {
 			MedicalRecord medicalRecordBefore = medicalRecord;
 			assertFalse(medicalRecord.update(medicalRecordTest));
+			assertEquals(medicalRecordBefore, medicalRecord);
+		}
+		
+		@Test
+		void updateTestIfNull() {
+			MedicalRecord medicalRecordBefore = medicalRecord;
+			assertFalse(medicalRecord.update(null));
 			assertEquals(medicalRecordBefore, medicalRecord);
 		}
 

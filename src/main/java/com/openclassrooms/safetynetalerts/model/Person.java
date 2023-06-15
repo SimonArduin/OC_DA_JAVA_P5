@@ -137,20 +137,21 @@ public class Person {
 
 	public boolean update(Person person) {
 		boolean result = false;
-		if (this.firstName != null && this.firstName.equals(person.getFirstName()) && this.lastName != null
-				&& this.lastName.equals(person.getLastName())) {
-			try {
-				Field[] fields = Person.class.getDeclaredFields();
-				for (int i = 0; i < fields.length; i++) {
-					if (fields[i].get(person) != null && !fields[i].get(person).equals(fields[i].get(this))) {
-						fields[i].set(this, fields[i].get(person));
+		if (person != null)
+			if (this.firstName != null && this.firstName.equals(person.getFirstName()) && this.lastName != null
+					&& this.lastName.equals(person.getLastName())) {
+				try {
+					Field[] fields = Person.class.getDeclaredFields();
+					for (int i = 0; i < fields.length; i++) {
+						if (fields[i].get(person) != null && !fields[i].get(person).equals(fields[i].get(this))) {
+							fields[i].set(this, fields[i].get(person));
+						}
 					}
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
-			} catch (Exception e) {
-				e.printStackTrace();
+				result = true;
 			}
-			result = true;
-		}
 		return result;
 	}
 }

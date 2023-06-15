@@ -19,6 +19,8 @@ public class PersonService {
 	}
 
 	public Person putPerson(Person person) {
+		if (person == null)
+			return new Person ();
 		boolean isInDB = false;
 		Person personToPut = new Person();
 		if (person.getFirstName() != null && person.getLastName() != null)

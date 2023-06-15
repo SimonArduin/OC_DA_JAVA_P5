@@ -60,6 +60,20 @@ public class PersonServiceTest {
 			assertEquals(emptyList, personService.getPerson(person));
 			verify(personRepository, Mockito.times(1)).get(any(Person.class));
 		}
+
+		@Test
+		public void getPersonTestIfEmpty() {
+			Mockito.when(personRepository.get(any(Person.class))).thenReturn(emptyList);
+			assertEquals(emptyList, personService.getPerson(emptyPerson));
+			verify(personRepository, Mockito.times(1)).get(any(Person.class));
+		}
+
+		@Test
+		public void getPersonTestIfNull() {
+			Mockito.when(personRepository.get(null)).thenReturn(emptyList);
+			assertEquals(emptyList, personService.getPerson(null));
+			verify(personRepository, Mockito.times(1)).get(null);
+		}
 	}
 
 	@Nested
@@ -69,8 +83,8 @@ public class PersonServiceTest {
 		public void putPersonTest() {
 			assertEquals(person, personService.putPerson(person));
 			verify(personRepository, Mockito.times(1)).get(any(Person.class));
-			verify(personRepository, Mockito.times(1)).delete(person);
-			verify(personRepository, Mockito.times(1)).save(person);
+			verify(personRepository, Mockito.times(1)).delete(any(Person.class));
+			verify(personRepository, Mockito.times(1)).save(any(Person.class));
 		}
 
 		@Test
@@ -78,8 +92,26 @@ public class PersonServiceTest {
 			Mockito.when(personRepository.get(any(Person.class))).thenReturn(emptyList);
 			assertEquals(emptyPerson, personService.putPerson(person));
 			verify(personRepository, Mockito.times(1)).get(any(Person.class));
-			verify(personRepository, Mockito.times(0)).delete(person);
-			verify(personRepository, Mockito.times(0)).save(person);
+			verify(personRepository, Mockito.times(0)).delete(any(Person.class));
+			verify(personRepository, Mockito.times(0)).save(any(Person.class));
+		}
+
+		@Test
+		public void putPersonTestIfEmpty() {
+			Mockito.when(personRepository.get(any(Person.class))).thenReturn(emptyList);
+			assertEquals(emptyPerson, personService.putPerson(emptyPerson));
+			verify(personRepository, Mockito.times(0)).get(any(Person.class));
+			verify(personRepository, Mockito.times(0)).delete(any(Person.class));
+			verify(personRepository, Mockito.times(0)).save(any(Person.class));
+		}
+
+		@Test
+		public void putPersonTestIfNull() {
+			Mockito.when(personRepository.get(null)).thenReturn(emptyList);
+			assertEquals(emptyPerson, personService.putPerson(null));
+			verify(personRepository, Mockito.times(0)).get(any(Person.class));
+			verify(personRepository, Mockito.times(0)).delete(any(Person.class));
+			verify(personRepository, Mockito.times(0)).save(any(Person.class));
 		}
 	}
 
@@ -89,14 +121,28 @@ public class PersonServiceTest {
 		@Test
 		public void postPersonTest() {
 			assertEquals(person, personService.postPerson(person));
-			verify(personRepository, Mockito.times(1)).save(person);
+			verify(personRepository, Mockito.times(1)).save(any(Person.class));
 		}
 
 		@Test
 		public void postPersonTestIfAlreadyInDB() {
 			Mockito.when(personRepository.save(any(Person.class))).thenReturn(emptyPerson);
 			assertEquals(emptyPerson, personService.postPerson(person));
-			verify(personRepository, Mockito.times(1)).save(person);
+			verify(personRepository, Mockito.times(1)).save(any(Person.class));
+		}
+
+		@Test
+		public void postPersonTestIfEmpty() {
+			Mockito.when(personRepository.save(any(Person.class))).thenReturn(emptyPerson);
+			assertEquals(emptyPerson, personService.postPerson(emptyPerson));
+			verify(personRepository, Mockito.times(1)).save(any(Person.class));
+		}
+
+		@Test
+		public void postPersonTestIfNull() {
+			Mockito.when(personRepository.save(null)).thenReturn(emptyPerson);
+			assertEquals(emptyPerson, personService.postPerson(null));
+			verify(personRepository, Mockito.times(1)).save(null);
 		}
 	}
 
@@ -106,14 +152,28 @@ public class PersonServiceTest {
 		@Test
 		public void deletePersonTest() {
 			assertEquals(person, personService.deletePerson(person));
-			verify(personRepository, Mockito.times(1)).delete(person);
+			verify(personRepository, Mockito.times(1)).delete(any(Person.class));
 		}
 
 		@Test
 		public void deletePersonTestIfNotInDB() {
 			Mockito.when(personRepository.delete(any(Person.class))).thenReturn(emptyPerson);
 			assertEquals(emptyPerson, personService.deletePerson(person));
-			verify(personRepository, Mockito.times(1)).delete(person);
+			verify(personRepository, Mockito.times(1)).delete(any(Person.class));
+		}
+
+		@Test
+		public void deletePersonTestIfEmpty() {
+			Mockito.when(personRepository.delete(any(Person.class))).thenReturn(emptyPerson);
+			assertEquals(emptyPerson, personService.deletePerson(emptyPerson));
+			verify(personRepository, Mockito.times(1)).delete(any(Person.class));
+		}
+
+		@Test
+		public void deletePersonTestIfNull() {
+			Mockito.when(personRepository.delete(null)).thenReturn(emptyPerson);
+			assertEquals(emptyPerson, personService.deletePerson(null));
+			verify(personRepository, Mockito.times(1)).delete(null);
 		}
 	}
 }

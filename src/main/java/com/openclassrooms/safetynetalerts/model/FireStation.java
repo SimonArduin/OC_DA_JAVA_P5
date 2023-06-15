@@ -73,19 +73,21 @@ public class FireStation {
 
 	public boolean update(FireStation fireStation) {
 		boolean result = false;
-		if (this.address != null && this.address.equals(fireStation.getAddress())) {
-			try {
-				Field[] fields = FireStation.class.getDeclaredFields();
-				for (int i = 0; i < fields.length; i++) {
-					if (fields[i].get(fireStation) != null && !fields[i].get(fireStation).equals(fields[i].get(this))) {
-						fields[i].set(this, fields[i].get(fireStation));
+		if (fireStation != null)
+			if (this.address != null && this.address.equals(fireStation.getAddress())) {
+				try {
+					Field[] fields = FireStation.class.getDeclaredFields();
+					for (int i = 0; i < fields.length; i++) {
+						if (fields[i].get(fireStation) != null
+								&& !fields[i].get(fireStation).equals(fields[i].get(this))) {
+							fields[i].set(this, fields[i].get(fireStation));
+						}
 					}
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
-			} catch (Exception e) {
-				e.printStackTrace();
+				result = true;
 			}
-			result = true;
-		}
 		return result;
 	}
 }

@@ -18,10 +18,14 @@ public class MedicalRecordService {
 	}
 	
 	public MedicalRecord getMedicalRecord(Person person) {
-		return medicalRecordRepository.get(new MedicalRecord(person.getFirstName(), person.getLastName()));
+		if (person == null)
+			return new MedicalRecord();
+		return getMedicalRecord(new MedicalRecord(person.getFirstName(), person.getLastName()));
 	}
 
 	public MedicalRecord putMedicalRecord(MedicalRecord medicalRecord) {
+		if (medicalRecord == null)
+			return new MedicalRecord();
 		if (medicalRecord.getFirstName() != null && medicalRecord.getLastName() != null) {
 			MedicalRecord medicalRecordToPut = medicalRecordRepository.get(medicalRecord);
 			if (!medicalRecordToPut.isEmpty()) {

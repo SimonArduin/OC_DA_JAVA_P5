@@ -64,7 +64,22 @@ public class PersonTest {
 		}
 
 		@Test
-		void equalsTestIfEmpty() {
+		void equalsTestIfFirstEmpty() {
+			assertFalse(personTest.equals(person));
+		}
+
+		@Test
+		void equalsTestIfSecondEmpty() {
+			assertFalse(person.equals(personTest));
+		}
+
+		@Test
+		void equalsTestIfBothEmpty() {
+			assertTrue(personTest.equals(personTest));
+		}
+
+		@Test
+		void equalsTestIfNull() {
 			assertFalse(person.equals(null));
 		}
 
@@ -85,21 +100,6 @@ public class PersonTest {
 			personTest.setFirstName(person.getFirstName());
 			personTest.setLastName(person.getLastName());
 			assertFalse(personTest.equals(personOther));
-		}
-
-		@Test
-		void equalsTestIfFirstNull() {
-			assertFalse(personTest.equals(person));
-		}
-
-		@Test
-		void equalsTestIfSecondNull() {
-			assertFalse(person.equals(personTest));
-		}
-
-		@Test
-		void equalsTestIfBothNull() {
-			assertTrue(personTest.equals(personTest));
 		}
 
 		@Test
@@ -223,16 +223,23 @@ public class PersonTest {
 		}
 
 		@Test
-		void updateTestIfFirstNull() {
+		void updateTestIfFirstEmpty() {
 			Person personBefore = personTest;
 			assertFalse(personTest.update(person));
 			assertEquals(personBefore, personTest);
 		}
 
 		@Test
-		void updateTestIfSecondNull() {
+		void updateTestIfSecondEmpty() {
 			Person personBefore = person;
 			assertFalse(person.update(personTest));
+			assertEquals(personBefore, person);
+		}
+
+		@Test
+		void updateTestIfNull() {
+			Person personBefore = person;
+			assertFalse(person.update(null));
 			assertEquals(personBefore, person);
 		}
 

@@ -89,7 +89,7 @@ public class UrlControllerTest {
 
 	@Nested
 	class FireStationURLTests {
-		
+
 		@Test
 		public void FireStationURLTest() throws Exception {
 			mockMvc.perform(get(String.format("/firestation?stationNumber=%s", fireStation.getStation())))
@@ -111,6 +111,28 @@ public class UrlControllerTest {
 			verify(fireStationService, Mockito.times(1)).getFireStation(any(FireStation.class));
 			verify(personService, Mockito.times(numberOfFireStationByStationNumber)).getPerson(any(Person.class));
 			verify(medicalRecordService, Mockito.times(2)).getMedicalRecord(any(Person.class));
+		}
+
+		@Test
+		public void FireStationURLTestIfEmptyParams() throws Exception {
+			Mockito.when(fireStationService.getFireStation(any(FireStation.class)))
+					.thenReturn(new ArrayList<FireStation>());
+			mockMvc.perform(get(String.format("/firestation?stationNumber=%s", nullValue())))
+					.andExpect(status().isOk()).andExpect(jsonPath("numberOfAdults", is(0)))
+					.andExpect(jsonPath("numberOfChildren", is(0)));
+
+			verify(fireStationService, Mockito.times(1)).getFireStation(any(FireStation.class));
+			verify(personService, Mockito.times(0)).getPerson(any(Person.class));
+			verify(medicalRecordService, Mockito.times(0)).getMedicalRecord(any(Person.class));
+		}
+
+		@Test
+		public void FireStationURLTestIfNoParams() throws Exception {
+			mockMvc.perform(get(String.format("/firestation"))).andExpect(status().is(400));
+
+			verify(fireStationService, Mockito.times(0)).getFireStation(any(FireStation.class));
+			verify(personService, Mockito.times(0)).getPerson(any(Person.class));
+			verify(medicalRecordService, Mockito.times(0)).getMedicalRecord(any(Person.class));
 		}
 
 		@Test
@@ -161,6 +183,26 @@ public class UrlControllerTest {
 			verify(personService, Mockito.times(1)).getPerson(any(Person.class));
 			verify(medicalRecordService, Mockito.times(1)).getMedicalRecord(person);
 			verify(medicalRecordService, Mockito.times(1)).getMedicalRecord(personChild);
+		}
+
+		@Test
+		public void ChildAlertURLTestIfEmptyParams() throws Exception {
+			Mockito.when(personService.getPerson(any(Person.class))).thenReturn(new ArrayList<Person>());
+			mockMvc.perform(get(String.format("/childAlert?address=%s", nullValue())))
+					.andExpect(status().isOk());
+
+			verify(personService, Mockito.times(1)).getPerson(any(Person.class));
+			verify(medicalRecordService, Mockito.times(0)).getMedicalRecord(person);
+			verify(medicalRecordService, Mockito.times(0)).getMedicalRecord(personChild);
+		}
+
+		@Test
+		public void ChildAlertURLTestIfNoParams() throws Exception {
+			mockMvc.perform(get(String.format("/childAlert"))).andExpect(status().is(400));
+
+			verify(personService, Mockito.times(0)).getPerson(any(Person.class));
+			verify(medicalRecordService, Mockito.times(0)).getMedicalRecord(person);
+			verify(medicalRecordService, Mockito.times(0)).getMedicalRecord(personChild);
 		}
 
 		@Test
@@ -242,6 +284,25 @@ public class UrlControllerTest {
 		}
 
 		@Test
+		public void PhoneAlertURLTestIfEmptyParams() throws Exception {
+			Mockito.when(fireStationService.getFireStation(any(FireStation.class)))
+					.thenReturn(new ArrayList<FireStation>());
+			mockMvc.perform(get(String.format("/phoneAlert?firestation=%s", nullValue())))
+					.andExpect(status().isOk());
+
+			verify(fireStationService, Mockito.times(1)).getFireStation(any(FireStation.class));
+			verify(personService, Mockito.times(0)).getPerson(any(Person.class));
+		}
+
+		@Test
+		public void PhoneAlertURLTestIfNoParams() throws Exception {
+			mockMvc.perform(get(String.format("/phoneAlert"))).andExpect(status().is(400));
+
+			verify(fireStationService, Mockito.times(0)).getFireStation(any(FireStation.class));
+			verify(personService, Mockito.times(0)).getPerson(any(Person.class));
+		}
+
+		@Test
 		public void PhoneAlertURLTestIfNoFireStation() throws Exception {
 			Mockito.when(fireStationService.getFireStation(any(FireStation.class)))
 					.thenReturn(new ArrayList<FireStation>());
@@ -300,6 +361,26 @@ public class UrlControllerTest {
 			verify(fireStationService, Mockito.times(1)).getFireStation(any(FireStation.class));
 			verify(personService, Mockito.times(1)).getPerson(any(Person.class));
 			verify(medicalRecordService, Mockito.times(numberOfPersons)).getMedicalRecord(any(Person.class));
+		}
+
+		@Test
+		public void FireURLTestIfEmptyParams() throws Exception {
+			Mockito.when(personService.getPerson(any(Person.class))).thenReturn(new ArrayList<Person>());
+			Mockito.when(fireStationService.getFireStation(any(FireStation.class))).thenReturn(new ArrayList<FireStation>());
+			mockMvc.perform(get(String.format("/fire?address=%s", nullValue()))).andExpect(status().isOk());
+
+			verify(fireStationService, Mockito.times(1)).getFireStation(any(FireStation.class));
+			verify(personService, Mockito.times(1)).getPerson(any(Person.class));
+			verify(medicalRecordService, Mockito.times(0)).getMedicalRecord(any(Person.class));
+		}
+
+		@Test
+		public void FireURLTestIfNoParams() throws Exception {
+			mockMvc.perform(get(String.format("/fire", fireStation.getAddress()))).andExpect(status().is(400));
+
+			verify(fireStationService, Mockito.times(0)).getFireStation(any(FireStation.class));
+			verify(personService, Mockito.times(0)).getPerson(any(Person.class));
+			verify(medicalRecordService, Mockito.times(0)).getMedicalRecord(any(Person.class));
 		}
 
 		@Test
@@ -414,6 +495,26 @@ public class UrlControllerTest {
 		}
 
 		@Test
+		public void FloodStationsURLTestIfEmptyParams() throws Exception {
+			Mockito.when(fireStationService.getFireStation(any(FireStation.class)))
+					.thenReturn(new ArrayList<FireStation>());
+			mockMvc.perform(get(String.format("/flood/stations?stations=%s", nullValue()))).andExpect(status().isOk());
+
+			verify(fireStationService, Mockito.times(1)).getFireStation(any(FireStation.class));
+			verify(personService, Mockito.times(0)).getPerson(any(Person.class));
+			verify(medicalRecordService, Mockito.times(0)).getMedicalRecord(any(Person.class));
+		}
+
+		@Test
+		public void FloodStationsURLTestIfNoParams() throws Exception {
+			mockMvc.perform(get(String.format("/flood/stations"))).andExpect(status().is(400));
+
+			verify(fireStationService, Mockito.times(0)).getFireStation(any(FireStation.class));
+			verify(personService, Mockito.times(0)).getPerson(any(Person.class));
+			verify(medicalRecordService, Mockito.times(0)).getMedicalRecord(any(Person.class));
+		}
+
+		@Test
 		public void FloodStationsURLTestIfNoFireStation() throws Exception {
 			Mockito.when(fireStationService.getFireStation(any(FireStation.class)))
 					.thenReturn(new ArrayList<FireStation>());
@@ -516,6 +617,27 @@ public class UrlControllerTest {
 		}
 
 		@Test
+		public void PersonInfoURLTestIfEmptyParams() throws Exception {
+			Mockito.when(personService.getPerson(any(Person.class))).thenReturn(new ArrayList<Person>());
+			mockMvc.perform(get(
+					String.format("/personInfo?firstName=%s&lastName=%s", nullValue(), nullValue())))
+					.andExpect(status().isOk());
+
+			verify(personService, Mockito.times(1)).getPerson(any(Person.class));
+			verify(medicalRecordService, Mockito.times(0)).getMedicalRecord(any(Person.class));
+		}
+
+		@Test
+		public void PersonInfoURLTestIfNoParams() throws Exception {
+			mockMvc.perform(get(
+					String.format("/personInfo")))
+					.andExpect(status().is(400));
+
+			verify(personService, Mockito.times(0)).getPerson(any(Person.class));
+			verify(medicalRecordService, Mockito.times(0)).getMedicalRecord(any(Person.class));
+		}
+
+		@Test
 		public void PersonInfoURLTestIfNoPerson() throws Exception {
 			Mockito.when(personService.getPerson(any(Person.class))).thenReturn(new ArrayList<Person>());
 			mockMvc.perform(get(
@@ -557,6 +679,21 @@ public class UrlControllerTest {
 					.andExpect(jsonPath("[1]", is(personChild.getEmail())));
 
 			verify(personService, Mockito.times(1)).getPerson(any(Person.class));
+		}
+
+		@Test
+		public void CommunityEmailURLTestIfEmptyParams() throws Exception {
+			Mockito.when(personService.getPerson(any(Person.class))).thenReturn(new ArrayList<Person>());
+			mockMvc.perform(get(String.format("/communityEmail?city=%s", nullValue()))).andExpect(status().isOk());
+
+			verify(personService, Mockito.times(1)).getPerson(any(Person.class));
+		}
+
+		@Test
+		public void CommunityEmailURLTestIfNoParams() throws Exception {
+			mockMvc.perform(get(String.format("/communityEmail"))).andExpect(status().is(400));
+
+			verify(personService, Mockito.times(0)).getPerson(any(Person.class));
 		}
 
 		@Test

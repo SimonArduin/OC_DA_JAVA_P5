@@ -63,28 +63,28 @@ public class FireStationTest {
 		}
 
 		@Test
-		void equalsTestIfEmpty() {
+		void equalsTestIfFirstEmpty() {
+			assertFalse(fireStationTest.equals(fireStation));
+		}
+
+		@Test
+		void equalsTestIfSecondEmpty() {
+			assertFalse(fireStation.equals(fireStationTest));
+		}
+
+		@Test
+		void equalsTestIfBothEmpty() {
+			assertTrue(fireStationTest.equals(fireStationTest));
+		}
+
+		@Test
+		void equalsTestIfNull() {
 			assertFalse(fireStation.equals(null));
 		}
 
 		@Test
 		void equalsTestIfOtherFireStation() {
 			assertFalse(fireStation.equals(fireStationOther));
-		}
-
-		@Test
-		void equalsTestIfFirstNull() {
-			assertFalse(fireStationTest.equals(fireStation));
-		}
-
-		@Test
-		void equalsTestIfSecondNull() {
-			assertFalse(fireStation.equals(fireStationTest));
-		}
-
-		@Test
-		void equalsTestIfBothNull() {
-			assertTrue(fireStationTest.equals(fireStationTest));
 		}
 
 		@Test
@@ -132,16 +132,23 @@ public class FireStationTest {
 		}
 
 		@Test
-		void updateTestIfFirstNull() {
+		void updateTestIfFirstEmpty() {
 			FireStation fireStationBefore = fireStationTest;
 			assertFalse(fireStationTest.update(fireStation));
 			assertEquals(fireStationBefore, fireStationTest);
 		}
 
 		@Test
-		void updateTestIfSecondNull() {
+		void updateTestIfSecondEmpty() {
 			FireStation fireStationBefore = fireStation;
 			assertFalse(fireStation.update(fireStationTest));
+			assertEquals(fireStationBefore, fireStation);
+		}
+
+		@Test
+		void updateTestIfNull() {
+			FireStation fireStationBefore = fireStation;
+			assertFalse(fireStation.update(null));
 			assertEquals(fireStationBefore, fireStation);
 		}
 

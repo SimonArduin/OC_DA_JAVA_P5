@@ -22,6 +22,7 @@ public class DataBaseTest {
 
 	final FireStation fireStation = new FireStation("address", "station");
 	final FireStation fireStationOther = new FireStation("addressOther", "stationOther");
+	final FireStation emptyFireStation = new FireStation();
 	final ArrayList<FireStation> fireStationList = new ArrayList<FireStation>(Arrays.asList(fireStation));
 	final ArrayList<FireStation> emptyFireStationList = new ArrayList<FireStation>();
 
@@ -29,7 +30,9 @@ public class DataBaseTest {
 			"email");
 	final Person personOther = new Person("firstNameOther", "lastNameOther", fireStationOther.getAddress(), "cityOther", "zipOther", "phoneOther",
 					"email");
+	final Person emptyPerson = new Person();
 	final ArrayList<Person> personList = new ArrayList<Person>(Arrays.asList(person));
+	final ArrayList<Person> emptyPersonList = new ArrayList<Person>();
 
 	final ArrayList<String> medications = new ArrayList<String>(Arrays.asList("medication 1", "medication 2"));
 	final ArrayList<String> allergies = new ArrayList<String>(Arrays.asList("allergy 1", "allergy 2"));
@@ -37,7 +40,9 @@ public class DataBaseTest {
 			allergies);
 	final MedicalRecord medicalRecordOther = new MedicalRecord("firstNameOther", "lastNameOther", "06/06/1996", null,
 			null);
+	final MedicalRecord emptyMedicalRecord = new MedicalRecord();
 	final ArrayList<MedicalRecord> medicalRecordList = new ArrayList<MedicalRecord>(Arrays.asList(medicalRecord));
+	final ArrayList<MedicalRecord> emptyMedicalRecordList = new ArrayList<MedicalRecord>();
 
 	@BeforeEach
 	void setUpPerTest() {
@@ -66,17 +71,17 @@ public class DataBaseTest {
 
 			@Test
 			void getFireStationsByFireStationTestIfNotInDB() {
-				assertEquals(null, dataBase.getFireStations(fireStationOther));
+				assertEquals(emptyFireStationList, dataBase.getFireStations(fireStationOther));
 			}
 
 			@Test
 			void getFireStationsByFireStationTestIfEmpty() {
-				assertEquals(null, dataBase.getFireStations(new FireStation()));
+				assertEquals(emptyFireStationList, dataBase.getFireStations(emptyFireStation));
 			}
 
 			@Test
 			void getFireStationsByFireStationTestIfNull() {
-				assertEquals(null, dataBase.getFireStations(null));
+				assertEquals(emptyFireStationList, dataBase.getFireStations(null));
 			}
 		}
 
@@ -90,17 +95,17 @@ public class DataBaseTest {
 
 			@Test
 			void addFireStationByFireStationTestIfAlreadyInDB() {
-				assertEquals(null, dataBase.addFireStation(fireStation));
+				assertEquals(emptyFireStation, dataBase.addFireStation(fireStation));
 			}
 
 			@Test
 			void addFireStationByFireStationTestIfEmpty() {
-				assertEquals(null, dataBase.addFireStation(new FireStation()));
+				assertEquals(emptyFireStation, dataBase.addFireStation(emptyFireStation));
 			}
 
 			@Test
 			void addFireStationByFireStationTestIfNull() {
-				assertEquals(null, dataBase.addFireStation(null));
+				assertEquals(emptyFireStation, dataBase.addFireStation(null));
 			}
 		}
 
@@ -114,17 +119,17 @@ public class DataBaseTest {
 
 			@Test
 			void removeFireStationByFireStationTestIfNotInDB() {
-				assertEquals(null, dataBase.removeFireStation(fireStationOther));
+				assertEquals(emptyFireStation, dataBase.removeFireStation(fireStationOther));
 			}
 
 			@Test
 			void removeFireStationByFireStationTestIfEmpty() {
-				assertEquals(null, dataBase.removeFireStation(new FireStation()));
+				assertEquals(emptyFireStation, dataBase.removeFireStation(emptyFireStation));
 			}
 
 			@Test
 			void removeFireStationByFireStationTestIfNull() {
-				assertEquals(null, dataBase.removeFireStation(null));
+				assertEquals(emptyFireStation, dataBase.removeFireStation(null));
 			}
 		}
 	}
@@ -147,17 +152,17 @@ public class DataBaseTest {
 
 			@Test
 			void getPersonsByPersonTestIfNotInDB() {
-				assertEquals(null, dataBase.getPersons(personOther));
+				assertEquals(emptyPersonList, dataBase.getPersons(personOther));
 			}
 
 			@Test
 			void getPersonsByPersonTestIfEmpty() {
-				assertEquals(null, dataBase.getPersons(new Person()));
+				assertEquals(emptyPersonList, dataBase.getPersons(emptyPerson));
 			}
 
 			@Test
 			void getPersonsByPersonTestIfNull() {
-				assertEquals(null, dataBase.getPersons(null));
+				assertEquals(emptyPersonList, dataBase.getPersons(null));
 			}
 		}
 
@@ -171,17 +176,17 @@ public class DataBaseTest {
 
 			@Test
 			void addPersonByPersonTestIfAlreadyInDB() {
-				assertEquals(null, dataBase.addPerson(person));
+				assertEquals(emptyPerson, dataBase.addPerson(person));
 			}
 
 			@Test
 			void addPersonByPersonTestIfEmpty() {
-				assertEquals(null, dataBase.addPerson(new Person()));
+				assertEquals(emptyPerson, dataBase.addPerson(emptyPerson));
 			}
 
 			@Test
 			void addPersonByPersonTestIfNull() {
-				assertEquals(null, dataBase.addPerson(null));
+				assertEquals(emptyPerson, dataBase.addPerson(null));
 			}
 		}
 
@@ -195,17 +200,17 @@ public class DataBaseTest {
 
 			@Test
 			void removePersonByPersonTestIfNotInDB() {
-				assertEquals(null, dataBase.removePerson(personOther));
+				assertEquals(emptyPerson, dataBase.removePerson(personOther));
 			}
 
 			@Test
 			void removePersonByPersonTestIfEmpty() {
-				assertEquals(null, dataBase.removePerson(new Person()));
+				assertEquals(emptyPerson, dataBase.removePerson(emptyPerson));
 			}
 
 			@Test
 			void removePersonByPersonTestIfNull() {
-				assertEquals(null, dataBase.removePerson(null));
+				assertEquals(emptyPerson, dataBase.removePerson(null));
 			}
 		}
 	}
@@ -228,17 +233,17 @@ public class DataBaseTest {
 
 			@Test
 			void getMedicalRecordsByMedicalRecordTestIfNotInDB() {
-				assertEquals(null, dataBase.getMedicalRecords(medicalRecordOther));
+				assertEquals(emptyMedicalRecord, dataBase.getMedicalRecords(medicalRecordOther));
 			}
 
 			@Test
 			void getMedicalRecordsByMedicalRecordTestIfEmpty() {
-				assertEquals(null, dataBase.getMedicalRecords(new MedicalRecord()));
+				assertEquals(emptyMedicalRecord, dataBase.getMedicalRecords(emptyMedicalRecord));
 			}
 
 			@Test
 			void getMedicalRecordsByMedicalRecordTestIfNull() {
-				assertEquals(null, dataBase.getMedicalRecords(null));
+				assertEquals(emptyMedicalRecord, dataBase.getMedicalRecords(null));
 			}
 		}
 
@@ -252,17 +257,17 @@ public class DataBaseTest {
 
 			@Test
 			void addMedicalRecordByMedicalRecordTestIfAlreadyInDB() {
-				assertEquals(null, dataBase.addMedicalRecord(medicalRecord));
+				assertEquals(emptyMedicalRecord, dataBase.addMedicalRecord(medicalRecord));
 			}
 
 			@Test
 			void addMedicalRecordByMedicalRecordTestIfEmpty() {
-				assertEquals(null, dataBase.addMedicalRecord(new MedicalRecord()));
+				assertEquals(emptyMedicalRecord, dataBase.addMedicalRecord(emptyMedicalRecord));
 			}
 
 			@Test
 			void addMedicalRecordByMedicalRecordTestIfNull() {
-				assertEquals(null, dataBase.addMedicalRecord(null));
+				assertEquals(emptyMedicalRecord, dataBase.addMedicalRecord(null));
 			}
 		}
 
@@ -276,17 +281,17 @@ public class DataBaseTest {
 
 			@Test
 			void removeMedicalRecordByMedicalRecordTestIfNotInDB() {
-				assertEquals(null, dataBase.removeMedicalRecord(medicalRecordOther));
+				assertEquals(emptyMedicalRecord, dataBase.removeMedicalRecord(medicalRecordOther));
 			}
 
 			@Test
 			void removeMedicalRecordByMedicalRecordTestIfEmpty() {
-				assertEquals(null, dataBase.removeMedicalRecord(new MedicalRecord()));
+				assertEquals(emptyMedicalRecord, dataBase.removeMedicalRecord(emptyMedicalRecord));
 			}
 
 			@Test
 			void removeMedicalRecordByMedicalRecordTestIfNull() {
-				assertEquals(null, dataBase.removeMedicalRecord(null));
+				assertEquals(emptyMedicalRecord, dataBase.removeMedicalRecord(null));
 			}
 		}
 	}

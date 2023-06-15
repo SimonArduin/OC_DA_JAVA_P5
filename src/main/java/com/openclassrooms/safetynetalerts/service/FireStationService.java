@@ -78,6 +78,8 @@ public class FireStationService {
 	 */
 
 	public FireStation putFireStation(FireStation fireStation) {
+		if (fireStation == null)
+			return new FireStation();
 		boolean isInDB = false;
 		FireStation fireStationToPut = new FireStation();
 		if (fireStation.getAddress() != null)
