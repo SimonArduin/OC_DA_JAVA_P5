@@ -49,6 +49,10 @@ public class DataBase {
 			instance = new DataBase();
 		return instance;
 	}
+	
+	public static DataBase readDataBase() {
+		return instance = new DataBase();
+	}
 
 	public static DataBase setDataBase(ArrayList<FireStation> fireStations, ArrayList<Person> persons,
 			ArrayList<MedicalRecord> medicalRecords) {
