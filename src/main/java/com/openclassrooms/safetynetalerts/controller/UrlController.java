@@ -9,6 +9,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
+import com.openclassrooms.safetynetalerts.dto.ChildAlertURLInfo;
+import com.openclassrooms.safetynetalerts.dto.FireURLInfo;
+import com.openclassrooms.safetynetalerts.dto.FloodStationsURLInfo;
+import com.openclassrooms.safetynetalerts.dto.PersonInfoURLPerson;
 import com.openclassrooms.safetynetalerts.model.FireStation;
 import com.openclassrooms.safetynetalerts.model.MedicalRecord;
 import com.openclassrooms.safetynetalerts.model.Person;
@@ -28,516 +32,11 @@ public class UrlController {
 
 	@Autowired
 	MedicalRecordService medicalRecordService;
-
-	public class FireStationURLInfo {
-
-		/*
-		 * Collects all the informations to be returned at
-		 * fireStation?stationNumber=<station_number>
-		 */
-
-		private List<FireStationURLPerson> persons = new ArrayList<FireStationURLPerson>();
-		private Integer numberOfAdults = 0;
-		private Integer numberOfChildren = 0;
-
-		public List<FireStationURLPerson> getPersons() {
-			return persons;
-		}
-
-		public void setPersons(List<FireStationURLPerson> persons) {
-			this.persons = persons;
-		}
-
-		public void addPerson(FireStationURLPerson person) {
-			this.persons.add(person);
-		}
-
-		public Integer getNumberOfAdults() {
-			return numberOfAdults;
-		}
-
-		public void setNumberOfAdults(Integer numberOfAdults) {
-			this.numberOfAdults = numberOfAdults;
-		}
-
-		public void addAdult() {
-			this.numberOfAdults++;
-		}
-
-		public Integer getNumberOfChildren() {
-			return numberOfChildren;
-		}
-
-		public void setNumberOfChildren(Integer numberOfChildren) {
-			this.numberOfChildren = numberOfChildren;
-		}
-
-		public void addChild() {
-			this.numberOfChildren++;
-		}
-	}
-
-	public class FireStationURLPerson {
-
-		/*
-		 * Collects the informations about a specific person to be returned at
-		 * fireStation?stationNumber=<station_number>
-		 */
-
-		private String firstName;
-		private String lastName;
-		private String address;
-		private String phone;
-
-		public String getFirstName() {
-			return firstName;
-		}
-
-		public void setFirstName(String firstName) {
-			this.firstName = firstName;
-		}
-
-		public String getLastName() {
-			return lastName;
-		}
-
-		public void setLastName(String lastName) {
-			this.lastName = lastName;
-		}
-
-		public String getAddress() {
-			return address;
-		}
-
-		public void setAddress(String address) {
-			this.address = address;
-		}
-
-		public String getPhone() {
-			return phone;
-		}
-
-		public void setPhone(String phone) {
-			this.phone = phone;
-		}
-
-		public FireStationURLPerson(Person person) {
-			super();
-			this.firstName = person.getFirstName();
-			this.lastName = person.getLastName();
-			this.address = person.getAddress();
-			this.phone = person.getPhone();
-		}
-	}
-
-	public class ChildAlertURLInfo {
-
-		/*
-		 * Collects all the informations to be returned at childAlert?address=<address>
-		 */
-
-		private List<ChildAlertURLChild> children = new ArrayList<ChildAlertURLChild>();
-		private List<Person> adults = new ArrayList<Person>();
-
-		public List<ChildAlertURLChild> getChildren() {
-			return children;
-		}
-
-		public void setChildren(List<ChildAlertURLChild> children) {
-			this.children = children;
-		}
-
-		public void addChild(Person person, int age) {
-			this.children.add(new ChildAlertURLChild(person, age));
-		}
-
-		public List<Person> getAdults() {
-			return adults;
-		}
-
-		public void setAdults(List<Person> adults) {
-			this.adults = adults;
-		}
-
-		public void addAdult(Person person) {
-			this.adults.add(person);
-		}
-	}
-
-	public class ChildAlertURLChild {
-
-		/*
-		 * Collects the informations about a specific child to be returned at
-		 * childAlert?address=<address>
-		 */
-
-		private String firstName;
-		private String lastName;
-		private int age;
-
-		public String getFirstName() {
-			return firstName;
-		}
-
-		public void setFirstName(String firstName) {
-			this.firstName = firstName;
-		}
-
-		public String getLastName() {
-			return lastName;
-		}
-
-		public void setLastName(String lastName) {
-			this.lastName = lastName;
-		}
-
-		public int getAge() {
-			return age;
-		}
-
-		public void setAge(int age) {
-			this.age = age;
-		}
-
-		public ChildAlertURLChild(Person person, int age) {
-			super();
-			this.firstName = person.getFirstName();
-			this.lastName = person.getLastName();
-			this.age = age;
-		}
-	}
-
-	public class FireURLInfo {
-
-		/*
-		 * Collects all the informations to be returned at fire?address=<address>
-		 */
-
-		private List<FireURLPerson> persons = new ArrayList<FireURLPerson>();
-		private String fireStationNumber;
-
-		public List<FireURLPerson> getPersons() {
-			return persons;
-		}
-
-		public void setPersons(List<FireURLPerson> persons) {
-			this.persons = persons;
-		}
-
-		public void addPerson(Person person, MedicalRecord medicalRecord) {
-			this.persons.add(new FireURLPerson(person, medicalRecord));
-		}
-
-		public String getFireStationNumber() {
-			return fireStationNumber;
-		}
-
-		public void setFireStationNumber(String fireStationNumber) {
-			this.fireStationNumber = fireStationNumber;
-		}
-	}
-
-	public class FireURLPerson {
-
-		/*
-		 * Collects the informations about a specific person to be returned at
-		 * fireStation?stationNumber=<station_number>
-		 */
-
-		private String firstName;
-		private String lastName;
-		private String address;
-		private String phone;
-		private int age;
-		private List<String> medications;
-		private List<String> allergies;
-
-		public String getFirstName() {
-			return firstName;
-		}
-
-		public void setFirstName(String firstName) {
-			this.firstName = firstName;
-		}
-
-		public String getLastName() {
-			return lastName;
-		}
-
-		public void setLastName(String lastName) {
-			this.lastName = lastName;
-		}
-
-		public String getAddress() {
-			return address;
-		}
-
-		public void setAddress(String address) {
-			this.address = address;
-		}
-
-		public String getPhone() {
-			return phone;
-		}
-
-		public void setPhone(String phone) {
-			this.phone = phone;
-		}
-
-		public int getAge() {
-			return age;
-		}
-
-		public void setAge(int age) {
-			this.age = age;
-		}
-
-		public List<String> getMedications() {
-			return medications;
-		}
-
-		public void setMedications(List<String> medications) {
-			this.medications = medications;
-		}
-
-		public List<String> getAllergies() {
-			return allergies;
-		}
-
-		public void setAllergies(List<String> allergies) {
-			this.allergies = allergies;
-		}
-
-		public FireURLPerson(Person person, MedicalRecord medicalRecord) {
-			super();
-			this.firstName = person.getFirstName();
-			this.lastName = person.getLastName();
-			this.address = person.getAddress();
-			this.phone = person.getPhone();
-			this.age = medicalRecord.calculateAge();
-			this.medications = medicalRecord.getMedications();
-			this.allergies = medicalRecord.getAllergies();
-		}
-	}
-
-	public class FloodStationsURLInfo {
-
-		/*
-		 * Collects the informations about a specific home to be returned at
-		 * flood/stations?stations=<a list of station_numbers>
-		 */
-
-		private List<FloodStationsURLPerson> persons = new ArrayList<FloodStationsURLPerson>();
-		private String fireStationNumber;
-
-		public List<FloodStationsURLPerson> getPersons() {
-			return persons;
-		}
-
-		public void setPersons(List<FloodStationsURLPerson> persons) {
-			this.persons = persons;
-		}
-
-		public String getFireStationNumber() {
-			return fireStationNumber;
-		}
-
-		public void setFireStationNumber(String station) {
-			this.fireStationNumber = station;
-		}
-
-		public void addResident(Person person, MedicalRecord medicalRecord) {
-			this.persons.add(new FloodStationsURLPerson(person, medicalRecord));
-		}
-	}
-
-	public class FloodStationsURLPerson {
-
-		/*
-		 * Collects the informations about a specific person to be returned at
-		 * flood/stations?stations=<a list of station_numbers>
-		 */
-
-		private String firstName;
-		private String lastName;
-		private String phone;
-		private int age;
-		private List<String> medications;
-		private List<String> allergies;
-
-		public String getFirstName() {
-			return firstName;
-		}
-
-		public void setFirstName(String firstName) {
-			this.firstName = firstName;
-		}
-
-		public String getLastName() {
-			return lastName;
-		}
-
-		public void setLastName(String lastName) {
-			this.lastName = lastName;
-		}
-
-		public String getPhone() {
-			return phone;
-		}
-
-		public void setPhone(String phone) {
-			this.phone = phone;
-		}
-
-		public int getAge() {
-			return age;
-		}
-
-		public void setAge(int age) {
-			this.age = age;
-		}
-
-		public List<String> getMedications() {
-			return medications;
-		}
-
-		public void setMedications(List<String> medications) {
-			this.medications = medications;
-		}
-
-		public List<String> getAllergies() {
-			return allergies;
-		}
-
-		public void setAllergies(List<String> allergies) {
-			this.allergies = allergies;
-		}
-
-		public FloodStationsURLPerson(Person person, MedicalRecord medicalRecord) {
-			super();
-			this.firstName = person.getFirstName();
-			this.lastName = person.getLastName();
-			this.phone = person.getPhone();
-			this.age = medicalRecord.calculateAge();
-			this.medications = medicalRecord.getMedications();
-			this.allergies = medicalRecord.getAllergies();
-		}
-	}
-
-	public class PersonInfoURLPerson {
-
-		/*
-		 * Collects the informations about a specific person to be returned at
-		 * personInfo?firstName=<firstName>&lastName=<lastName>
-		 */
-
-		private String firstName;
-		private String lastName;
-		private int age;
-		private String address;
-		private List<String> medications;
-		private List<String> allergies;
-
-		public String getFirstName() {
-			return firstName;
-		}
-
-		public void setFirstName(String firstName) {
-			this.firstName = firstName;
-		}
-
-		public String getLastName() {
-			return lastName;
-		}
-
-		public void setLastName(String lastName) {
-			this.lastName = lastName;
-		}
-
-		public int getAge() {
-			return age;
-		}
-
-		public void setAge(int age) {
-			this.age = age;
-		}
-
-		public String getAddress() {
-			return address;
-		}
-
-		public void setAddress(String address) {
-			this.address = address;
-		}
-
-		public List<String> getMedications() {
-			return medications;
-		}
-
-		public void setMedications(List<String> medications) {
-			this.medications = medications;
-		}
-
-		public List<String> getAllergies() {
-			return allergies;
-		}
-
-		public void setAllergies(List<String> allergies) {
-			this.allergies = allergies;
-		}
-
-		public PersonInfoURLPerson(Person person, MedicalRecord medicalRecord) {
-			super();
-			this.firstName = person.getFirstName();
-			this.lastName = person.getLastName();
-			this.age = medicalRecord.calculateAge();
-			this.address = person.getAddress();
-			this.medications = medicalRecord.getMedications();
-			this.allergies = medicalRecord.getAllergies();
-		}
-	}
-
-	@GetMapping(value = "/firestation", params = "stationNumber")
-	public FireStationURLInfo FireStationURL(@RequestParam(value = "stationNumber") String stationNumber) {
-
-		/**
-		 * Read - Get info on residents covered by a certain fire station or get all
-		 * fire stations
-		 * 
-		 * @param - An int corresponding to the fire station number
-		 * @return - An Iterable object of info on residents or of FireStation full
-		 *         filled
-		 */
-
-		FireStationURLInfo result = new FireStationURLInfo();
-		FireStation fireStationToSearch = new FireStation();
-
-		// get fire stations
-		fireStationToSearch.setStation(stationNumber);
-		ArrayList<FireStation> fireStations = new ArrayList<FireStation>(
-				fireStationService.getFireStation(fireStationToSearch));
-		// for every person covered by each fire station
-		for (FireStation fireStation : fireStations) {
-			Person personToSearch = new Person();
-			personToSearch.setAddress(fireStation.getAddress());
-			ArrayList<Person> persons = new ArrayList<Person>(personService.getPerson(personToSearch));
-			for (Person personInFireStation : persons) {
-				// get first name, last name, address and phone number of the resident
-				result.addPerson(new FireStationURLPerson(personInFireStation));
-				// get medical record of the resident
-				MedicalRecord medicalRecord = medicalRecordService.getMedicalRecord(personInFireStation);
-				// count as adult or child
-				if (medicalRecord.calculateAge() > 18)
-					result.addAdult();
-				else
-					result.addChild();
-			}
-		}
-		return result;
-	}
+	
+	int ageMaxChild = 18;
 
 	@GetMapping(value = "/childAlert", params = "address")
-	public ChildAlertURLInfo ChildAlertURL(@RequestParam(value = "address") String address) {
+	public ChildAlertURLInfo childAlertURL(@RequestParam(value = "address") String address) {
 
 		/**
 		 * Read - Get info on children living at a certain address and a list of all
@@ -558,7 +57,7 @@ public class UrlController {
 			MedicalRecord medicalRecord = medicalRecordService.getMedicalRecord(person);
 			// split between children and adults
 			int age = medicalRecord.calculateAge();
-			if (age < 18)
+			if (age <= ageMaxChild)
 				result.addChild(person, age);
 			else
 				result.addAdult(person);
@@ -567,7 +66,7 @@ public class UrlController {
 	}
 
 	@GetMapping(value = "/phoneAlert", params = "firestation")
-	public List<String> PhoneAlertURL(@RequestParam(value = "firestation") String firestation) {
+	public List<String> phoneAlertURL(@RequestParam(value = "firestation") String firestation) {
 
 		/**
 		 * Read - Get the phone numbers of every person corresponding to the station
@@ -597,7 +96,7 @@ public class UrlController {
 	}
 
 	@GetMapping(value = "/fire", params = "address")
-	public FireURLInfo FireURL(@RequestParam(value = "address") String address) {
+	public FireURLInfo fireURL(@RequestParam(value = "address") String address) {
 
 		/**
 		 * Read - Get info on every resident of the corresponding address
@@ -628,7 +127,7 @@ public class UrlController {
 	}
 
 	@GetMapping(value = "flood/stations", params = "stations")
-	public List<FloodStationsURLInfo> FloodStationsURL(@RequestParam(value = "stations") List<String> stations) {
+	public List<FloodStationsURLInfo> floodStationsURL(@RequestParam(value = "stations") List<String> stations) {
 
 		/**
 		 * Read - Get a list of residents corresponding to a list of fire stations
@@ -664,7 +163,7 @@ public class UrlController {
 	}
 
 	@GetMapping(value = "personInfo", params = { "firstName", "lastName" })
-	public List<PersonInfoURLPerson> PersonInfoURL(@RequestParam(value = "firstName") String firstName,
+	public List<PersonInfoURLPerson> personInfoURL(@RequestParam(value = "firstName") String firstName,
 			@RequestParam(value = "lastName") String lastName) {
 
 		/**
@@ -689,7 +188,7 @@ public class UrlController {
 	}
 
 	@GetMapping(value = "communityEmail", params = "city")
-	public List<String> CommunityEmailURL(@RequestParam(value = "city") String city) {
+	public List<String> communityEmailURL(@RequestParam(value = "city") String city) {
 
 		/**
 		 * Read - Get info on a person

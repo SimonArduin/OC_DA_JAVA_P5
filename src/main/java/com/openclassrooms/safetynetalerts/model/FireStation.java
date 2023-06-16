@@ -2,6 +2,8 @@ package com.openclassrooms.safetynetalerts.model;
 
 import java.lang.reflect.Field;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class FireStation {
 
 	private String address;
@@ -29,9 +31,41 @@ public class FireStation {
 		this.station = stationNumber;
 	}
 
+	@JsonIgnore
+	public Object[] getAllFields() {
+		Field[] fields = FireStation.class.getDeclaredFields();
+		Object[] result = new Object[fields.length];
+		try {
+			for (int i = 0; i < fields.length; i++)
+				result[i] = fields[i].get(this);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+	@JsonIgnore
+	public void setAllFields(Object[] objects) {
+		if (objects != null) {
+			Field[] fields = FireStation.class.getDeclaredFields();
+			if (fields.length == objects.length)
+				try {
+					for (int i = 0; i < fields.length; i++) {
+						if (objects[i] != null && objects[i].getClass().equals(fields[i].getType()))
+							fields[i].set(this, objects[i]);
+						else
+							fields[i].set(this, null);
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+		}
+	}
+
 	public FireStation() {
 	}
 
+	@JsonIgnore
 	public boolean isEmpty() {
 		try {
 			Field[] fields = this.getClass().getDeclaredFields();
@@ -71,23 +105,12 @@ public class FireStation {
 		return false;
 	}
 
-	public boolean update(FireStation fireStation) {
-		boolean result = false;
-		if (fireStation != null)
-			if (this.address != null && this.address.equals(fireStation.getAddress())) {
-				try {
-					Field[] fields = FireStation.class.getDeclaredFields();
-					for (int i = 0; i < fields.length; i++) {
-						if (fields[i].get(fireStation) != null
-								&& !fields[i].get(fireStation).equals(fields[i].get(this))) {
-							fields[i].set(this, fields[i].get(fireStation));
-						}
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				result = true;
-			}
-		return result;
+	public void update(FireStation fireStation) {
+		if (fireStation != null) {
+			if (fireStation.getAddress() != null)
+				this.address = fireStation.getAddress();
+			if (fireStation.getStation() != null)
+				this.station = fireStation.getStation();
+		}
 	}
 }

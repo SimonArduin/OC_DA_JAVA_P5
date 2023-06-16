@@ -1,4 +1,4 @@
-package com.openclassrooms.safetynetalerts;
+package com.openclassrooms.safetynetalerts.unit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -207,39 +207,34 @@ public class PersonTest {
 			assertFalse(personTest.equals(personOther));
 		}
 	}
-
+	
 	@Nested
 	class updateTests {
 
 		@Test
 		void updateTest() {
-			personTest.setFirstName(person.getFirstName());
-			personTest.setLastName(person.getLastName());
-			personTest.setAddress(personOther.getAddress());
-			personTest.setEmail(personOther.getEmail());
-			assertTrue(person.update(personTest));
-			assertEquals(personTest.getAddress(), person.getAddress());
-			assertEquals(personTest.getEmail(), person.getEmail());
+			person.update(personOther);
+			assertEquals(personOther, person);
 		}
 
 		@Test
 		void updateTestIfFirstEmpty() {
 			Person personBefore = personTest;
-			assertFalse(personTest.update(person));
+			personTest.update(person);
 			assertEquals(personBefore, personTest);
 		}
 
 		@Test
 		void updateTestIfSecondEmpty() {
 			Person personBefore = person;
-			assertFalse(person.update(personTest));
+			person.update(personTest);
 			assertEquals(personBefore, person);
 		}
-
+		
 		@Test
 		void updateTestIfNull() {
 			Person personBefore = person;
-			assertFalse(person.update(null));
+			person.update(null);
 			assertEquals(personBefore, person);
 		}
 
@@ -247,14 +242,7 @@ public class PersonTest {
 		void updateTestIfSame() {
 			Person personBefore = person;
 			personTest = person;
-			assertTrue(person.update(personTest));
-			assertEquals(personBefore, person);
-		}
-
-		@Test
-		void updateTestIfNotSameName() {
-			Person personBefore = person;
-			assertFalse(person.update(personOther));
+			person.update(personTest);
 			assertEquals(personBefore, person);
 		}
 	}

@@ -1,4 +1,4 @@
-package com.openclassrooms.safetynetalerts;
+package com.openclassrooms.safetynetalerts.unit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -194,39 +194,34 @@ public class MedicalRecordTest {
 			assertFalse(medicalRecordTest.equals(medicalRecordOther));
 		}
 	}
-
+	
 	@Nested
 	class updateTests {
 
 		@Test
 		void updateTest() {
-			medicalRecordTest.setFirstName(medicalRecord.getFirstName());
-			medicalRecordTest.setLastName(medicalRecord.getLastName());
-			medicalRecordTest.setBirthdate(medicalRecordOther.getBirthdate());
-			medicalRecordTest.setMedications(medicalRecordOther.getMedications());
-			assertTrue(medicalRecord.update(medicalRecordTest));
-			assertEquals(medicalRecordTest.getBirthdate(), medicalRecord.getBirthdate());
-			assertEquals(medicalRecordTest.getMedications(), medicalRecord.getMedications());
+			medicalRecord.update(medicalRecordOther);
+			assertEquals(medicalRecordOther, medicalRecord);
 		}
 
 		@Test
 		void updateTestIfFirstEmpty() {
 			MedicalRecord medicalRecordBefore = medicalRecordTest;
-			assertFalse(medicalRecordTest.update(medicalRecord));
+			medicalRecordTest.update(medicalRecord);
 			assertEquals(medicalRecordBefore, medicalRecordTest);
 		}
 
 		@Test
 		void updateTestIfSecondEmpty() {
 			MedicalRecord medicalRecordBefore = medicalRecord;
-			assertFalse(medicalRecord.update(medicalRecordTest));
+			medicalRecord.update(medicalRecordTest);
 			assertEquals(medicalRecordBefore, medicalRecord);
 		}
 		
 		@Test
 		void updateTestIfNull() {
 			MedicalRecord medicalRecordBefore = medicalRecord;
-			assertFalse(medicalRecord.update(null));
+			medicalRecord.update(null);
 			assertEquals(medicalRecordBefore, medicalRecord);
 		}
 
@@ -234,14 +229,7 @@ public class MedicalRecordTest {
 		void updateTestIfSame() {
 			MedicalRecord medicalRecordBefore = medicalRecord;
 			medicalRecordTest = medicalRecord;
-			assertTrue(medicalRecord.update(medicalRecordTest));
-			assertEquals(medicalRecordBefore, medicalRecord);
-		}
-
-		@Test
-		void updateTestIfNotSameName() {
-			MedicalRecord medicalRecordBefore = medicalRecord;
-			assertFalse(medicalRecord.update(medicalRecordOther));
+			medicalRecord.update(medicalRecordTest);
 			assertEquals(medicalRecordBefore, medicalRecord);
 		}
 	}

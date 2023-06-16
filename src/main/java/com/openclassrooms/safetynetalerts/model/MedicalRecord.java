@@ -6,6 +6,8 @@ import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class MedicalRecord {
 
 	private String firstName;
@@ -83,6 +85,7 @@ public class MedicalRecord {
 			return 999;
 	}
 
+	@JsonIgnore
 	public boolean isEmpty() {
 		try {
 			Field[] fields = MedicalRecord.class.getDeclaredFields();
@@ -129,24 +132,18 @@ public class MedicalRecord {
 		return false;
 	}
 
-	public boolean update(MedicalRecord medicalRecord) {
-		boolean result = false;
-		if (medicalRecord != null)
-			if (this.firstName != null && this.firstName.equals(medicalRecord.getFirstName()) && this.lastName != null
-					&& this.lastName.equals(medicalRecord.getLastName())) {
-				try {
-					Field[] fields = MedicalRecord.class.getDeclaredFields();
-					for (int i = 0; i < fields.length; i++) {
-						if (fields[i].get(medicalRecord) != null
-								&& !fields[i].get(medicalRecord).equals(fields[i].get(this))) {
-							fields[i].set(this, fields[i].get(medicalRecord));
-						}
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				result = true;
-			}
-		return result;
+	public void update(MedicalRecord medicalRecord) {
+		if (medicalRecord != null) {
+			if (medicalRecord.getFirstName() != null)
+				this.firstName = medicalRecord.getFirstName();
+			if (medicalRecord.getLastName() != null)
+				this.lastName = medicalRecord.getLastName();
+			if (medicalRecord.getBirthdate() != null)
+				this.birthdate = medicalRecord.getBirthdate();
+			if (medicalRecord.getMedications() != null)
+				this.medications = medicalRecord.getMedications();
+			if (medicalRecord.getAllergies() != null)
+				this.allergies = medicalRecord.getAllergies();
+		}
 	}
 }

@@ -1,4 +1,4 @@
-package com.openclassrooms.safetynetalerts;
+package com.openclassrooms.safetynetalerts.unit;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -85,80 +85,6 @@ public class UrlControllerTest {
 
 	@Test
 	void contextLoads() {
-	}
-
-	@Nested
-	class FireStationURLTests {
-
-		@Test
-		public void FireStationURLTest() throws Exception {
-			mockMvc.perform(get(String.format("/firestation?stationNumber=%s", fireStation.getStation())))
-					.andExpect(status().isOk())
-
-					.andExpect(jsonPath("persons.[0].firstName", is(person.getFirstName())))
-					.andExpect(jsonPath("persons.[0].lastName", is(person.getLastName())))
-					.andExpect(jsonPath("persons.[0].address", is(person.getAddress())))
-					.andExpect(jsonPath("persons.[0].phone", is(person.getPhone())))
-
-					.andExpect(jsonPath("persons.[1].firstName", is(personChild.getFirstName())))
-					.andExpect(jsonPath("persons.[1].lastName", is(personChild.getLastName())))
-					.andExpect(jsonPath("persons.[1].address", is(personChild.getAddress())))
-					.andExpect(jsonPath("persons.[1].phone", is(personChild.getPhone())))
-
-					.andExpect(jsonPath("numberOfAdults", is(numberOfAdults)))
-					.andExpect(jsonPath("numberOfChildren", is(numberOfChildren)));
-
-			verify(fireStationService, Mockito.times(1)).getFireStation(any(FireStation.class));
-			verify(personService, Mockito.times(numberOfFireStationByStationNumber)).getPerson(any(Person.class));
-			verify(medicalRecordService, Mockito.times(2)).getMedicalRecord(any(Person.class));
-		}
-
-		@Test
-		public void FireStationURLTestIfEmptyParams() throws Exception {
-			Mockito.when(fireStationService.getFireStation(any(FireStation.class)))
-					.thenReturn(new ArrayList<FireStation>());
-			mockMvc.perform(get(String.format("/firestation?stationNumber=%s", nullValue())))
-					.andExpect(status().isOk()).andExpect(jsonPath("numberOfAdults", is(0)))
-					.andExpect(jsonPath("numberOfChildren", is(0)));
-
-			verify(fireStationService, Mockito.times(1)).getFireStation(any(FireStation.class));
-			verify(personService, Mockito.times(0)).getPerson(any(Person.class));
-			verify(medicalRecordService, Mockito.times(0)).getMedicalRecord(any(Person.class));
-		}
-
-		@Test
-		public void FireStationURLTestIfNoParams() throws Exception {
-			mockMvc.perform(get(String.format("/firestation"))).andExpect(status().is(400));
-
-			verify(fireStationService, Mockito.times(0)).getFireStation(any(FireStation.class));
-			verify(personService, Mockito.times(0)).getPerson(any(Person.class));
-			verify(medicalRecordService, Mockito.times(0)).getMedicalRecord(any(Person.class));
-		}
-
-		@Test
-		public void FireStationURLTestIfNoFireStation() throws Exception {
-			Mockito.when(fireStationService.getFireStation(any(FireStation.class)))
-					.thenReturn(new ArrayList<FireStation>());
-			mockMvc.perform(get(String.format("/firestation?stationNumber=%s", fireStation.getStation())))
-					.andExpect(status().isOk()).andExpect(jsonPath("numberOfAdults", is(0)))
-					.andExpect(jsonPath("numberOfChildren", is(0)));
-
-			verify(fireStationService, Mockito.times(1)).getFireStation(any(FireStation.class));
-			verify(personService, Mockito.times(0)).getPerson(any(Person.class));
-			verify(medicalRecordService, Mockito.times(0)).getMedicalRecord(any(Person.class));
-		}
-
-		@Test
-		public void FireStationURLTestIfNoPersons() throws Exception {
-			Mockito.when(personService.getPerson(any(Person.class))).thenReturn(new ArrayList<Person>());
-			mockMvc.perform(get(String.format("/firestation?stationNumber=%s", fireStation.getStation())))
-					.andExpect(status().isOk()).andExpect(jsonPath("numberOfAdults", is(0)))
-					.andExpect(jsonPath("numberOfChildren", is(0)));
-
-			verify(fireStationService, Mockito.times(1)).getFireStation(any(FireStation.class));
-			verify(personService, Mockito.times(numberOfFireStationByStationNumber)).getPerson(any(Person.class));
-			verify(medicalRecordService, Mockito.times(0)).getMedicalRecord(any(Person.class));
-		}
 	}
 
 	@Nested

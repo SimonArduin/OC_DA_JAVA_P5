@@ -1,8 +1,10 @@
-package com.openclassrooms.safetynetalerts;
+package com.openclassrooms.safetynetalerts.unit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.Arrays;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -17,16 +19,49 @@ public class FireStationTest {
 	FireStation fireStation;
 	FireStation fireStationOther;
 	FireStation fireStationTest;
+	Object[] objects = new Object[FireStation.class.getDeclaredFields().length];
 
 	@BeforeEach
 	void setUpPerTest() {
 		fireStation = new FireStation("address", "station");
 		fireStationOther = new FireStation("otherAddress", "otherStation");
 		fireStationTest = new FireStation();
+		objects[0] = fireStation.getAddress();
+		objects[1] = fireStation.getStation();
 	}
 
 	@Test
 	void contextLoads() {
+	}
+	@Nested
+	
+	class setAllFieldsTests {
+
+		@Test
+		void setAllFieldsTest() {
+			fireStationTest.setAllFields(objects);
+			assertEquals(fireStation, fireStationTest);
+		}
+
+		@Test
+		void setAllFieldsTestIfEmpty() {
+			Arrays.fill(objects, null);
+			fireStationTest.setAllFields(objects);
+			assertEquals(new FireStation(), fireStationTest);
+		}
+
+		@Test
+		void setAllFieldsTestIfNull() {
+			fireStationTest.setAllFields(null);
+			assertEquals(new FireStation(), fireStationTest);
+		}
+
+		@Test
+		void setAllFieldsTestIfNotSameType() {
+			Arrays.fill(objects, 1);
+			fireStationTest.setAllFields(objects);
+			assertEquals(new FireStation(), fireStationTest);
+		}
 	}
 
 	@Nested
@@ -124,31 +159,28 @@ public class FireStationTest {
 
 		@Test
 		void updateTest() {
-			fireStationTest.setAddress(fireStation.getAddress());
-			fireStationTest.setStation(fireStationOther.getStation());
-			assertTrue(fireStation.update(fireStationTest));
-			assertEquals(fireStationTest.getAddress(), fireStation.getAddress());
-			assertEquals(fireStationTest.getStation(), fireStation.getStation());
+			fireStation.update(fireStationOther);
+			assertEquals(fireStationOther, fireStation);
 		}
 
 		@Test
 		void updateTestIfFirstEmpty() {
 			FireStation fireStationBefore = fireStationTest;
-			assertFalse(fireStationTest.update(fireStation));
+			fireStationTest.update(fireStation);
 			assertEquals(fireStationBefore, fireStationTest);
 		}
 
 		@Test
 		void updateTestIfSecondEmpty() {
 			FireStation fireStationBefore = fireStation;
-			assertFalse(fireStation.update(fireStationTest));
+			fireStation.update(fireStationTest);
 			assertEquals(fireStationBefore, fireStation);
 		}
-
+		
 		@Test
 		void updateTestIfNull() {
 			FireStation fireStationBefore = fireStation;
-			assertFalse(fireStation.update(null));
+			fireStation.update(null);
 			assertEquals(fireStationBefore, fireStation);
 		}
 
@@ -156,14 +188,7 @@ public class FireStationTest {
 		void updateTestIfSame() {
 			FireStation fireStationBefore = fireStation;
 			fireStationTest = fireStation;
-			assertTrue(fireStation.update(fireStationTest));
-			assertEquals(fireStationBefore, fireStation);
-		}
-
-		@Test
-		void updateTestIfNotSameName() {
-			FireStation fireStationBefore = fireStation;
-			assertFalse(fireStation.update(fireStationOther));
+			fireStation.update(fireStationTest);
 			assertEquals(fireStationBefore, fireStation);
 		}
 	}

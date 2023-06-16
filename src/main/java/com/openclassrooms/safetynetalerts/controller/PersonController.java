@@ -45,6 +45,9 @@ public class PersonController {
 			person.setPhone(phone.get());
 		if (email.isPresent())
 			person.setEmail(email.get());
+		/*if(true)
+			throw new ResourceNotFoundException();
+			*/
 		return personService.putPerson(person);
 	}
 

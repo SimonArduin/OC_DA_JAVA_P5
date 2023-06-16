@@ -1,4 +1,4 @@
-package com.openclassrooms.safetynetalerts;
+package com.openclassrooms.safetynetalerts.unit;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;

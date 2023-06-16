@@ -1,4 +1,4 @@
-package com.openclassrooms.safetynetalerts;
+package com.openclassrooms.safetynetalerts.unit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

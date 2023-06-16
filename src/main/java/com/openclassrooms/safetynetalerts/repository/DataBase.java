@@ -46,7 +46,7 @@ public class DataBase {
 
 	public static DataBase getDataBase() {
 		if (instance == null)
-			instance = new DataBase();
+			instance = readDataBase();
 		return instance;
 	}
 	

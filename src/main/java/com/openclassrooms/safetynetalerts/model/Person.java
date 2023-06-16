@@ -2,6 +2,8 @@ package com.openclassrooms.safetynetalerts.model;
 
 import java.lang.reflect.Field;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class Person {
 
 	private String firstName;
@@ -89,6 +91,7 @@ public class Person {
 	public Person() {
 	}
 
+	@JsonIgnore
 	public boolean isEmpty() {
 		try {
 			Field[] fields = this.getClass().getDeclaredFields();
@@ -135,23 +138,22 @@ public class Person {
 		return false;
 	}
 
-	public boolean update(Person person) {
-		boolean result = false;
-		if (person != null)
-			if (this.firstName != null && this.firstName.equals(person.getFirstName()) && this.lastName != null
-					&& this.lastName.equals(person.getLastName())) {
-				try {
-					Field[] fields = Person.class.getDeclaredFields();
-					for (int i = 0; i < fields.length; i++) {
-						if (fields[i].get(person) != null && !fields[i].get(person).equals(fields[i].get(this))) {
-							fields[i].set(this, fields[i].get(person));
-						}
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				result = true;
-			}
-		return result;
+	public void update(Person person) {
+		if (person != null) {
+			if (person.getFirstName() != null)
+				this.firstName = person.getFirstName();
+			if (person.getLastName() != null)
+				this.lastName = person.getLastName();
+			if (person.getAddress() != null)
+				this.address = person.getAddress();
+			if (person.getCity() != null)
+				this.city = person.getCity();
+			if (person.getZip() != null)
+				this.zip = person.getZip();
+			if (person.getPhone() != null)
+				this.phone = person.getPhone();
+			if (person.getEmail() != null)
+				this.email = person.getEmail();
+		}
 	}
 }
