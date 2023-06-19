@@ -6,7 +6,7 @@ import java.util.List;
 import com.openclassrooms.safetynetalerts.model.MedicalRecord;
 import com.openclassrooms.safetynetalerts.model.Person;
 
-public class FireURLInfo {
+public class FireURLDto {
 
 	/*
 	 * Collects all the informations to be returned at fire?address=<address>

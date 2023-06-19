@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.openclassrooms.safetynetalerts.model.Person;
 
-public class ChildAlertURLInfo {
+public class ChildAlertURLDto {
 
 	/*
 	 * Collects all the informations to be returned at childAlert?address=<address>

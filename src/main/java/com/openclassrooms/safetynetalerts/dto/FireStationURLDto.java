@@ -3,7 +3,7 @@ package com.openclassrooms.safetynetalerts.dto;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FireStationURLInfo {
+public class FireStationURLDto {
 
 	/*
 	 * Collects all the informations to be returned at

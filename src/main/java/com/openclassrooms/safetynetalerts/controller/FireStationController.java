@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-import com.openclassrooms.safetynetalerts.dto.FireStationURLInfo;
+import com.openclassrooms.safetynetalerts.dto.FireStationURLDto;
 import com.openclassrooms.safetynetalerts.dto.FireStationURLPerson;
 import com.openclassrooms.safetynetalerts.model.FireStation;
 import com.openclassrooms.safetynetalerts.model.MedicalRecord;
@@ -81,7 +81,7 @@ public class FireStationController {
 	}
 
 	@GetMapping(params = "stationNumber")
-	public FireStationURLInfo fireStationURL(String stationNumber) {
+	public FireStationURLDto fireStationURL(String stationNumber) {
 	
 		/**
 		 * Read - Get info on residents covered by a certain fire station or get all
@@ -92,7 +92,7 @@ public class FireStationController {
 		 *         filled
 		 */
 	
-		FireStationURLInfo result = new FireStationURLInfo();
+		FireStationURLDto result = new FireStationURLDto();
 		FireStation fireStationToSearch = new FireStation();
 	
 		// get fire stations

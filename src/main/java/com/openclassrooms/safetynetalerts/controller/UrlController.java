@@ -9,10 +9,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-import com.openclassrooms.safetynetalerts.dto.ChildAlertURLInfo;
-import com.openclassrooms.safetynetalerts.dto.FireURLInfo;
-import com.openclassrooms.safetynetalerts.dto.FloodStationsURLInfo;
+import com.openclassrooms.safetynetalerts.dto.ChildAlertURLDto;
+import com.openclassrooms.safetynetalerts.dto.CommunityEmailURLDto;
+import com.openclassrooms.safetynetalerts.dto.FireURLDto;
+import com.openclassrooms.safetynetalerts.dto.FloodStationsURLDto;
+import com.openclassrooms.safetynetalerts.dto.FloodStationsURLHome;
+import com.openclassrooms.safetynetalerts.dto.PersonInfoURLDto;
 import com.openclassrooms.safetynetalerts.dto.PersonInfoURLPerson;
+import com.openclassrooms.safetynetalerts.dto.PhoneAlertURLDto;
 import com.openclassrooms.safetynetalerts.model.FireStation;
 import com.openclassrooms.safetynetalerts.model.MedicalRecord;
 import com.openclassrooms.safetynetalerts.model.Person;
@@ -22,7 +26,7 @@ import com.openclassrooms.safetynetalerts.service.PersonService;
 
 @RestController
 @EnableWebMvc
-public class UrlController {
+public class URLController {
 
 	@Autowired
 	FireStationService fireStationService;
@@ -36,7 +40,7 @@ public class UrlController {
 	int ageMaxChild = 18;
 
 	@GetMapping(value = "/childAlert", params = "address")
-	public ChildAlertURLInfo childAlertURL(@RequestParam(value = "address") String address) {
+	public ChildAlertURLDto childAlertURL(@RequestParam(value = "address") String address) {
 
 		/**
 		 * Read - Get info on children living at a certain address and a list of all
@@ -46,7 +50,7 @@ public class UrlController {
 		 * @return - A ChildAlertURLInfo object
 		 */
 
-		ChildAlertURLInfo result = new ChildAlertURLInfo();
+		ChildAlertURLDto result = new ChildAlertURLDto();
 		Person personToSearch = new Person();
 
 		// get persons at the address
@@ -66,7 +70,7 @@ public class UrlController {
 	}
 
 	@GetMapping(value = "/phoneAlert", params = "firestation")
-	public List<String> phoneAlertURL(@RequestParam(value = "firestation") String firestation) {
+	public PhoneAlertURLDto phoneAlertURL(@RequestParam(value = "firestation") String firestation) {
 
 		/**
 		 * Read - Get the phone numbers of every person corresponding to the station
@@ -76,7 +80,7 @@ public class UrlController {
 		 * @return - A List<String> containing phone numbers
 		 */
 
-		List<String> result = new ArrayList<String>();
+		PhoneAlertURLDto result = new PhoneAlertURLDto();
 		FireStation fireStationToSearch = new FireStation();
 		Person personToSearch = new Person();
 
@@ -89,14 +93,14 @@ public class UrlController {
 			personToSearch.setAddress(fireStationInDB.getAddress());
 			ArrayList<Person> persons = new ArrayList<Person>(personService.getPerson(personToSearch));
 			for (Person personInDB : persons) {
-				result.add(personInDB.getPhone());
+				result.addPhone(personInDB.getPhone());
 			}
 		}
 		return result;
 	}
 
 	@GetMapping(value = "/fire", params = "address")
-	public FireURLInfo fireURL(@RequestParam(value = "address") String address) {
+	public FireURLDto fireURL(@RequestParam(value = "address") String address) {
 
 		/**
 		 * Read - Get info on every resident of the corresponding address
@@ -105,7 +109,7 @@ public class UrlController {
 		 * @return - A FireURLInfo object
 		 */
 
-		FireURLInfo result = new FireURLInfo();
+		FireURLDto result = new FireURLDto();
 		FireStation fireStationToSearch = new FireStation();
 		Person personToSearch = new Person();
 
@@ -127,7 +131,7 @@ public class UrlController {
 	}
 
 	@GetMapping(value = "flood/stations", params = "stations")
-	public List<FloodStationsURLInfo> floodStationsURL(@RequestParam(value = "stations") List<String> stations) {
+	public FloodStationsURLDto floodStationsURL(@RequestParam(value = "stations") List<String> stations) {
 
 		/**
 		 * Read - Get a list of residents corresponding to a list of fire stations
@@ -136,7 +140,7 @@ public class UrlController {
 		 * @return - A FloodStationsURLInfo object
 		 */
 
-		ArrayList<FloodStationsURLInfo> result = new ArrayList<FloodStationsURLInfo>();
+		FloodStationsURLDto result = new FloodStationsURLDto();
 		FireStation fireStationToSearch = new FireStation();
 		Person personToSearch = new Person();
 
@@ -147,7 +151,7 @@ public class UrlController {
 					fireStationService.getFireStation(fireStationToSearch));
 			// get homes
 			for (FireStation fireStation : fireStations) {
-				FloodStationsURLInfo home = new FloodStationsURLInfo();
+				FloodStationsURLHome home = new FloodStationsURLHome();
 				home.setFireStationNumber(fireStation.getStation());
 				// get residents
 				personToSearch.setAddress(fireStation.getAddress());
@@ -156,14 +160,14 @@ public class UrlController {
 					MedicalRecord medicalRecord = medicalRecordService.getMedicalRecord(person);
 					home.addResident(person, medicalRecord);
 				}
-				result.add(home);
+				result.addHome(home);
 			}
 		}
 		return result;
 	}
 
 	@GetMapping(value = "personInfo", params = { "firstName", "lastName" })
-	public List<PersonInfoURLPerson> personInfoURL(@RequestParam(value = "firstName") String firstName,
+	public PersonInfoURLDto personInfoURL(@RequestParam(value = "firstName") String firstName,
 			@RequestParam(value = "lastName") String lastName) {
 
 		/**
@@ -173,7 +177,7 @@ public class UrlController {
 		 * @return - A List<personInfoURLPerson> object
 		 */
 
-		ArrayList<PersonInfoURLPerson> result = new ArrayList<PersonInfoURLPerson>();
+		PersonInfoURLDto result = new PersonInfoURLDto();
 		Person personToSearch = new Person();
 		personToSearch.setFirstName(firstName);
 		personToSearch.setLastName(lastName);
@@ -182,13 +186,13 @@ public class UrlController {
 		// get medical record
 		for (Person person : persons) {
 			MedicalRecord medicalRecord = medicalRecordService.getMedicalRecord(person);
-			result.add(new PersonInfoURLPerson(person, medicalRecord));
+			result.addPerson(new PersonInfoURLPerson(person, medicalRecord));
 		}
 		return result;
 	}
 
 	@GetMapping(value = "communityEmail", params = "city")
-	public List<String> communityEmailURL(@RequestParam(value = "city") String city) {
+	public CommunityEmailURLDto communityEmailURL(@RequestParam(value = "city") String city) {
 
 		/**
 		 * Read - Get info on a person
@@ -197,14 +201,14 @@ public class UrlController {
 		 * @return - A List<personInfoURLPerson> object
 		 */
 
-		ArrayList<String> result = new ArrayList<String>();
+		CommunityEmailURLDto result = new CommunityEmailURLDto();
 		Person personToSearch = new Person();
 		personToSearch.setCity(city);
 		// get persons
 		ArrayList<Person> persons = new ArrayList<Person>(personService.getPerson(personToSearch));
 		// get emails
 		for (Person person : persons) {
-			result.add(person.getEmail());
+			result.addEmail(person.getEmail());
 		}
 		return result;
 	}

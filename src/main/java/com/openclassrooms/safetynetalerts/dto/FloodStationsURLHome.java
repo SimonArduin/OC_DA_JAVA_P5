@@ -6,7 +6,7 @@ import java.util.List;
 import com.openclassrooms.safetynetalerts.model.MedicalRecord;
 import com.openclassrooms.safetynetalerts.model.Person;
 
-public class FloodStationsURLInfo {
+public class FloodStationsURLHome {
 
 	/*
 	 * Collects the informations about a specific home to be returned at
@@ -35,4 +35,5 @@ public class FloodStationsURLInfo {
 	public void addResident(Person person, MedicalRecord medicalRecord) {
 		this.persons.add(new FloodStationsURLPerson(person, medicalRecord));
 	}
+
 }
