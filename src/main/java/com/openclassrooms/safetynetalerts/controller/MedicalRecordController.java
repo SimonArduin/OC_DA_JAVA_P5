@@ -19,7 +19,7 @@ import java.util.Optional;
 public class MedicalRecordController {
 
 	@Autowired
-	MedicalRecordService medicalRecordService;
+	private MedicalRecordService medicalRecordService;
 
 	/**
 	 * Put - Changes the fields of a medicalRecord in the database

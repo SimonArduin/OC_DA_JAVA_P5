@@ -72,14 +72,6 @@ public class FireStationRepositoryTest {
 		}
 	}
 
-	@Test
-	public void getAllTest() {
-		ArrayList<FireStation> result = new ArrayList<FireStation>(fireStationRepository.getAll());
-		verify(dataBase, Mockito.times(1)).getFireStations();
-		assertEquals(fireStations.size(), result.size());
-		assertTrue(result.contains(fireStation));
-	}
-
 	@Nested
 	class getTests {
 

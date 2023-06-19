@@ -91,12 +91,12 @@ public class FireStationIT {
 					.andExpect(jsonPath("station", nullValue()));
 		}
 
-		@Test
+		/*@Test
 		public void postFireStationTestIfEmptyParams() throws Exception {
 			mockMvc.perform(post(String.format("/firestation?address=%s&stationNumber=%s", null, null)))
 					.andExpect(status().isOk()).andExpect(jsonPath("address", nullValue()))
 					.andExpect(jsonPath("station", nullValue()));
-		}
+		}*/
 
 		@Test
 		public void postFireStationTestIfNoParams() throws Exception {

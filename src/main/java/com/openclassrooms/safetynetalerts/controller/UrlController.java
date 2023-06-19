@@ -29,15 +29,15 @@ import com.openclassrooms.safetynetalerts.service.PersonService;
 public class URLController {
 
 	@Autowired
-	FireStationService fireStationService;
+	private FireStationService fireStationService;
 
 	@Autowired
-	PersonService personService;
+	private PersonService personService;
 
 	@Autowired
-	MedicalRecordService medicalRecordService;
-	
-	int ageMaxChild = 18;
+	private MedicalRecordService medicalRecordService;
+
+	private int ageMaxChild = 18;
 
 	@GetMapping(value = "/childAlert", params = "address")
 	public ChildAlertURLDto childAlertURL(@RequestParam(value = "address") String address) {

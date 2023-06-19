@@ -15,9 +15,9 @@ public class DataBase {
 
 	private static DataBase instance;
 
-	public List<FireStation> firestations;
-	public List<Person> persons;
-	public List<MedicalRecord> medicalrecords;
+	private List<FireStation> firestations;
+	private List<Person> persons;
+	private List<MedicalRecord> medicalrecords;
 
 	private DataBase() {
 		try {
@@ -28,7 +28,7 @@ public class DataBase {
 			for (String current : lines)
 				fullFile += current;
 
-			FullJson fullData = JsonIterator.deserialize(fullFile, FullJson.class);
+			DataBaseStructure fullData = JsonIterator.deserialize(fullFile, DataBaseStructure.class);
 			this.firestations = fullData.firestations;
 			this.persons = fullData.persons;
 			this.medicalrecords = fullData.medicalrecords;

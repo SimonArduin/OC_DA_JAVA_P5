@@ -72,14 +72,6 @@ public class PersonRepositoryTest {
 		}
 	}
 
-	@Test
-	public void getAllTest() {
-		ArrayList<Person> result = new ArrayList<Person>(personRepository.getAll());
-		verify(dataBase, Mockito.times(1)).getPersons();
-		assertEquals(persons.size(), result.size());
-		assertTrue(result.contains(person));
-	}
-
 	@Nested
 	class getTests {
 

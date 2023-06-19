@@ -47,15 +47,6 @@ public class FireStationService {
 	}
 
 	/*
-	 * Get every fire stations
-	 * 
-	 * @return - An Iterable<FireStation>
-	 */
-	public List<FireStation> getAllFireStations() {
-		return fireStationRepository.getAll();
-	}
-
-	/*
 	 * Adds a fire station
 	 * 
 	 * @param - A FireStation representing a fire station

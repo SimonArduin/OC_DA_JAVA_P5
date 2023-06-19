@@ -17,7 +17,7 @@ import java.util.Optional;
 public class PersonController {
 
 	@Autowired
-	PersonService personService;
+	private PersonService personService;
 
 	/**
 	 * Put - Changes the fields of a person in the database

@@ -35,7 +35,6 @@ public class FireStationServiceTest {
 	private void setUp() {
 		when(fireStationRepository.delete(any(FireStation.class))).thenReturn(fireStation);
 		when(fireStationRepository.get(any(FireStation.class))).thenReturn(new ArrayList<FireStation>(Arrays.asList(fireStation)));
-		when(fireStationRepository.getAll()).thenReturn(new ArrayList<FireStation>(Arrays.asList(fireStation)));
 		when(fireStationRepository.save(any(FireStation.class))).thenReturn(fireStation);
 	}
 
@@ -114,23 +113,6 @@ public class FireStationServiceTest {
 			when(fireStationRepository.get(null)).thenReturn(new ArrayList<FireStation>());
 			assertEquals(new ArrayList<FireStation>(), fireStationService.getFireStation(null));
 			verify(fireStationRepository, Mockito.times(1)).get(null);
-		}
-	}
-
-	@Nested
-	class getAllFireStationTests {
-
-		@Test
-		public void getAllFireStationsTest() {
-			assertEquals(fireStationList, fireStationService.getAllFireStations());
-			verify(fireStationRepository, Mockito.times(1)).getAll();
-		}
-
-		@Test
-		public void getAllFireStationsTestIfDBIsEmpty() {
-			when(fireStationRepository.getAll()).thenReturn(new ArrayList<FireStation>());
-			assertEquals(new ArrayList<FireStation>(), fireStationService.getAllFireStations());
-			verify(fireStationRepository, Mockito.times(1)).getAll();
 		}
 	}
 

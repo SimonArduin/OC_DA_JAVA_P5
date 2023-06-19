@@ -16,10 +16,6 @@ public class FloodStationsURLDto {
 		return homes;
 	}
 
-	public void setHomes(List<FloodStationsURLHome> homes) {
-		this.homes = homes;
-	}
-
 	public void addHome(FloodStationsURLHome home) {
 		this.homes.add(home);
 	}

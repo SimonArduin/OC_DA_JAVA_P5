@@ -23,10 +23,6 @@ public class FireStationRepository {
 		return dataBase.removeFireStation(fireStation);
 	}
 
-	public List<FireStation> getAll() {
-		return dataBase.getFireStations();
-	}
-
 	public List<FireStation> get(FireStation fireStation) {
 		return dataBase.getFireStations(fireStation);
 	}

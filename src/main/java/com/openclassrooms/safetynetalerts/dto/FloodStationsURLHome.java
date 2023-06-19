@@ -15,13 +15,9 @@ public class FloodStationsURLHome {
 
 	private List<FloodStationsURLPerson> persons = new ArrayList<FloodStationsURLPerson>();
 	private String fireStationNumber;
-
+	
 	public List<FloodStationsURLPerson> getPersons() {
 		return persons;
-	}
-
-	public void setPersons(List<FloodStationsURLPerson> persons) {
-		this.persons = persons;
 	}
 
 	public String getFireStationNumber() {

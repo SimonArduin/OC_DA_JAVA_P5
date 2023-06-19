@@ -23,10 +23,6 @@ public class PersonRepository {
 		return dataBase.removePerson(person);
 	}
 
-	public List<Person> getAll() {
-		return dataBase.getPersons();
-	}
-
 	public List<Person> get(Person person) {
 		return dataBase.getPersons(person);
 	}

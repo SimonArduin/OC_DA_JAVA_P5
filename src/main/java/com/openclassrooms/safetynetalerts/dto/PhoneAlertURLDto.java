@@ -10,15 +10,11 @@ public class PhoneAlertURLDto {
 	 */
 	
 	private List<String> phones = new ArrayList<String>();
-
+	
 	public List<String> getPhones() {
 		return phones;
 	}
 
-	public void setPhones(List<String> phones) {
-		this.phones = phones;
-	}
-	
 	public void addPhone(String phone) {
 		this.phones.add(phone);
 	}

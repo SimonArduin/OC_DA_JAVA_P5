@@ -18,32 +18,20 @@ public class FireStationURLDto {
 		return persons;
 	}
 
-	public void setPersons(List<FireStationURLPerson> persons) {
-		this.persons = persons;
-	}
-
-	public void addPerson(FireStationURLPerson person) {
-		this.persons.add(person);
-	}
-
 	public Integer getNumberOfAdults() {
 		return numberOfAdults;
-	}
-
-	public void setNumberOfAdults(Integer numberOfAdults) {
-		this.numberOfAdults = numberOfAdults;
-	}
-
-	public void addAdult() {
-		this.numberOfAdults++;
 	}
 
 	public Integer getNumberOfChildren() {
 		return numberOfChildren;
 	}
 
-	public void setNumberOfChildren(Integer numberOfChildren) {
-		this.numberOfChildren = numberOfChildren;
+	public void addPerson(FireStationURLPerson person) {
+		this.persons.add(person);
+	}
+
+	public void addAdult() {
+		this.numberOfAdults++;
 	}
 
 	public void addChild() {

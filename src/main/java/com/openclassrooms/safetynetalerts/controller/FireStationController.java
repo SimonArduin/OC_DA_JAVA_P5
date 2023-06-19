@@ -29,15 +29,15 @@ import java.util.Optional;
 public class FireStationController {
 
 	@Autowired
-	FireStationService fireStationService;
+	private FireStationService fireStationService;
 
 	@Autowired
-	PersonService personService;
+	private PersonService personService;
 
 	@Autowired
-	MedicalRecordService medicalRecordService;
+	private MedicalRecordService medicalRecordService;
 	
-	int ageMaxChild = 18;
+	private int ageMaxChild = 18;
 
 	/**
 	 * Put - Changes the station number of a firestation in the database

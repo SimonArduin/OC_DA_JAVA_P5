@@ -1,7 +1,6 @@
 package com.openclassrooms.safetynetalerts.unit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -72,14 +71,6 @@ public class MedicalRecordRepositoryTest {
 			assertEquals(new MedicalRecord(), medicalRecordRepository.delete(null));
 			verify(dataBase, Mockito.times(1)).removeMedicalRecord(null);
 		}
-	}
-
-	@Test
-	public void getAllTest() {
-		ArrayList<MedicalRecord> result = new ArrayList<MedicalRecord>(medicalRecordRepository.getAll());
-		verify(dataBase, Mockito.times(1)).getMedicalRecords();
-		assertEquals(medicalRecords.size(), result.size());
-		assertTrue(result.contains(medicalRecord));
 	}
 
 	@Nested
