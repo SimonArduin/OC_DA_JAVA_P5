@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -14,6 +15,7 @@ import java.util.Optional;
 
 @RestController
 @EnableWebMvc
+@RequestMapping("/person")
 public class PersonController {
 
 	@Autowired
@@ -22,12 +24,23 @@ public class PersonController {
 	/**
 	 * Put - Changes the fields of a person in the database
 	 * 
-	 * @param - Two String corresponding to the name of the person Four
-	 *          Optional<String> and an Optional<Integer> corresponding to the info
-	 *          of the person
+	 * @param - Two String corresponding to the name of the person
+	 * 
+	 *          An Optional<String> corresponding to the new address
+	 * 
+	 *          An Optional<String> corresponding to the new city
+	 * 
+	 *          An Optional<String> corresponding to the new zip
+	 * 
+	 *          An Optional<String> corresponding to the new phone
+	 * 
+	 *          An Optional<String> corresponding to the new email
+	 * 
+	 *          If one of the optional params has no value, the corresponding field
+	 *          of the person will not be modified
 	 * @return - A Person corresponding to the modified person
 	 */
-	@PutMapping("/person")
+	@PutMapping
 	public Person putPerson(@RequestParam(value = "firstName") String firstName,
 			@RequestParam(value = "lastName") String lastName,
 			@RequestParam(value = "address") Optional<String> address,
@@ -45,9 +58,6 @@ public class PersonController {
 			person.setPhone(phone.get());
 		if (email.isPresent())
 			person.setEmail(email.get());
-		/*if(true)
-			throw new ResourceNotFoundException();
-			*/
 		return personService.putPerson(person);
 	}
 
@@ -55,11 +65,22 @@ public class PersonController {
 	 * Post - Adds a new person to the database
 	 * 
 	 * @param - Two String corresponding to the name of the person Four
-	 *          Optional<String> and an Optional<Integer> corresponding to the info
-	 *          of the person
+	 * 
+	 *          An Optional<String> corresponding to the new address
+	 * 
+	 *          An Optional<String> corresponding to the new city
+	 * 
+	 *          An Optional<String> corresponding to the new zip
+	 * 
+	 *          An Optional<String> corresponding to the new phone
+	 * 
+	 *          An Optional<String> corresponding to the new email
+	 * 
+	 *          If one of the optional params has no value, the corresponding field
+	 *          of the person will not be modified
 	 * @return - A Person corresponding to the added person
 	 */
-	@PostMapping("/person")
+	@PostMapping
 	public Person postPerson(@RequestParam(value = "firstName") String firstName,
 			@RequestParam(value = "lastName") String lastName,
 			@RequestParam(value = "address") Optional<String> address,
@@ -85,9 +106,9 @@ public class PersonController {
 	 * 
 	 * @param - Two String objects corresponding to the first and last name of the
 	 *          person
-	 * @return - A List<Person> of all removed persons
+	 * @return - A Person corresponding to the deleted person
 	 */
-	@DeleteMapping("/person")
+	@DeleteMapping
 	public Person deletePerson(@RequestParam(value = "firstName") String firstName,
 			@RequestParam(value = "lastName") String lastName) {
 		return personService.deletePerson(new Person(firstName, lastName));

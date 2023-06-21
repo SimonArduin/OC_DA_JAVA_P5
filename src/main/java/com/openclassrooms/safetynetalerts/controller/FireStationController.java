@@ -36,14 +36,16 @@ public class FireStationController {
 
 	@Autowired
 	private MedicalRecordService medicalRecordService;
-	
+
 	private int ageMaxChild = 18;
 
 	/**
-	 * Put - Changes the station number of a firestation in the database
+	 * Put - Changes the station number of a fireStation in the database
 	 * 
-	 * @param - A String corresponding to the address of the fire station and an
-	 *          optional int corresponding to the new fire station number
+	 * @param - A String corresponding to the address of the fireStation
+	 * 
+	 *          A String corresponding to the new fireStation number
+	 * @return - A FireStation corresponding to the modified fireStation
 	 */
 	@PutMapping
 	public FireStation putFireStation(@RequestParam(value = "address") String address,
@@ -52,10 +54,12 @@ public class FireStationController {
 	}
 
 	/**
-	 * Post - Adds a new firestation to the database
+	 * Post - Adds a new fire station to the database
 	 * 
-	 * @param - A String corresponding to the address of the fire station and an int
-	 *          corresponding to the fire station number
+	 * @param - A String corresponding to the address of the fireStation
+	 * 
+	 *          A String corresponding to the new fireStation number
+	 * @return - A FireStation corresponding to the new fireStation
 	 */
 	@PostMapping
 	public FireStation postFireStation(@RequestParam(value = "address") String address,
@@ -68,6 +72,7 @@ public class FireStationController {
 	 * 
 	 * @param - An optional String corresponding to the address of the fire station
 	 *          and an optional int corresponding to the new fire station number
+	 * @return - A FireStation corresponding to the removed fireStation
 	 */
 	@DeleteMapping
 	public List<FireStation> deleteFireStation(@RequestParam(value = "address") Optional<String> address,
@@ -82,19 +87,26 @@ public class FireStationController {
 
 	@GetMapping(params = "stationNumber")
 	public FireStationURLDto fireStationURL(String stationNumber) {
-	
+
 		/**
-		 * Read - Get info on residents covered by a certain fire station or get all
-		 * fire stations
+		 * Read - Get info on residents covered by a certain fireStation
 		 * 
-		 * @param - An int corresponding to the fire station number
-		 * @return - An Iterable object of info on residents or of FireStation full
-		 *         filled
+		 * @param - A String corresponding to the fire station number
+		 * @return - A FireStationURLDto containing :
+		 * 
+		 *         -- a List<FireStationURLPerson> containing all persons covered by the
+		 *         fireStation
+		 * 
+		 *         -- an int corresponding to the number of adults covered by the
+		 *         fireStation
+		 * 
+		 *         -- an int corresponding to the number of children covered by the
+		 *         fireStation
 		 */
-	
+
 		FireStationURLDto result = new FireStationURLDto();
 		FireStation fireStationToSearch = new FireStation();
-	
+
 		// get fire stations
 		fireStationToSearch.setStation(stationNumber);
 		ArrayList<FireStation> fireStations = new ArrayList<FireStation>(

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -16,6 +17,7 @@ import java.util.Optional;
 
 @RestController
 @EnableWebMvc
+@RequestMapping("/medicalRecord")
 public class MedicalRecordController {
 
 	@Autowired
@@ -24,12 +26,19 @@ public class MedicalRecordController {
 	/**
 	 * Put - Changes the fields of a medicalRecord in the database
 	 * 
-	 * @param - Two String corresponding to the name of the medicalRecord Four
-	 *          Optional<String> and an Optional<Integer> corresponding to the info
-	 *          of the medicalRecord
+	 * @param - Two String corresponding to the name of the medicalRecord
+	 * 
+	 *          An Optional<String> corresponding to the new birthdate
+	 * 
+	 *          An Optional<ArrayList<String>> corresponding to the new medications
+	 * 
+	 *          An Optional<ArrayList<String>> corresponding to the new allergies
+	 * 
+	 *          If one of the optional params has no value, the corresponding field
+	 *          of the medicalRecord will not be modified
 	 * @return - A MedicalRecord corresponding to the modified medicalRecord
 	 */
-	@PutMapping("/medicalRecord")
+	@PutMapping
 	public MedicalRecord putMedicalRecord(@RequestParam(value = "firstName") String firstName,
 			@RequestParam(value = "lastName") String lastName,
 			@RequestParam(value = "birthdate") Optional<String> birthdate,
@@ -48,12 +57,19 @@ public class MedicalRecordController {
 	/**
 	 * Post - Adds a new medicalRecord to the database
 	 * 
-	 * @param - Two String corresponding to the name of the medicalRecord Four
-	 *          Optional<String> and an Optional<Integer> corresponding to the info
-	 *          of the medicalRecord
+	 * @param - Two String corresponding to the name of the medicalRecord
+	 * 
+	 *          An Optional<String> corresponding to the new birthdate
+	 * 
+	 *          An Optional<ArrayList<String>> corresponding to the new medications
+	 * 
+	 *          An Optional<ArrayList<String>> corresponding to the new allergies
+	 * 
+	 *          If one of the optional params has no value, the corresponding field
+	 *          of the medicalRecord will be null
 	 * @return - A MedicalRecord corresponding to the added medicalRecord
 	 */
-	@PostMapping("/medicalRecord")
+	@PostMapping
 	public MedicalRecord postMedicalRecord(@RequestParam(value = "firstName") String firstName,
 			@RequestParam(value = "lastName") String lastName,
 			@RequestParam(value = "birthdate") Optional<String> birthdate,
@@ -74,9 +90,9 @@ public class MedicalRecordController {
 	 * 
 	 * @param - Two String objects corresponding to the first and last name of the
 	 *          medicalRecord
-	 * @return - A List<MedicalRecord> of all removed medicalRecords
+	 * @return - A MedicalRecord corresponding to the deleted medicalRecord
 	 */
-	@DeleteMapping("/medicalRecord")
+	@DeleteMapping
 	public MedicalRecord deleteMedicalRecord(@RequestParam(value = "firstName") String firstName,
 			@RequestParam(value = "lastName") String lastName) {
 		return medicalRecordService.deleteMedicalRecord(new MedicalRecord(firstName, lastName));
