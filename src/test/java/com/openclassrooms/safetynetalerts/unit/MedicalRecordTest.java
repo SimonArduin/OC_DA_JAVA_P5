@@ -4,6 +4,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -24,6 +27,8 @@ public class MedicalRecordTest {
 	MedicalRecord medicalRecord;
 	MedicalRecord medicalRecordOther;
 	MedicalRecord medicalRecordTest;
+	String birthdate = "06/06/1966";
+	int ageIfError = 999;
 
 	@BeforeEach
 	void setUpPerTest() {
@@ -31,7 +36,7 @@ public class MedicalRecordTest {
 		allergies = new ArrayList<String>(Arrays.asList("allergy 1", "allergy 2"));
 		otherMedications = new ArrayList<String>(Arrays.asList("otherMedication 1", "otherMedication 2"));
 		otherAllergies = new ArrayList<String>(Arrays.asList("otherAllergy 1", "otherAllergy 2"));
-		medicalRecord = new MedicalRecord("firstName", "lastName", "birthdate", medications, allergies);
+		medicalRecord = new MedicalRecord("firstName", "lastName", birthdate, medications, allergies);
 		medicalRecordOther = new MedicalRecord("otherFirstName", "otherLastName", "otherBirthdate", otherMedications,
 				otherAllergies);
 		medicalRecordTest = new MedicalRecord();
@@ -231,6 +236,27 @@ public class MedicalRecordTest {
 			medicalRecordTest = medicalRecord;
 			medicalRecord.update(medicalRecordTest);
 			assertEquals(medicalRecordBefore, medicalRecord);
+		}
+	}
+	
+	@Nested
+	class calculateAgeTests {
+
+		@Test
+		void updateTest() {
+			assertEquals(Period
+					.between(LocalDate.parse(birthdate, DateTimeFormatter.ofPattern("MM/dd/yyyy")), LocalDate.now())
+					.getYears(), medicalRecord.calculateAge());
+		}
+		
+		@Test
+		void calculateAgeTestIfBirthdateNull() {
+			assertEquals(ageIfError, medicalRecordTest.calculateAge());
+		}
+
+		@Test
+		void calculateAgeTestIfBirthdateNotCorrectFormat() {
+			assertEquals(ageIfError, medicalRecordOther.calculateAge());
 		}
 	}
 }
