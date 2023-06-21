@@ -228,22 +228,22 @@ public class DataBaseTest {
 
 			@Test
 			void getMedicalRecordsByMedicalRecordTest() {
-				assertEquals(medicalRecord, dataBase.getMedicalRecords(medicalRecord));
+				assertEquals(medicalRecordList, dataBase.getMedicalRecords(medicalRecord));
 			}
 
 			@Test
 			void getMedicalRecordsByMedicalRecordTestIfNotInDB() {
-				assertEquals(emptyMedicalRecord, dataBase.getMedicalRecords(medicalRecordOther));
+				assertEquals(emptyMedicalRecordList, dataBase.getMedicalRecords(medicalRecordOther));
 			}
 
 			@Test
 			void getMedicalRecordsByMedicalRecordTestIfEmpty() {
-				assertEquals(emptyMedicalRecord, dataBase.getMedicalRecords(emptyMedicalRecord));
+				assertEquals(emptyMedicalRecordList, dataBase.getMedicalRecords(emptyMedicalRecord));
 			}
 
 			@Test
 			void getMedicalRecordsByMedicalRecordTestIfNull() {
-				assertEquals(emptyMedicalRecord, dataBase.getMedicalRecords(null));
+				assertEquals(emptyMedicalRecordList, dataBase.getMedicalRecords(null));
 			}
 		}
 

@@ -1,5 +1,7 @@
 package com.openclassrooms.safetynetalerts.repository;
 
+import java.util.List;
+
 import org.springframework.stereotype.Repository;
 
 import com.openclassrooms.safetynetalerts.model.MedicalRecord;
@@ -21,7 +23,7 @@ public class MedicalRecordRepository {
 		return dataBase.removeMedicalRecord(medicalRecord);
 	}
 
-	public MedicalRecord get(MedicalRecord medicalRecord) {
+	public List<MedicalRecord> get(MedicalRecord medicalRecord) {
 		return dataBase.getMedicalRecords(medicalRecord);
 	}
 	
