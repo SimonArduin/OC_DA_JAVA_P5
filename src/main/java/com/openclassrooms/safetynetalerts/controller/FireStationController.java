@@ -1,12 +1,13 @@
 package com.openclassrooms.safetynetalerts.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
@@ -21,7 +22,6 @@ import com.openclassrooms.safetynetalerts.service.PersonService;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @EnableWebMvc
@@ -40,51 +40,56 @@ public class FireStationController {
 	private int ageMaxChild = 18;
 
 	/**
-	 * Put - Changes the station number of a fireStation in the database
+	 * Put - Changes the fields of a fireStation in the database
 	 * 
-	 * @param - A String corresponding to the address of the fireStation
+	 * @param - A FireStation containing the new information
 	 * 
-	 *          A String corresponding to the new fireStation number
+	 *          If one of this fireStation's field is empty, the field of the fireStation in
+	 *          the database will remain the same
 	 * @return - A FireStation corresponding to the modified fireStation
 	 */
 	@PutMapping
-	public FireStation putFireStation(@RequestParam(value = "address") String address,
-			@RequestParam(value = "stationNumber") String stationNumber) {
-		return fireStationService.putFireStation(new FireStation(address, stationNumber));
+	public ResponseEntity<FireStation> putFireStation(@RequestBody FireStation fireStation) {
+		if (fireStation == null)
+			return ResponseEntity.badRequest().build();
+		FireStation putFireStation = fireStationService.putFireStation(fireStation);
+		if (putFireStation == null || putFireStation.isEmpty())
+			return ResponseEntity.notFound().build();
+		return ResponseEntity.ok().body(putFireStation);
 	}
 
 	/**
-	 * Post - Adds a new fire station to the database
+	 * Post - Adds a new fireStation to the database
 	 * 
-	 * @param - A String corresponding to the address of the fireStation
-	 * 
-	 *          A String corresponding to the new fireStation number
-	 * @return - A FireStation corresponding to the new fireStation
+	 * @param - A FireStation corresponding to the new fireStation
+	 * @return - A FireStation corresponding to the added fireStation
 	 */
 	@PostMapping
-	public FireStation postFireStation(@RequestParam(value = "address") String address,
-			@RequestParam(value = "stationNumber") String stationNumber) {
-		return fireStationService.postFireStation(new FireStation(address, stationNumber));
+	public ResponseEntity<FireStation> postFireStation(@RequestBody FireStation fireStation) {
+		if (fireStation == null)
+			return ResponseEntity.badRequest().build();
+		FireStation postedFireStation = fireStationService.postFireStation(fireStation);
+		if (postedFireStation == null || postedFireStation.isEmpty())
+			return ResponseEntity.notFound().build();
+		return ResponseEntity.ok().body(postedFireStation);
 	}
 
 	/**
-	 * Delete - Removes a firestation from the database
+	 * Delete - Removes a fireStation from the database
 	 * 
-	 * @param - An optional String corresponding to the address of the fire station
-	 *          and an optional int corresponding to the new fire station number
-	 * @return - A FireStation corresponding to the removed fireStation
+	 * @param - A FireStation corresponding to the fireStation to be deleted
+	 * @return - A FireStation corresponding to the deleted fireStation
 	 */
 	@DeleteMapping
-	public List<FireStation> deleteFireStation(@RequestParam(value = "address") Optional<String> address,
-			@RequestParam(value = "stationNumber") Optional<String> stationNumber) {
-		FireStation fireStation = new FireStation();
-		if (address.isPresent())
-			fireStation.setAddress(address.get());
-		if (stationNumber.isPresent())
-			fireStation.setStation(stationNumber.get());
-		return fireStationService.deleteFireStation(fireStation);
+	public ResponseEntity<List<FireStation>> deleteFireStation(@RequestBody FireStation fireStation) {
+		if (fireStation == null)
+			return ResponseEntity.badRequest().build();
+		List<FireStation> deletedFireStation = fireStationService.deleteFireStation(fireStation);
+		if (deletedFireStation == null || deletedFireStation.isEmpty())
+			return ResponseEntity.notFound().build();
+		return ResponseEntity.ok().body(deletedFireStation);
 	}
-
+	
 	@GetMapping(params = "stationNumber")
 	public FireStationURLDto fireStationURL(String stationNumber) {
 

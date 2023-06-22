@@ -1,14 +1,8 @@
 package com.openclassrooms.safetynetalerts.unit;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,7 +14,8 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 
 import com.openclassrooms.safetynetalerts.controller.MedicalRecordController;
 import com.openclassrooms.safetynetalerts.model.MedicalRecord;
@@ -32,9 +27,6 @@ public class MedicalRecordControllerTest {
 	@Autowired
 	MedicalRecordController medicalRecordController;
 
-	@Autowired
-	private MockMvc mockMvc;
-
 	@MockBean
 	MedicalRecordService medicalRecordService;
 
@@ -45,7 +37,7 @@ public class MedicalRecordControllerTest {
 
 	@BeforeEach
 	private void setUp() {
-		Mockito.when(medicalRecordService.deleteMedicalRecord(any(MedicalRecord.class))).thenReturn(medicalRecord);
+		Mockito.when(medicalRecordService.deleteMedicalRecord(medicalRecord)).thenReturn(medicalRecord);
 		Mockito.when(medicalRecordService.putMedicalRecord(any(MedicalRecord.class))).thenReturn(medicalRecord);
 		Mockito.when(medicalRecordService.postMedicalRecord(any(MedicalRecord.class))).thenReturn(medicalRecord);
 	}
@@ -58,281 +50,85 @@ public class MedicalRecordControllerTest {
 	class putMedicalRecordTests {
 
 		@Test
-		public void putMedicalRecordTest() throws Exception {
-			mockMvc.perform(put(
-					String.format("/medicalRecord?firstName=%s&lastName=%s&birthdate=%s&medications=%s&allergies=%s",
-							medicalRecord.getFirstName(), medicalRecord.getLastName(), medicalRecord.getBirthdate(),
-							medicalRecord.getMedications(), medicalRecord.getAllergies())))
-					.andExpect(status().isOk()).andExpect(jsonPath("firstName", is(medicalRecord.getFirstName())))
-					.andExpect(jsonPath("lastName", is(medicalRecord.getLastName())))
-					.andExpect(jsonPath("birthdate", is(medicalRecord.getBirthdate())))
-					.andExpect(jsonPath("medications", is(medicalRecord.getMedications())))
-					.andExpect(jsonPath("allergies", is(medicalRecord.getAllergies())));
+		public void putMedicalRecord() throws Exception {
+			ResponseEntity<MedicalRecord> result = medicalRecordController.putMedicalRecord(medicalRecord);
+			assertEquals(HttpStatusCode.valueOf(200), result.getStatusCode());
+			assertEquals(medicalRecord, result.getBody());
 			verify(medicalRecordService, Mockito.times(1)).putMedicalRecord(any(MedicalRecord.class));
 		}
 
 		@Test
 		public void putMedicalRecordTestIfNotInDB() throws Exception {
-			Mockito.when(medicalRecordService.putMedicalRecord(any(MedicalRecord.class)))
-					.thenReturn(new MedicalRecord());
-			mockMvc.perform(put(
-					String.format("/medicalRecord?firstName=%s&lastName=%s&birthdate=%s&medications=%s&allergies=%s",
-							medicalRecord.getFirstName(), medicalRecord.getLastName(), medicalRecord.getBirthdate(),
-							medicalRecord.getMedications(), medicalRecord.getAllergies())))
-					.andExpect(status().isOk()).andExpect(jsonPath("firstName", is(nullValue())))
-					.andExpect(jsonPath("lastName", is(nullValue()))).andExpect(jsonPath("birthdate", is(nullValue())))
-					.andExpect(jsonPath("medications", is(nullValue())))
-					.andExpect(jsonPath("allergies", is(nullValue())));
+			Mockito.when(medicalRecordService.putMedicalRecord(any(MedicalRecord.class))).thenReturn(null);
+			ResponseEntity<MedicalRecord> result = medicalRecordController.putMedicalRecord(medicalRecord);
+			assertEquals(HttpStatusCode.valueOf(404), result.getStatusCode());
+			assertEquals(null, result.getBody());
 			verify(medicalRecordService, Mockito.times(1)).putMedicalRecord(any(MedicalRecord.class));
 		}
 
 		@Test
-		public void putMedicalRecordTestIfEmptyParams() throws Exception {
-			Mockito.when(medicalRecordService.putMedicalRecord(any(MedicalRecord.class)))
-					.thenReturn(new MedicalRecord());
-			mockMvc.perform(put(
-					String.format("/medicalRecord?firstName=%s&lastName=%s&birthdate=%s&medications=%s&allergies=%s",
-							medicalRecord.getFirstName(), medicalRecord.getLastName(), medicalRecord.getBirthdate(),
-							medicalRecord.getMedications(), medicalRecord.getAllergies())))
-					.andExpect(status().isOk()).andExpect(jsonPath("firstName", is(nullValue())))
-					.andExpect(jsonPath("lastName", is(nullValue()))).andExpect(jsonPath("birthdate", is(nullValue())))
-					.andExpect(jsonPath("medications", is(nullValue())))
-					.andExpect(jsonPath("allergies", is(nullValue())));
-			verify(medicalRecordService, Mockito.times(1)).putMedicalRecord(any(MedicalRecord.class));
-		}
-
-		@Test
-		public void putMedicalRecordTestIfNoParams() throws Exception {
-			mockMvc.perform(put(String.format("/medicalRecord"))).andExpect(status().is(400));
+		public void putMedicalRecordTestIfEmptyBody() throws Exception {
+			ResponseEntity<MedicalRecord> result = medicalRecordController.putMedicalRecord(null);
+			assertEquals(HttpStatusCode.valueOf(400), result.getStatusCode());
+			assertEquals(null, result.getBody());
 			verify(medicalRecordService, Mockito.times(0)).putMedicalRecord(any(MedicalRecord.class));
-		}
-
-		@Test
-		public void putMedicalRecordTestIfOnlyName() throws Exception {
-			Mockito.when(medicalRecordService.putMedicalRecord(any(MedicalRecord.class)))
-					.thenReturn(medicalRecordOnlyName);
-			mockMvc.perform(put(String.format("/medicalRecord?firstName=%s&lastName=%s", medicalRecord.getFirstName(),
-					medicalRecord.getLastName()))).andExpect(status().isOk())
-					.andExpect(jsonPath("firstName", is(medicalRecord.getFirstName())))
-					.andExpect(jsonPath("lastName", is(medicalRecord.getLastName())))
-					.andExpect(jsonPath("birthdate", is(nullValue())))
-					.andExpect(jsonPath("medications", is(nullValue())))
-					.andExpect(jsonPath("allergies", is(nullValue())));
-			verify(medicalRecordService, Mockito.times(1)).putMedicalRecord(any(MedicalRecord.class));
-		}
-
-		@Test
-		public void putMedicalRecordTestIfOnlyBirthdate() throws Exception {
-			mockMvc.perform(put(String.format("/medicalRecord?firstName=%s&lastName=%s&birthdate=%s",
-					medicalRecord.getFirstName(), medicalRecord.getLastName(), medicalRecord.getBirthdate())))
-					.andExpect(status().isOk()).andExpect(jsonPath("firstName", is(medicalRecord.getFirstName())))
-					.andExpect(jsonPath("lastName", is(medicalRecord.getLastName())))
-					.andExpect(jsonPath("birthdate", is(medicalRecord.getBirthdate())))
-					.andExpect(jsonPath("medications", is(medicalRecord.getMedications())))
-					.andExpect(jsonPath("allergies", is(medicalRecord.getAllergies())));
-			verify(medicalRecordService, Mockito.times(1)).putMedicalRecord(any(MedicalRecord.class));
-		}
-
-		@Test
-		public void putMedicalRecordTestIfOnlyMedications() throws Exception {
-			mockMvc.perform(put(String.format("/medicalRecord?firstName=%s&lastName=%s&medications=%s",
-					medicalRecord.getFirstName(), medicalRecord.getLastName(), medicalRecord.getMedications())))
-					.andExpect(status().isOk()).andExpect(jsonPath("firstName", is(medicalRecord.getFirstName())))
-					.andExpect(jsonPath("lastName", is(medicalRecord.getLastName())))
-					.andExpect(jsonPath("birthdate", is(medicalRecord.getBirthdate())))
-					.andExpect(jsonPath("medications", is(medicalRecord.getMedications())))
-					.andExpect(jsonPath("allergies", is(medicalRecord.getAllergies())));
-			verify(medicalRecordService, Mockito.times(1)).putMedicalRecord(any(MedicalRecord.class));
-		}
-
-		@Test
-		public void putMedicalRecordTestIfOnlyAllergies() throws Exception {
-			mockMvc.perform(put(String.format("/medicalRecord?firstName=%s&lastName=%s&allergies=%s",
-					medicalRecord.getFirstName(), medicalRecord.getLastName(), medicalRecord.getAllergies())))
-					.andExpect(status().isOk()).andExpect(jsonPath("firstName", is(medicalRecord.getFirstName())))
-					.andExpect(jsonPath("lastName", is(medicalRecord.getLastName())))
-					.andExpect(jsonPath("birthdate", is(medicalRecord.getBirthdate())))
-					.andExpect(jsonPath("medications", is(medicalRecord.getMedications())))
-					.andExpect(jsonPath("allergies", is(medicalRecord.getAllergies())));
-			verify(medicalRecordService, Mockito.times(1)).putMedicalRecord(any(MedicalRecord.class));
-		}
-
-		@Test
-		public void putMedicalRecordTestIfBirthdateAndAllergies() throws Exception {
-			mockMvc.perform(put(String.format("/medicalRecord?firstName=%s&lastName=%s&birthdate=%s&allergies=%s",
-					medicalRecord.getFirstName(), medicalRecord.getLastName(), medicalRecord.getBirthdate(),
-					medicalRecord.getAllergies()))).andExpect(status().isOk())
-					.andExpect(jsonPath("firstName", is(medicalRecord.getFirstName())))
-					.andExpect(jsonPath("lastName", is(medicalRecord.getLastName())))
-					.andExpect(jsonPath("birthdate", is(medicalRecord.getBirthdate())))
-					.andExpect(jsonPath("medications", is(medicalRecord.getMedications())))
-					.andExpect(jsonPath("allergies", is(medicalRecord.getAllergies())));
-			verify(medicalRecordService, Mockito.times(1)).putMedicalRecord(any(MedicalRecord.class));
 		}
 	}
 
 	@Nested
 	class postMedicalRecordTests {
-
+		
 		@Test
-		public void postMedicalRecordTest() throws Exception {
-			mockMvc.perform(post(
-					String.format("/medicalRecord?firstName=%s&lastName=%s&birthdate=%s&medications=%s&allergies=%s",
-							medicalRecord.getFirstName(), medicalRecord.getLastName(), medicalRecord.getBirthdate(),
-							medicalRecord.getMedications(), medicalRecord.getAllergies())))
-					.andExpect(status().isOk()).andExpect(jsonPath("firstName", is(medicalRecord.getFirstName())))
-					.andExpect(jsonPath("lastName", is(medicalRecord.getLastName())))
-					.andExpect(jsonPath("birthdate", is(medicalRecord.getBirthdate())))
-					.andExpect(jsonPath("medications", is(medicalRecord.getMedications())))
-					.andExpect(jsonPath("allergies", is(medicalRecord.getAllergies())));
+		public void postMedicalRecord() throws Exception {
+			ResponseEntity<MedicalRecord> result = medicalRecordController.postMedicalRecord(medicalRecord);
+			assertEquals(HttpStatusCode.valueOf(200), result.getStatusCode());
+			assertEquals(medicalRecord, result.getBody());
 			verify(medicalRecordService, Mockito.times(1)).postMedicalRecord(any(MedicalRecord.class));
 		}
 
 		@Test
 		public void postMedicalRecordTestIfNotInDB() throws Exception {
-			Mockito.when(medicalRecordService.postMedicalRecord(any(MedicalRecord.class)))
-					.thenReturn(new MedicalRecord());
-			mockMvc.perform(post(
-					String.format("/medicalRecord?firstName=%s&lastName=%s&birthdate=%s&medications=%s&allergies=%s",
-							medicalRecord.getFirstName(), medicalRecord.getLastName(), medicalRecord.getBirthdate(),
-							medicalRecord.getMedications(), medicalRecord.getAllergies())))
-					.andExpect(status().isOk()).andExpect(jsonPath("firstName", is(nullValue())))
-					.andExpect(jsonPath("lastName", is(nullValue()))).andExpect(jsonPath("birthdate", is(nullValue())))
-					.andExpect(jsonPath("medications", is(nullValue())))
-					.andExpect(jsonPath("allergies", is(nullValue())));
+			Mockito.when(medicalRecordService.postMedicalRecord(any(MedicalRecord.class))).thenReturn(null);
+			ResponseEntity<MedicalRecord> result = medicalRecordController.postMedicalRecord(medicalRecord);
+			assertEquals(HttpStatusCode.valueOf(404), result.getStatusCode());
+			assertEquals(null, result.getBody());
 			verify(medicalRecordService, Mockito.times(1)).postMedicalRecord(any(MedicalRecord.class));
 		}
 
 		@Test
-		public void postMedicalRecordTestIfEmptyParams() throws Exception {
-			Mockito.when(medicalRecordService.postMedicalRecord(any(MedicalRecord.class)))
-					.thenReturn(new MedicalRecord());
-			mockMvc.perform(post(
-					String.format("/medicalRecord?firstName=%s&lastName=%s&birthdate=%s&medications=%s&allergies=%s",
-							medicalRecord.getFirstName(), medicalRecord.getLastName(), medicalRecord.getBirthdate(),
-							medicalRecord.getMedications(), medicalRecord.getAllergies())))
-					.andExpect(status().isOk()).andExpect(jsonPath("firstName", is(nullValue())))
-					.andExpect(jsonPath("lastName", is(nullValue()))).andExpect(jsonPath("birthdate", is(nullValue())))
-					.andExpect(jsonPath("medications", is(nullValue())))
-					.andExpect(jsonPath("allergies", is(nullValue())));
-			verify(medicalRecordService, Mockito.times(1)).postMedicalRecord(any(MedicalRecord.class));
-		}
-
-		@Test
-		public void postMedicalRecordTestIfNoParams() throws Exception {
-			mockMvc.perform(post(String.format("/medicalRecord"))).andExpect(status().is(400));
+		public void postMedicalRecordTestIfEmptyBody() throws Exception {
+			ResponseEntity<MedicalRecord> result = medicalRecordController.postMedicalRecord(null);
+			assertEquals(HttpStatusCode.valueOf(400), result.getStatusCode());
+			assertEquals(null, result.getBody());
 			verify(medicalRecordService, Mockito.times(0)).postMedicalRecord(any(MedicalRecord.class));
 		}
-
-		@Test
-		public void postMedicalRecordTestIfOnlyName() throws Exception {
-			Mockito.when(medicalRecordService.postMedicalRecord(any(MedicalRecord.class)))
-					.thenReturn(medicalRecordOnlyName);
-			mockMvc.perform(post(String.format("/medicalRecord?firstName=%s&lastName=%s", medicalRecord.getFirstName(),
-					medicalRecord.getLastName()))).andExpect(status().isOk())
-					.andExpect(jsonPath("firstName", is(medicalRecord.getFirstName())))
-					.andExpect(jsonPath("lastName", is(medicalRecord.getLastName())))
-					.andExpect(jsonPath("birthdate", is(nullValue())))
-					.andExpect(jsonPath("medications", is(nullValue())))
-					.andExpect(jsonPath("allergies", is(nullValue())));
-			verify(medicalRecordService, Mockito.times(1)).postMedicalRecord(any(MedicalRecord.class));
-		}
-
-		@Test
-		public void postMedicalRecordTestIfOnlyBirthdate() throws Exception {
-			mockMvc.perform(post(String.format("/medicalRecord?firstName=%s&lastName=%s&birthdate=%s",
-					medicalRecord.getFirstName(), medicalRecord.getLastName(), medicalRecord.getBirthdate())))
-					.andExpect(status().isOk()).andExpect(jsonPath("firstName", is(medicalRecord.getFirstName())))
-					.andExpect(jsonPath("lastName", is(medicalRecord.getLastName())))
-					.andExpect(jsonPath("birthdate", is(medicalRecord.getBirthdate())))
-					.andExpect(jsonPath("medications", is(medicalRecord.getMedications())))
-					.andExpect(jsonPath("allergies", is(medicalRecord.getAllergies())));
-			verify(medicalRecordService, Mockito.times(1)).postMedicalRecord(any(MedicalRecord.class));
-		}
-
-		@Test
-		public void postMedicalRecordTestIfOnlyMedications() throws Exception {
-			mockMvc.perform(post(String.format("/medicalRecord?firstName=%s&lastName=%s&medications=%s",
-					medicalRecord.getFirstName(), medicalRecord.getLastName(), medicalRecord.getMedications())))
-					.andExpect(status().isOk()).andExpect(jsonPath("firstName", is(medicalRecord.getFirstName())))
-					.andExpect(jsonPath("lastName", is(medicalRecord.getLastName())))
-					.andExpect(jsonPath("birthdate", is(medicalRecord.getBirthdate())))
-					.andExpect(jsonPath("medications", is(medicalRecord.getMedications())))
-					.andExpect(jsonPath("allergies", is(medicalRecord.getAllergies())));
-			verify(medicalRecordService, Mockito.times(1)).postMedicalRecord(any(MedicalRecord.class));
-		}
-
-		@Test
-		public void postMedicalRecordTestIfOnlyAllergies() throws Exception {
-			mockMvc.perform(post(String.format("/medicalRecord?firstName=%s&lastName=%s&allergies=%s",
-					medicalRecord.getFirstName(), medicalRecord.getLastName(), medicalRecord.getAllergies())))
-					.andExpect(status().isOk()).andExpect(jsonPath("firstName", is(medicalRecord.getFirstName())))
-					.andExpect(jsonPath("lastName", is(medicalRecord.getLastName())))
-					.andExpect(jsonPath("birthdate", is(medicalRecord.getBirthdate())))
-					.andExpect(jsonPath("medications", is(medicalRecord.getMedications())))
-					.andExpect(jsonPath("allergies", is(medicalRecord.getAllergies())));
-			verify(medicalRecordService, Mockito.times(1)).postMedicalRecord(any(MedicalRecord.class));
-		}
-
-		@Test
-		public void postMedicalRecordTestIfBirthdateAndAllergies() throws Exception {
-			mockMvc.perform(post(String.format("/medicalRecord?firstName=%s&lastName=%s&birthdate=%s&allergies=%s",
-					medicalRecord.getFirstName(), medicalRecord.getLastName(), medicalRecord.getBirthdate(),
-					medicalRecord.getAllergies()))).andExpect(status().isOk())
-					.andExpect(jsonPath("firstName", is(medicalRecord.getFirstName())))
-					.andExpect(jsonPath("lastName", is(medicalRecord.getLastName())))
-					.andExpect(jsonPath("birthdate", is(medicalRecord.getBirthdate())))
-					.andExpect(jsonPath("medications", is(medicalRecord.getMedications())))
-					.andExpect(jsonPath("allergies", is(medicalRecord.getAllergies())));
-			verify(medicalRecordService, Mockito.times(1)).postMedicalRecord(any(MedicalRecord.class));
-		}
 	}
-
+	
 	@Nested
 	class deleteMedicalRecordTests {
 
 		@Test
 		public void deleteMedicalRecord() throws Exception {
-			mockMvc.perform(delete(String.format("/medicalRecord?firstName=%s&lastName=%s",
-					medicalRecord.getFirstName(), medicalRecord.getLastName()))).andExpect(status().isOk())
-					.andExpect(jsonPath("firstName", is(medicalRecord.getFirstName())))
-					.andExpect(jsonPath("lastName", is(medicalRecord.getLastName())))
-					.andExpect(jsonPath("birthdate", is(medicalRecord.getBirthdate())))
-					.andExpect(jsonPath("medications", is(medicalRecord.getMedications())))
-					.andExpect(jsonPath("allergies", is(medicalRecord.getAllergies())));
+			ResponseEntity<MedicalRecord> result = medicalRecordController.deleteMedicalRecord(medicalRecord);
+			assertEquals(HttpStatusCode.valueOf(200), result.getStatusCode());
+			assertEquals(medicalRecord, result.getBody());
 			verify(medicalRecordService, Mockito.times(1)).deleteMedicalRecord(any(MedicalRecord.class));
 		}
 
 		@Test
-		public void deleteMedicalRecordIfNotInDB() throws Exception {
-			Mockito.when(medicalRecordService.deleteMedicalRecord(any(MedicalRecord.class)))
-					.thenReturn(new MedicalRecord());
-			mockMvc.perform(delete(String.format("/medicalRecord?firstName=%s&lastName=%s",
-					medicalRecord.getFirstName(), medicalRecord.getLastName()))).andExpect(status().isOk())
-					.andExpect(jsonPath("firstName", is(nullValue()))).andExpect(jsonPath("lastName", is(nullValue())))
-					.andExpect(jsonPath("birthdate", is(nullValue())))
-					.andExpect(jsonPath("medications", is(nullValue())))
-					.andExpect(jsonPath("allergies", is(nullValue())));
+		public void deleteMedicalRecordTestIfNotInDB() throws Exception {
+			Mockito.when(medicalRecordService.deleteMedicalRecord(any(MedicalRecord.class))).thenReturn(null);
+			ResponseEntity<MedicalRecord> result = medicalRecordController.deleteMedicalRecord(medicalRecord);
+			assertEquals(HttpStatusCode.valueOf(404), result.getStatusCode());
+			assertEquals(null, result.getBody());
 			verify(medicalRecordService, Mockito.times(1)).deleteMedicalRecord(any(MedicalRecord.class));
 		}
 
 		@Test
-		public void deleteMedicalRecordTestIfEmptyParams() throws Exception {
-			Mockito.when(medicalRecordService.deleteMedicalRecord(any(MedicalRecord.class)))
-					.thenReturn(new MedicalRecord());
-			mockMvc.perform(delete(
-					String.format("/medicalRecord?firstName=%s&lastName=%s",
-							medicalRecord.getFirstName(), medicalRecord.getLastName())))
-					.andExpect(status().isOk()).andExpect(jsonPath("firstName", is(nullValue())))
-					.andExpect(jsonPath("lastName", is(nullValue()))).andExpect(jsonPath("birthdate", is(nullValue())))
-					.andExpect(jsonPath("medications", is(nullValue())))
-					.andExpect(jsonPath("allergies", is(nullValue())));
-			verify(medicalRecordService, Mockito.times(1)).deleteMedicalRecord(any(MedicalRecord.class));
-		}
-
-		@Test
-		public void deleteMedicalRecordTestIfNoParams() throws Exception {
-			mockMvc.perform(delete(String.format("/medicalRecord"))).andExpect(status().is(400));
+		public void deleteMedicalRecordTestIfEmptyBody() throws Exception {
+			ResponseEntity<MedicalRecord> result = medicalRecordController.deleteMedicalRecord(null);
+			assertEquals(HttpStatusCode.valueOf(400), result.getStatusCode());
+			assertEquals(null, result.getBody());
 			verify(medicalRecordService, Mockito.times(0)).deleteMedicalRecord(any(MedicalRecord.class));
 		}
 	}

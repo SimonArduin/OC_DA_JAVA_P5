@@ -1,19 +1,17 @@
 package com.openclassrooms.safetynetalerts.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import com.openclassrooms.safetynetalerts.model.MedicalRecord;
 import com.openclassrooms.safetynetalerts.service.MedicalRecordService;
-
-import java.util.ArrayList;
-import java.util.Optional;
 
 @RestController
 @EnableWebMvc
@@ -26,75 +24,51 @@ public class MedicalRecordController {
 	/**
 	 * Put - Changes the fields of a medicalRecord in the database
 	 * 
-	 * @param - Two String corresponding to the name of the medicalRecord
+	 * @param - A MedicalRecord containing the new information
 	 * 
-	 *          An Optional<String> corresponding to the new birthdate
-	 * 
-	 *          An Optional<ArrayList<String>> corresponding to the new medications
-	 * 
-	 *          An Optional<ArrayList<String>> corresponding to the new allergies
-	 * 
-	 *          If one of the optional params has no value, the corresponding field
-	 *          of the medicalRecord will not be modified
+	 *          If one of this medicalRecord's field is empty, the field of the medicalRecord in
+	 *          the database will remain the same
 	 * @return - A MedicalRecord corresponding to the modified medicalRecord
 	 */
 	@PutMapping
-	public MedicalRecord putMedicalRecord(@RequestParam(value = "firstName") String firstName,
-			@RequestParam(value = "lastName") String lastName,
-			@RequestParam(value = "birthdate") Optional<String> birthdate,
-			@RequestParam(value = "medications") Optional<ArrayList<String>> medications,
-			@RequestParam(value = "allergies") Optional<ArrayList<String>> allergies) {
-		MedicalRecord medicalRecord = new MedicalRecord(firstName, lastName);
-		if (birthdate.isPresent())
-			medicalRecord.setBirthdate(birthdate.get());
-		if (medications.isPresent())
-			medicalRecord.setMedications(medications.get());
-		if (allergies.isPresent())
-			medicalRecord.setAllergies(allergies.get());
-		return medicalRecordService.putMedicalRecord(medicalRecord);
+	public ResponseEntity<MedicalRecord> putMedicalRecord(@RequestBody MedicalRecord medicalRecord) {
+		if (medicalRecord == null)
+			return ResponseEntity.badRequest().build();
+		MedicalRecord putMedicalRecord = medicalRecordService.putMedicalRecord(medicalRecord);
+		if (putMedicalRecord == null || putMedicalRecord.isEmpty())
+			return ResponseEntity.notFound().build();
+		return ResponseEntity.ok().body(putMedicalRecord);
 	}
 
 	/**
 	 * Post - Adds a new medicalRecord to the database
 	 * 
-	 * @param - Two String corresponding to the name of the medicalRecord
-	 * 
-	 *          An Optional<String> corresponding to the new birthdate
-	 * 
-	 *          An Optional<ArrayList<String>> corresponding to the new medications
-	 * 
-	 *          An Optional<ArrayList<String>> corresponding to the new allergies
-	 * 
-	 *          If one of the optional params has no value, the corresponding field
-	 *          of the medicalRecord will be null
+	 * @param - A MedicalRecord corresponding to the new medicalRecord
 	 * @return - A MedicalRecord corresponding to the added medicalRecord
 	 */
 	@PostMapping
-	public MedicalRecord postMedicalRecord(@RequestParam(value = "firstName") String firstName,
-			@RequestParam(value = "lastName") String lastName,
-			@RequestParam(value = "birthdate") Optional<String> birthdate,
-			@RequestParam(value = "medications") Optional<ArrayList<String>> medications,
-			@RequestParam(value = "allergies") Optional<ArrayList<String>> allergies) {
-		MedicalRecord medicalRecord = new MedicalRecord(firstName, lastName);
-		if (birthdate.isPresent())
-			medicalRecord.setBirthdate(birthdate.get());
-		if (medications.isPresent())
-			medicalRecord.setMedications(medications.get());
-		if (allergies.isPresent())
-			medicalRecord.setAllergies(allergies.get());
-		return medicalRecordService.postMedicalRecord(medicalRecord);
+	public ResponseEntity<MedicalRecord> postMedicalRecord(@RequestBody MedicalRecord medicalRecord) {
+		if (medicalRecord == null)
+			return ResponseEntity.badRequest().build();
+		MedicalRecord postedMedicalRecord = medicalRecordService.postMedicalRecord(medicalRecord);
+		if (postedMedicalRecord == null || postedMedicalRecord.isEmpty())
+			return ResponseEntity.notFound().build();
+		return ResponseEntity.ok().body(postedMedicalRecord);
 	}
 
 	/**
 	 * Delete - Removes a medicalRecord from the database
 	 * 
-	 * @param - Two String objects corresponding to the first and last name of the
-	 *          medicalRecord
+	 * @param - A MedicalRecord corresponding to the medicalRecord to be deleted
 	 * @return - A MedicalRecord corresponding to the deleted medicalRecord
 	 */
 	@DeleteMapping
-	public MedicalRecord deleteMedicalRecord(@RequestParam(value = "firstName") String firstName,
-			@RequestParam(value = "lastName") String lastName) {
-		return medicalRecordService.deleteMedicalRecord(new MedicalRecord(firstName, lastName));
+	public ResponseEntity<MedicalRecord> deleteMedicalRecord(@RequestBody MedicalRecord medicalRecord) {
+		if (medicalRecord == null)
+			return ResponseEntity.badRequest().build();
+		MedicalRecord deletedMedicalRecord = medicalRecordService.deleteMedicalRecord(medicalRecord);
+		if (deletedMedicalRecord == null || deletedMedicalRecord.isEmpty())
+			return ResponseEntity.notFound().build();
+		return ResponseEntity.ok().body(deletedMedicalRecord);
 	}
 }
