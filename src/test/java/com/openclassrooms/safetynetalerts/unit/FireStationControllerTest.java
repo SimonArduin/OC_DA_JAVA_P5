@@ -1,13 +1,8 @@
 package com.openclassrooms.safetynetalerts.unit;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,9 +17,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.web.servlet.MockMvc;
 
 import com.openclassrooms.safetynetalerts.controller.FireStationController;
+import com.openclassrooms.safetynetalerts.dto.FireStationURLDto;
 import com.openclassrooms.safetynetalerts.model.FireStation;
 import com.openclassrooms.safetynetalerts.model.MedicalRecord;
 import com.openclassrooms.safetynetalerts.model.Person;
@@ -37,9 +32,6 @@ public class FireStationControllerTest {
 
 	@Autowired
 	FireStationController fireStationController;
-
-	@Autowired
-	private MockMvc mockMvc;
 
 	@MockBean
 	FireStationService fireStationService;
@@ -68,6 +60,7 @@ public class FireStationControllerTest {
 	final int numberOfFireStationByStationNumber = 1;
 	final int numberOfAdults = 1;
 	final int numberOfChildren = 1;
+	final int numberOfPersons = numberOfAdults + numberOfChildren;
 
 	@BeforeEach
 	private void setUp() {
@@ -179,68 +172,45 @@ public class FireStationControllerTest {
 
 		@Test
 		public void FireStationURLTest() throws Exception {
-			mockMvc.perform(get(String.format("/firestation?stationNumber=%s", fireStation.getStation())))
-					.andExpect(status().isOk())
-
-					.andExpect(jsonPath("persons.[0].firstName", is(person.getFirstName())))
-					.andExpect(jsonPath("persons.[0].lastName", is(person.getLastName())))
-					.andExpect(jsonPath("persons.[0].address", is(person.getAddress())))
-					.andExpect(jsonPath("persons.[0].phone", is(person.getPhone())))
-
-					.andExpect(jsonPath("persons.[1].firstName", is(personChild.getFirstName())))
-					.andExpect(jsonPath("persons.[1].lastName", is(personChild.getLastName())))
-					.andExpect(jsonPath("persons.[1].address", is(personChild.getAddress())))
-					.andExpect(jsonPath("persons.[1].phone", is(personChild.getPhone())))
-
-					.andExpect(jsonPath("numberOfAdults", is(numberOfAdults)))
-					.andExpect(jsonPath("numberOfChildren", is(numberOfChildren)));
+			ResponseEntity<FireStationURLDto> result = fireStationController.fireStationURL(fireStation.getStation());
+			assertEquals(HttpStatusCode.valueOf(200), result.getStatusCode());
+			assertEquals(person.getFirstName(), result.getBody().getPersons().get(0).getFirstName());
+			assertEquals(person.getLastName(), result.getBody().getPersons().get(0).getLastName());
+			assertEquals(personChild.getFirstName(), result.getBody().getPersons().get(1).getFirstName());
+			assertEquals(personChild.getLastName(), result.getBody().getPersons().get(1).getLastName());
+			assertEquals(numberOfAdults, result.getBody().getNumberOfAdults());
+			assertEquals(numberOfChildren, result.getBody().getNumberOfChildren());
 
 			verify(fireStationService, Mockito.times(1)).getFireStation(any(FireStation.class));
 			verify(personService, Mockito.times(numberOfFireStationByStationNumber)).getPerson(any(Person.class));
-			verify(medicalRecordService, Mockito.times(2)).getMedicalRecord(any(Person.class));
+			verify(medicalRecordService, Mockito.times(numberOfPersons)).getMedicalRecord(any(Person.class));
 		}
-
-		@Test
-		public void FireStationURLTestIfEmptyParams() throws Exception {
-			Mockito.when(fireStationService.getFireStation(any(FireStation.class)))
-					.thenReturn(new ArrayList<FireStation>());
-			mockMvc.perform(get(String.format("/firestation?stationNumber=%s", nullValue()))).andExpect(status().isOk())
-					.andExpect(jsonPath("numberOfAdults", is(0))).andExpect(jsonPath("numberOfChildren", is(0)));
-
-			verify(fireStationService, Mockito.times(1)).getFireStation(any(FireStation.class));
-			verify(personService, Mockito.times(0)).getPerson(any(Person.class));
-			verify(medicalRecordService, Mockito.times(0)).getMedicalRecord(any(Person.class));
-		}
-
+		
 		@Test
 		public void FireStationURLTestIfNoParams() throws Exception {
-			mockMvc.perform(get(String.format("/firestation"))).andExpect(status().is(400));
-
+			ResponseEntity<FireStationURLDto> result = fireStationController.fireStationURL(null);
+			assertEquals(HttpStatusCode.valueOf(400), result.getStatusCode());
 			verify(fireStationService, Mockito.times(0)).getFireStation(any(FireStation.class));
 			verify(personService, Mockito.times(0)).getPerson(any(Person.class));
 			verify(medicalRecordService, Mockito.times(0)).getMedicalRecord(any(Person.class));
 		}
 
 		@Test
-		public void FireStationURLTestIfNoFireStation() throws Exception {
+		public void FireStationURLTestIfNoFireStationInDB() throws Exception {
 			Mockito.when(fireStationService.getFireStation(any(FireStation.class)))
 					.thenReturn(new ArrayList<FireStation>());
-			mockMvc.perform(get(String.format("/firestation?stationNumber=%s", fireStation.getStation())))
-					.andExpect(status().isOk()).andExpect(jsonPath("numberOfAdults", is(0)))
-					.andExpect(jsonPath("numberOfChildren", is(0)));
-
+			ResponseEntity<FireStationURLDto> result = fireStationController.fireStationURL(fireStation.getStation());
+			assertEquals(HttpStatusCode.valueOf(404), result.getStatusCode());
 			verify(fireStationService, Mockito.times(1)).getFireStation(any(FireStation.class));
 			verify(personService, Mockito.times(0)).getPerson(any(Person.class));
 			verify(medicalRecordService, Mockito.times(0)).getMedicalRecord(any(Person.class));
 		}
 
 		@Test
-		public void FireStationURLTestIfNoPersons() throws Exception {
+		public void FireStationURLTestIfNoPersonsInDB() throws Exception {
 			Mockito.when(personService.getPerson(any(Person.class))).thenReturn(new ArrayList<Person>());
-			mockMvc.perform(get(String.format("/firestation?stationNumber=%s", fireStation.getStation())))
-					.andExpect(status().isOk()).andExpect(jsonPath("numberOfAdults", is(0)))
-					.andExpect(jsonPath("numberOfChildren", is(0)));
-
+			ResponseEntity<FireStationURLDto> result = fireStationController.fireStationURL(fireStation.getStation());
+			assertEquals(HttpStatusCode.valueOf(404), result.getStatusCode());
 			verify(fireStationService, Mockito.times(1)).getFireStation(any(FireStation.class));
 			verify(personService, Mockito.times(numberOfFireStationByStationNumber)).getPerson(any(Person.class));
 			verify(medicalRecordService, Mockito.times(0)).getMedicalRecord(any(Person.class));

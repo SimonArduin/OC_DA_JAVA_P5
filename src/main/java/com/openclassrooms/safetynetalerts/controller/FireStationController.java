@@ -91,7 +91,7 @@ public class FireStationController {
 	}
 	
 	@GetMapping(params = "stationNumber")
-	public FireStationURLDto fireStationURL(String stationNumber) {
+	public ResponseEntity<FireStationURLDto> fireStationURL(String stationNumber) {
 
 		/**
 		 * Read - Get info on residents covered by a certain fireStation
@@ -108,6 +108,9 @@ public class FireStationController {
 		 *         -- an int corresponding to the number of children covered by the
 		 *         fireStation
 		 */
+		
+		if (stationNumber == null)
+			return ResponseEntity.badRequest().build();
 
 		FireStationURLDto result = new FireStationURLDto();
 		FireStation fireStationToSearch = new FireStation();
@@ -116,6 +119,8 @@ public class FireStationController {
 		fireStationToSearch.setStation(stationNumber);
 		ArrayList<FireStation> fireStations = new ArrayList<FireStation>(
 				fireStationService.getFireStation(fireStationToSearch));
+		if (fireStations.isEmpty())
+			return ResponseEntity.notFound().build();
 		// for every person covered by each fire station
 		for (FireStation fireStation : fireStations) {
 			Person personToSearch = new Person();
@@ -133,6 +138,8 @@ public class FireStationController {
 					result.addChild();
 			}
 		}
-		return result;
+		if (result.getPersons().isEmpty())
+			return ResponseEntity.notFound().build();
+		return ResponseEntity.ok().body(result);
 	}
 }
