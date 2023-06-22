@@ -4,8 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.Arrays;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -33,37 +31,7 @@ public class FireStationTest {
 	@Test
 	void contextLoads() {
 	}
-	@Nested
 	
-	class setAllFieldsTests {
-
-		@Test
-		void setAllFieldsTest() {
-			fireStationTest.setAllFields(objects);
-			assertEquals(fireStation, fireStationTest);
-		}
-
-		@Test
-		void setAllFieldsTestIfEmpty() {
-			Arrays.fill(objects, null);
-			fireStationTest.setAllFields(objects);
-			assertEquals(new FireStation(), fireStationTest);
-		}
-
-		@Test
-		void setAllFieldsTestIfNull() {
-			fireStationTest.setAllFields(null);
-			assertEquals(new FireStation(), fireStationTest);
-		}
-
-		@Test
-		void setAllFieldsTestIfNotSameType() {
-			Arrays.fill(objects, 1);
-			fireStationTest.setAllFields(objects);
-			assertEquals(new FireStation(), fireStationTest);
-		}
-	}
-
 	@Nested
 	class isEmptyTests {
 

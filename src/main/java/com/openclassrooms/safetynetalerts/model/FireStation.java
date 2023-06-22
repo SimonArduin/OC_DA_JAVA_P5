@@ -31,37 +31,6 @@ public class FireStation {
 		this.station = stationNumber;
 	}
 
-	@JsonIgnore
-	public Object[] getAllFields() {
-		Field[] fields = FireStation.class.getDeclaredFields();
-		Object[] result = new Object[fields.length];
-		try {
-			for (int i = 0; i < fields.length; i++)
-				result[i] = fields[i].get(this);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return result;
-	}
-
-	@JsonIgnore
-	public void setAllFields(Object[] objects) {
-		if (objects != null) {
-			Field[] fields = FireStation.class.getDeclaredFields();
-			if (fields.length == objects.length)
-				try {
-					for (int i = 0; i < fields.length; i++) {
-						if (objects[i] != null && objects[i].getClass().equals(fields[i].getType()))
-							fields[i].set(this, objects[i]);
-						else
-							fields[i].set(this, null);
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-		}
-	}
-
 	public FireStation() {
 	}
 
