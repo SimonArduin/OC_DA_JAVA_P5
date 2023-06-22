@@ -190,6 +190,7 @@ public class FireStationControllerTest {
 		public void FireStationURLTestIfNoParams() throws Exception {
 			ResponseEntity<FireStationURLDto> result = fireStationController.fireStationURL(null);
 			assertEquals(HttpStatusCode.valueOf(400), result.getStatusCode());
+			assertEquals(null, result.getBody());
 			verify(fireStationService, Mockito.times(0)).getFireStation(any(FireStation.class));
 			verify(personService, Mockito.times(0)).getPerson(any(Person.class));
 			verify(medicalRecordService, Mockito.times(0)).getMedicalRecord(any(Person.class));
@@ -201,6 +202,7 @@ public class FireStationControllerTest {
 					.thenReturn(new ArrayList<FireStation>());
 			ResponseEntity<FireStationURLDto> result = fireStationController.fireStationURL(fireStation.getStation());
 			assertEquals(HttpStatusCode.valueOf(404), result.getStatusCode());
+			assertEquals(null, result.getBody());
 			verify(fireStationService, Mockito.times(1)).getFireStation(any(FireStation.class));
 			verify(personService, Mockito.times(0)).getPerson(any(Person.class));
 			verify(medicalRecordService, Mockito.times(0)).getMedicalRecord(any(Person.class));
@@ -211,6 +213,7 @@ public class FireStationControllerTest {
 			Mockito.when(personService.getPerson(any(Person.class))).thenReturn(new ArrayList<Person>());
 			ResponseEntity<FireStationURLDto> result = fireStationController.fireStationURL(fireStation.getStation());
 			assertEquals(HttpStatusCode.valueOf(404), result.getStatusCode());
+			assertEquals(null, result.getBody());
 			verify(fireStationService, Mockito.times(1)).getFireStation(any(FireStation.class));
 			verify(personService, Mockito.times(numberOfFireStationByStationNumber)).getPerson(any(Person.class));
 			verify(medicalRecordService, Mockito.times(0)).getMedicalRecord(any(Person.class));

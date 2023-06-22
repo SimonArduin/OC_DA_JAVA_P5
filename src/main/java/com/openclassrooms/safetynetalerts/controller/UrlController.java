@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -40,7 +41,7 @@ public class URLController {
 	private int ageMaxChild = 18;
 
 	@GetMapping(value = "/childAlert", params = "address")
-	public ChildAlertURLDto childAlertURL(@RequestParam(value = "address") String address) {
+	public ResponseEntity<ChildAlertURLDto> childAlertURL(@RequestParam(value = "address") String address) {
 
 		/**
 		 * Read - Get info on children living at a certain address and a list of all
@@ -50,12 +51,17 @@ public class URLController {
 		 * @return - A ChildAlertURLInfo object
 		 */
 
+		if (address == null)
+			return ResponseEntity.badRequest().build();
+
 		ChildAlertURLDto result = new ChildAlertURLDto();
 		Person personToSearch = new Person();
 
 		// get persons at the address
 		personToSearch.setAddress(address);
 		ArrayList<Person> persons = new ArrayList<Person>(personService.getPerson(personToSearch));
+		if (persons.isEmpty())
+			return ResponseEntity.notFound().build();
 		for (Person person : persons) {
 			// get medical record of a person
 			MedicalRecord medicalRecord = medicalRecordService.getMedicalRecord(person);
@@ -66,11 +72,11 @@ public class URLController {
 			else
 				result.addAdult(person);
 		}
-		return result;
+		return ResponseEntity.ok().body(result);
 	}
 
 	@GetMapping(value = "/phoneAlert", params = "firestation")
-	public PhoneAlertURLDto phoneAlertURL(@RequestParam(value = "firestation") String firestation) {
+	public ResponseEntity<PhoneAlertURLDto> phoneAlertURL(@RequestParam(value = "firestation") String firestation) {
 
 		/**
 		 * Read - Get the phone numbers of every person corresponding to the station
@@ -80,6 +86,9 @@ public class URLController {
 		 * @return - A List<String> containing phone numbers
 		 */
 
+		if (firestation == null)
+			return ResponseEntity.badRequest().build();
+
 		PhoneAlertURLDto result = new PhoneAlertURLDto();
 		FireStation fireStationToSearch = new FireStation();
 		Person personToSearch = new Person();
@@ -88,19 +97,24 @@ public class URLController {
 		fireStationToSearch.setStation(firestation);
 		ArrayList<FireStation> fireStations = new ArrayList<FireStation>(
 				fireStationService.getFireStation(fireStationToSearch));
+		if (fireStations.isEmpty())
+			return ResponseEntity.notFound().build();
 		for (FireStation fireStationInDB : fireStations) {
 			// get persons
 			personToSearch.setAddress(fireStationInDB.getAddress());
 			ArrayList<Person> persons = new ArrayList<Person>(personService.getPerson(personToSearch));
 			for (Person personInDB : persons) {
-				result.addPhone(personInDB.getPhone());
+				if (personInDB.getPhone() != null)
+					result.addPhone(personInDB.getPhone());
 			}
 		}
-		return result;
+		if (result.getPhones().isEmpty())
+			return ResponseEntity.notFound().build();
+		return ResponseEntity.ok().body(result);
 	}
 
 	@GetMapping(value = "/fire", params = "address")
-	public FireURLDto fireURL(@RequestParam(value = "address") String address) {
+	public ResponseEntity<FireURLDto> fireURL(@RequestParam(value = "address") String address) {
 
 		/**
 		 * Read - Get info on every resident of the corresponding address
@@ -108,6 +122,9 @@ public class URLController {
 		 * @param - A String corresponding to the address
 		 * @return - A FireURLInfo object
 		 */
+
+		if (address == null)
+			return ResponseEntity.badRequest().build();
 
 		FireURLDto result = new FireURLDto();
 		FireStation fireStationToSearch = new FireStation();
@@ -117,21 +134,26 @@ public class URLController {
 		fireStationToSearch.setAddress(address);
 		ArrayList<FireStation> fireStations = new ArrayList<FireStation>(
 				fireStationService.getFireStation(fireStationToSearch));
-		if (!fireStations.isEmpty()) {
+		if (fireStations.isEmpty())
+			return ResponseEntity.notFound().build();
+		else
 			result.setFireStationNumber(fireStations.get(0).getStation());
-		}
 		// get persons
 		personToSearch.setAddress(address);
 		ArrayList<Person> persons = new ArrayList<Person>(personService.getPerson(personToSearch));
 		for (Person person : persons) {
 			MedicalRecord medicalRecord = medicalRecordService.getMedicalRecord(person);
-			result.addPerson(person, medicalRecord);
+			if (medicalRecord != null)
+				result.addPerson(person, medicalRecord);
 		}
-		return result;
+		if (result.getPersons().isEmpty())
+			return ResponseEntity.notFound().build();
+		return ResponseEntity.ok().body(result);
 	}
 
 	@GetMapping(value = "flood/stations", params = "stations")
-	public FloodStationsURLDto floodStationsURL(@RequestParam(value = "stations") List<String> stations) {
+	public ResponseEntity<FloodStationsURLDto> floodStationsURL(
+			@RequestParam(value = "stations") List<String> stations) {
 
 		/**
 		 * Read - Get a list of residents corresponding to a list of fire stations
@@ -139,6 +161,9 @@ public class URLController {
 		 * @param - A List<String> corresponding to the station numbers
 		 * @return - A FloodStationsURLInfo object
 		 */
+
+		if (stations == null || stations.isEmpty())
+			return ResponseEntity.badRequest().build();
 
 		FloodStationsURLDto result = new FloodStationsURLDto();
 		FireStation fireStationToSearch = new FireStation();
@@ -158,16 +183,19 @@ public class URLController {
 				ArrayList<Person> persons = new ArrayList<Person>(personService.getPerson(personToSearch));
 				for (Person person : persons) {
 					MedicalRecord medicalRecord = medicalRecordService.getMedicalRecord(person);
-					home.addResident(person, medicalRecord);
+					if (medicalRecord != null)
+						home.addResident(person, medicalRecord);
 				}
 				result.addHome(home);
 			}
 		}
-		return result;
+		if (result.getHomes().isEmpty())
+			return ResponseEntity.notFound().build();
+		return ResponseEntity.ok().body(result);
 	}
 
 	@GetMapping(value = "personInfo", params = { "firstName", "lastName" })
-	public PersonInfoURLDto personInfoURL(@RequestParam(value = "firstName") String firstName,
+	public ResponseEntity<PersonInfoURLDto> personInfoURL(@RequestParam(value = "firstName") String firstName,
 			@RequestParam(value = "lastName") String lastName) {
 
 		/**
@@ -177,22 +205,30 @@ public class URLController {
 		 * @return - A List<personInfoURLPerson> object
 		 */
 
+		if (firstName == null || lastName == null)
+			return ResponseEntity.badRequest().build();
+
 		PersonInfoURLDto result = new PersonInfoURLDto();
 		Person personToSearch = new Person();
 		personToSearch.setFirstName(firstName);
 		personToSearch.setLastName(lastName);
 		// get persons
 		ArrayList<Person> persons = new ArrayList<Person>(personService.getPerson(personToSearch));
+		if (persons.isEmpty())
+			return ResponseEntity.notFound().build();
 		// get medical record
 		for (Person person : persons) {
 			MedicalRecord medicalRecord = medicalRecordService.getMedicalRecord(person);
-			result.addPerson(new PersonInfoURLPerson(person, medicalRecord));
+			if (medicalRecord != null)
+				result.addPerson(new PersonInfoURLPerson(person, medicalRecord));
 		}
-		return result;
+		if (result.getPersons().isEmpty())
+			return ResponseEntity.notFound().build();
+		return ResponseEntity.ok().body(result);
 	}
 
 	@GetMapping(value = "communityEmail", params = "city")
-	public CommunityEmailURLDto communityEmailURL(@RequestParam(value = "city") String city) {
+	public ResponseEntity<CommunityEmailURLDto> communityEmailURL(@RequestParam(value = "city") String city) {
 
 		/**
 		 * Read - Get info on a person
@@ -201,15 +237,23 @@ public class URLController {
 		 * @return - A List<personInfoURLPerson> object
 		 */
 
+		if (city == null)
+			return ResponseEntity.badRequest().build();
+
 		CommunityEmailURLDto result = new CommunityEmailURLDto();
 		Person personToSearch = new Person();
 		personToSearch.setCity(city);
 		// get persons
 		ArrayList<Person> persons = new ArrayList<Person>(personService.getPerson(personToSearch));
+		if (persons.isEmpty())
+			return ResponseEntity.notFound().build();
 		// get emails
 		for (Person person : persons) {
-			result.addEmail(person.getEmail());
+			if (person.getEmail() != null)
+				result.addEmail(person.getEmail());
 		}
-		return result;
+		if (result.getEmails().isEmpty())
+			return ResponseEntity.notFound().build();
+		return ResponseEntity.ok().body(result);
 	}
 }
