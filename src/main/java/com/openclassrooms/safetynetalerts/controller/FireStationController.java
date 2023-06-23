@@ -20,7 +20,6 @@ import com.openclassrooms.safetynetalerts.service.FireStationService;
 import com.openclassrooms.safetynetalerts.service.MedicalRecordService;
 import com.openclassrooms.safetynetalerts.service.PersonService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -44,8 +43,8 @@ public class FireStationController {
 	 * 
 	 * @param - A FireStation containing the new information
 	 * 
-	 *          If one of this fireStation's field is empty, the field of the fireStation in
-	 *          the database will remain the same
+	 *          If one of this fireStation's field is empty, the field of the
+	 *          fireStation in the database will remain the same
 	 * @return - A FireStation corresponding to the modified fireStation
 	 */
 	@PutMapping
@@ -89,7 +88,7 @@ public class FireStationController {
 			return ResponseEntity.notFound().build();
 		return ResponseEntity.ok().body(deletedFireStation);
 	}
-	
+
 	@GetMapping(params = "stationNumber")
 	public ResponseEntity<FireStationURLDto> fireStationURL(String stationNumber) {
 
@@ -108,7 +107,7 @@ public class FireStationController {
 		 *         -- an int corresponding to the number of children covered by the
 		 *         fireStation
 		 */
-		
+
 		if (stationNumber == null)
 			return ResponseEntity.badRequest().build();
 
@@ -117,26 +116,26 @@ public class FireStationController {
 
 		// get fire stations
 		fireStationToSearch.setStation(stationNumber);
-		ArrayList<FireStation> fireStations = new ArrayList<FireStation>(
-				fireStationService.getFireStation(fireStationToSearch));
-		if (fireStations.isEmpty())
+		List<FireStation> fireStations = fireStationService.getFireStation(fireStationToSearch);
+		if (fireStations == null)
 			return ResponseEntity.notFound().build();
 		// for every person covered by each fire station
 		for (FireStation fireStation : fireStations) {
 			Person personToSearch = new Person();
 			personToSearch.setAddress(fireStation.getAddress());
-			ArrayList<Person> persons = new ArrayList<Person>(personService.getPerson(personToSearch));
-			for (Person personInFireStation : persons) {
-				// get first name, last name, address and phone number of the resident
-				result.addPerson(new FireStationURLPerson(personInFireStation));
-				// get medical record of the resident
-				MedicalRecord medicalRecord = medicalRecordService.getMedicalRecord(personInFireStation);
-				// count as adult or child
-				if (medicalRecord.calculateAge() > ageMaxChild)
-					result.addAdult();
-				else
-					result.addChild();
-			}
+			List<Person> persons = personService.getPerson(personToSearch);
+			if (persons != null)
+				for (Person personInFireStation : persons) {
+					// get first name, last name, address and phone number of the resident
+					result.addPerson(new FireStationURLPerson(personInFireStation));
+					// get medical record of the resident
+					MedicalRecord medicalRecord = medicalRecordService.getMedicalRecord(personInFireStation);
+					// count as adult or child
+					if (medicalRecord.calculateAge() > ageMaxChild)
+						result.addAdult();
+					else
+						result.addChild();
+				}
 		}
 		if (result.getPersons().isEmpty())
 			return ResponseEntity.notFound().build();

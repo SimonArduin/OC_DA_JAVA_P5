@@ -199,7 +199,7 @@ public class FireStationControllerTest {
 		@Test
 		public void FireStationURLTestIfNoFireStationInDB() throws Exception {
 			Mockito.when(fireStationService.getFireStation(any(FireStation.class)))
-					.thenReturn(new ArrayList<FireStation>());
+					.thenReturn(null);
 			ResponseEntity<FireStationURLDto> result = fireStationController.fireStationURL(fireStation.getStation());
 			assertEquals(HttpStatus.valueOf(404), result.getStatusCode());
 			assertEquals(null, result.getBody());
@@ -210,7 +210,7 @@ public class FireStationControllerTest {
 
 		@Test
 		public void FireStationURLTestIfNoPersonsInDB() throws Exception {
-			Mockito.when(personService.getPerson(any(Person.class))).thenReturn(new ArrayList<Person>());
+			Mockito.when(personService.getPerson(any(Person.class))).thenReturn(null);
 			ResponseEntity<FireStationURLDto> result = fireStationController.fireStationURL(fireStation.getStation());
 			assertEquals(HttpStatus.valueOf(404), result.getStatusCode());
 			assertEquals(null, result.getBody());

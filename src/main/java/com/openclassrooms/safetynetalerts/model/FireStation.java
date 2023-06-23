@@ -6,6 +6,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class FireStation {
 
+	@Override
+	public String toString() {
+		return "FireStation{ address=" + address + ", station=" + station + " }";
+	}
+
 	private String address;
 	private String station;
 
