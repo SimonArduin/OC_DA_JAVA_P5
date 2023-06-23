@@ -14,7 +14,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatusCode;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.openclassrooms.safetynetalerts.controller.MedicalRecordController;
@@ -52,7 +52,7 @@ public class MedicalRecordControllerTest {
 		@Test
 		public void putMedicalRecord() throws Exception {
 			ResponseEntity<MedicalRecord> result = medicalRecordController.putMedicalRecord(medicalRecord);
-			assertEquals(HttpStatusCode.valueOf(200), result.getStatusCode());
+			assertEquals(HttpStatus.valueOf(200), result.getStatusCode());
 			assertEquals(medicalRecord, result.getBody());
 			verify(medicalRecordService, Mockito.times(1)).putMedicalRecord(any(MedicalRecord.class));
 		}
@@ -61,7 +61,7 @@ public class MedicalRecordControllerTest {
 		public void putMedicalRecordTestIfNotInDB() throws Exception {
 			Mockito.when(medicalRecordService.putMedicalRecord(any(MedicalRecord.class))).thenReturn(null);
 			ResponseEntity<MedicalRecord> result = medicalRecordController.putMedicalRecord(medicalRecord);
-			assertEquals(HttpStatusCode.valueOf(404), result.getStatusCode());
+			assertEquals(HttpStatus.valueOf(404), result.getStatusCode());
 			assertEquals(null, result.getBody());
 			verify(medicalRecordService, Mockito.times(1)).putMedicalRecord(any(MedicalRecord.class));
 		}
@@ -69,7 +69,7 @@ public class MedicalRecordControllerTest {
 		@Test
 		public void putMedicalRecordTestIfEmptyBody() throws Exception {
 			ResponseEntity<MedicalRecord> result = medicalRecordController.putMedicalRecord(null);
-			assertEquals(HttpStatusCode.valueOf(400), result.getStatusCode());
+			assertEquals(HttpStatus.valueOf(400), result.getStatusCode());
 			assertEquals(null, result.getBody());
 			verify(medicalRecordService, Mockito.times(0)).putMedicalRecord(any(MedicalRecord.class));
 		}
@@ -81,7 +81,7 @@ public class MedicalRecordControllerTest {
 		@Test
 		public void postMedicalRecord() throws Exception {
 			ResponseEntity<MedicalRecord> result = medicalRecordController.postMedicalRecord(medicalRecord);
-			assertEquals(HttpStatusCode.valueOf(200), result.getStatusCode());
+			assertEquals(HttpStatus.valueOf(200), result.getStatusCode());
 			assertEquals(medicalRecord, result.getBody());
 			verify(medicalRecordService, Mockito.times(1)).postMedicalRecord(any(MedicalRecord.class));
 		}
@@ -90,7 +90,7 @@ public class MedicalRecordControllerTest {
 		public void postMedicalRecordTestIfNotInDB() throws Exception {
 			Mockito.when(medicalRecordService.postMedicalRecord(any(MedicalRecord.class))).thenReturn(null);
 			ResponseEntity<MedicalRecord> result = medicalRecordController.postMedicalRecord(medicalRecord);
-			assertEquals(HttpStatusCode.valueOf(404), result.getStatusCode());
+			assertEquals(HttpStatus.valueOf(404), result.getStatusCode());
 			assertEquals(null, result.getBody());
 			verify(medicalRecordService, Mockito.times(1)).postMedicalRecord(any(MedicalRecord.class));
 		}
@@ -98,7 +98,7 @@ public class MedicalRecordControllerTest {
 		@Test
 		public void postMedicalRecordTestIfEmptyBody() throws Exception {
 			ResponseEntity<MedicalRecord> result = medicalRecordController.postMedicalRecord(null);
-			assertEquals(HttpStatusCode.valueOf(400), result.getStatusCode());
+			assertEquals(HttpStatus.valueOf(400), result.getStatusCode());
 			assertEquals(null, result.getBody());
 			verify(medicalRecordService, Mockito.times(0)).postMedicalRecord(any(MedicalRecord.class));
 		}
@@ -110,7 +110,7 @@ public class MedicalRecordControllerTest {
 		@Test
 		public void deleteMedicalRecord() throws Exception {
 			ResponseEntity<MedicalRecord> result = medicalRecordController.deleteMedicalRecord(medicalRecord);
-			assertEquals(HttpStatusCode.valueOf(200), result.getStatusCode());
+			assertEquals(HttpStatus.valueOf(200), result.getStatusCode());
 			assertEquals(medicalRecord, result.getBody());
 			verify(medicalRecordService, Mockito.times(1)).deleteMedicalRecord(any(MedicalRecord.class));
 		}
@@ -119,7 +119,7 @@ public class MedicalRecordControllerTest {
 		public void deleteMedicalRecordTestIfNotInDB() throws Exception {
 			Mockito.when(medicalRecordService.deleteMedicalRecord(any(MedicalRecord.class))).thenReturn(null);
 			ResponseEntity<MedicalRecord> result = medicalRecordController.deleteMedicalRecord(medicalRecord);
-			assertEquals(HttpStatusCode.valueOf(404), result.getStatusCode());
+			assertEquals(HttpStatus.valueOf(404), result.getStatusCode());
 			assertEquals(null, result.getBody());
 			verify(medicalRecordService, Mockito.times(1)).deleteMedicalRecord(any(MedicalRecord.class));
 		}
@@ -127,7 +127,7 @@ public class MedicalRecordControllerTest {
 		@Test
 		public void deleteMedicalRecordTestIfEmptyBody() throws Exception {
 			ResponseEntity<MedicalRecord> result = medicalRecordController.deleteMedicalRecord(null);
-			assertEquals(HttpStatusCode.valueOf(400), result.getStatusCode());
+			assertEquals(HttpStatus.valueOf(400), result.getStatusCode());
 			assertEquals(null, result.getBody());
 			verify(medicalRecordService, Mockito.times(0)).deleteMedicalRecord(any(MedicalRecord.class));
 		}

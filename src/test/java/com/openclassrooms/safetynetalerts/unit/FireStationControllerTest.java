@@ -15,7 +15,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatusCode;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.openclassrooms.safetynetalerts.controller.FireStationController;
@@ -86,7 +86,7 @@ public class FireStationControllerTest {
 		@Test
 		public void putFireStation() throws Exception {
 			ResponseEntity<FireStation> result = fireStationController.putFireStation(fireStation);
-			assertEquals(HttpStatusCode.valueOf(200), result.getStatusCode());
+			assertEquals(HttpStatus.valueOf(200), result.getStatusCode());
 			assertEquals(fireStation, result.getBody());
 			verify(fireStationService, Mockito.times(1)).putFireStation(any(FireStation.class));
 		}
@@ -95,7 +95,7 @@ public class FireStationControllerTest {
 		public void putFireStationTestIfNotInDB() throws Exception {
 			Mockito.when(fireStationService.putFireStation(any(FireStation.class))).thenReturn(null);
 			ResponseEntity<FireStation> result = fireStationController.putFireStation(fireStation);
-			assertEquals(HttpStatusCode.valueOf(404), result.getStatusCode());
+			assertEquals(HttpStatus.valueOf(404), result.getStatusCode());
 			assertEquals(null, result.getBody());
 			verify(fireStationService, Mockito.times(1)).putFireStation(any(FireStation.class));
 		}
@@ -103,7 +103,7 @@ public class FireStationControllerTest {
 		@Test
 		public void putFireStationTestIfEmptyBody() throws Exception {
 			ResponseEntity<FireStation> result = fireStationController.putFireStation(null);
-			assertEquals(HttpStatusCode.valueOf(400), result.getStatusCode());
+			assertEquals(HttpStatus.valueOf(400), result.getStatusCode());
 			assertEquals(null, result.getBody());
 			verify(fireStationService, Mockito.times(0)).putFireStation(any(FireStation.class));
 		}
@@ -115,7 +115,7 @@ public class FireStationControllerTest {
 		@Test
 		public void postFireStation() throws Exception {
 			ResponseEntity<FireStation> result = fireStationController.postFireStation(fireStation);
-			assertEquals(HttpStatusCode.valueOf(200), result.getStatusCode());
+			assertEquals(HttpStatus.valueOf(200), result.getStatusCode());
 			assertEquals(fireStation, result.getBody());
 			verify(fireStationService, Mockito.times(1)).postFireStation(any(FireStation.class));
 		}
@@ -124,7 +124,7 @@ public class FireStationControllerTest {
 		public void postFireStationTestIfNotInDB() throws Exception {
 			Mockito.when(fireStationService.postFireStation(any(FireStation.class))).thenReturn(null);
 			ResponseEntity<FireStation> result = fireStationController.postFireStation(fireStation);
-			assertEquals(HttpStatusCode.valueOf(404), result.getStatusCode());
+			assertEquals(HttpStatus.valueOf(404), result.getStatusCode());
 			assertEquals(null, result.getBody());
 			verify(fireStationService, Mockito.times(1)).postFireStation(any(FireStation.class));
 		}
@@ -132,7 +132,7 @@ public class FireStationControllerTest {
 		@Test
 		public void postFireStationTestIfEmptyBody() throws Exception {
 			ResponseEntity<FireStation> result = fireStationController.postFireStation(null);
-			assertEquals(HttpStatusCode.valueOf(400), result.getStatusCode());
+			assertEquals(HttpStatus.valueOf(400), result.getStatusCode());
 			assertEquals(null, result.getBody());
 			verify(fireStationService, Mockito.times(0)).postFireStation(any(FireStation.class));
 		}
@@ -144,7 +144,7 @@ public class FireStationControllerTest {
 		@Test
 		public void deleteFireStation() throws Exception {
 			ResponseEntity<List<FireStation>> result = fireStationController.deleteFireStation(fireStation);
-			assertEquals(HttpStatusCode.valueOf(200), result.getStatusCode());
+			assertEquals(HttpStatus.valueOf(200), result.getStatusCode());
 			assertEquals(new ArrayList<FireStation>(Arrays.asList(fireStation)), result.getBody());
 			verify(fireStationService, Mockito.times(1)).deleteFireStation(any(FireStation.class));
 		}
@@ -153,7 +153,7 @@ public class FireStationControllerTest {
 		public void deleteFireStationTestIfNotInDB() throws Exception {
 			Mockito.when(fireStationService.deleteFireStation(any(FireStation.class))).thenReturn(null);
 			ResponseEntity<List<FireStation>> result = fireStationController.deleteFireStation(fireStation);
-			assertEquals(HttpStatusCode.valueOf(404), result.getStatusCode());
+			assertEquals(HttpStatus.valueOf(404), result.getStatusCode());
 			assertEquals(null, result.getBody());
 			verify(fireStationService, Mockito.times(1)).deleteFireStation(any(FireStation.class));
 		}
@@ -161,7 +161,7 @@ public class FireStationControllerTest {
 		@Test
 		public void deleteFireStationTestIfEmptyBody() throws Exception {
 			ResponseEntity<List<FireStation>> result = fireStationController.deleteFireStation(null);
-			assertEquals(HttpStatusCode.valueOf(400), result.getStatusCode());
+			assertEquals(HttpStatus.valueOf(400), result.getStatusCode());
 			assertEquals(null, result.getBody());
 			verify(fireStationService, Mockito.times(0)).deleteFireStation(any(FireStation.class));
 		}
@@ -173,7 +173,7 @@ public class FireStationControllerTest {
 		@Test
 		public void FireStationURLTest() throws Exception {
 			ResponseEntity<FireStationURLDto> result = fireStationController.fireStationURL(fireStation.getStation());
-			assertEquals(HttpStatusCode.valueOf(200), result.getStatusCode());
+			assertEquals(HttpStatus.valueOf(200), result.getStatusCode());
 			assertEquals(person.getFirstName(), result.getBody().getPersons().get(0).getFirstName());
 			assertEquals(person.getLastName(), result.getBody().getPersons().get(0).getLastName());
 			assertEquals(personChild.getFirstName(), result.getBody().getPersons().get(1).getFirstName());
@@ -189,7 +189,7 @@ public class FireStationControllerTest {
 		@Test
 		public void FireStationURLTestIfNoParams() throws Exception {
 			ResponseEntity<FireStationURLDto> result = fireStationController.fireStationURL(null);
-			assertEquals(HttpStatusCode.valueOf(400), result.getStatusCode());
+			assertEquals(HttpStatus.valueOf(400), result.getStatusCode());
 			assertEquals(null, result.getBody());
 			verify(fireStationService, Mockito.times(0)).getFireStation(any(FireStation.class));
 			verify(personService, Mockito.times(0)).getPerson(any(Person.class));
@@ -201,7 +201,7 @@ public class FireStationControllerTest {
 			Mockito.when(fireStationService.getFireStation(any(FireStation.class)))
 					.thenReturn(new ArrayList<FireStation>());
 			ResponseEntity<FireStationURLDto> result = fireStationController.fireStationURL(fireStation.getStation());
-			assertEquals(HttpStatusCode.valueOf(404), result.getStatusCode());
+			assertEquals(HttpStatus.valueOf(404), result.getStatusCode());
 			assertEquals(null, result.getBody());
 			verify(fireStationService, Mockito.times(1)).getFireStation(any(FireStation.class));
 			verify(personService, Mockito.times(0)).getPerson(any(Person.class));
@@ -212,7 +212,7 @@ public class FireStationControllerTest {
 		public void FireStationURLTestIfNoPersonsInDB() throws Exception {
 			Mockito.when(personService.getPerson(any(Person.class))).thenReturn(new ArrayList<Person>());
 			ResponseEntity<FireStationURLDto> result = fireStationController.fireStationURL(fireStation.getStation());
-			assertEquals(HttpStatusCode.valueOf(404), result.getStatusCode());
+			assertEquals(HttpStatus.valueOf(404), result.getStatusCode());
 			assertEquals(null, result.getBody());
 			verify(fireStationService, Mockito.times(1)).getFireStation(any(FireStation.class));
 			verify(personService, Mockito.times(numberOfFireStationByStationNumber)).getPerson(any(Person.class));

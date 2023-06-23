@@ -11,7 +11,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatusCode;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.openclassrooms.safetynetalerts.controller.PersonController;
@@ -48,7 +48,7 @@ public class PersonControllerTest {
 		@Test
 		public void putPerson() throws Exception {
 			ResponseEntity<Person> result = personController.putPerson(person);
-			assertEquals(HttpStatusCode.valueOf(200), result.getStatusCode());
+			assertEquals(HttpStatus.valueOf(200), result.getStatusCode());
 			assertEquals(person, result.getBody());
 			verify(personService, Mockito.times(1)).putPerson(any(Person.class));
 		}
@@ -57,7 +57,7 @@ public class PersonControllerTest {
 		public void putPersonTestIfNotInDB() throws Exception {
 			Mockito.when(personService.putPerson(any(Person.class))).thenReturn(null);
 			ResponseEntity<Person> result = personController.putPerson(person);
-			assertEquals(HttpStatusCode.valueOf(404), result.getStatusCode());
+			assertEquals(HttpStatus.valueOf(404), result.getStatusCode());
 			assertEquals(null, result.getBody());
 			verify(personService, Mockito.times(1)).putPerson(any(Person.class));
 		}
@@ -65,7 +65,7 @@ public class PersonControllerTest {
 		@Test
 		public void putPersonTestIfEmptyBody() throws Exception {
 			ResponseEntity<Person> result = personController.putPerson(null);
-			assertEquals(HttpStatusCode.valueOf(400), result.getStatusCode());
+			assertEquals(HttpStatus.valueOf(400), result.getStatusCode());
 			assertEquals(null, result.getBody());
 			verify(personService, Mockito.times(0)).putPerson(any(Person.class));
 		}
@@ -77,7 +77,7 @@ public class PersonControllerTest {
 		@Test
 		public void postPerson() throws Exception {
 			ResponseEntity<Person> result = personController.postPerson(person);
-			assertEquals(HttpStatusCode.valueOf(200), result.getStatusCode());
+			assertEquals(HttpStatus.valueOf(200), result.getStatusCode());
 			assertEquals(person, result.getBody());
 			verify(personService, Mockito.times(1)).postPerson(any(Person.class));
 		}
@@ -86,7 +86,7 @@ public class PersonControllerTest {
 		public void postPersonTestIfNotInDB() throws Exception {
 			Mockito.when(personService.postPerson(any(Person.class))).thenReturn(null);
 			ResponseEntity<Person> result = personController.postPerson(person);
-			assertEquals(HttpStatusCode.valueOf(404), result.getStatusCode());
+			assertEquals(HttpStatus.valueOf(404), result.getStatusCode());
 			assertEquals(null, result.getBody());
 			verify(personService, Mockito.times(1)).postPerson(any(Person.class));
 		}
@@ -94,7 +94,7 @@ public class PersonControllerTest {
 		@Test
 		public void postPersonTestIfEmptyBody() throws Exception {
 			ResponseEntity<Person> result = personController.postPerson(null);
-			assertEquals(HttpStatusCode.valueOf(400), result.getStatusCode());
+			assertEquals(HttpStatus.valueOf(400), result.getStatusCode());
 			assertEquals(null, result.getBody());
 			verify(personService, Mockito.times(0)).postPerson(any(Person.class));
 		}
@@ -106,7 +106,7 @@ public class PersonControllerTest {
 		@Test
 		public void deletePerson() throws Exception {
 			ResponseEntity<Person> result = personController.deletePerson(person);
-			assertEquals(HttpStatusCode.valueOf(200), result.getStatusCode());
+			assertEquals(HttpStatus.valueOf(200), result.getStatusCode());
 			assertEquals(person, result.getBody());
 			verify(personService, Mockito.times(1)).deletePerson(any(Person.class));
 		}
@@ -115,7 +115,7 @@ public class PersonControllerTest {
 		public void deletePersonTestIfNotInDB() throws Exception {
 			Mockito.when(personService.deletePerson(any(Person.class))).thenReturn(null);
 			ResponseEntity<Person> result = personController.deletePerson(person);
-			assertEquals(HttpStatusCode.valueOf(404), result.getStatusCode());
+			assertEquals(HttpStatus.valueOf(404), result.getStatusCode());
 			assertEquals(null, result.getBody());
 			verify(personService, Mockito.times(1)).deletePerson(any(Person.class));
 		}
@@ -123,7 +123,7 @@ public class PersonControllerTest {
 		@Test
 		public void deletePersonTestIfEmptyBody() throws Exception {
 			ResponseEntity<Person> result = personController.deletePerson(null);
-			assertEquals(HttpStatusCode.valueOf(400), result.getStatusCode());
+			assertEquals(HttpStatus.valueOf(400), result.getStatusCode());
 			assertEquals(null, result.getBody());
 			verify(personService, Mockito.times(0)).deletePerson(any(Person.class));
 		}

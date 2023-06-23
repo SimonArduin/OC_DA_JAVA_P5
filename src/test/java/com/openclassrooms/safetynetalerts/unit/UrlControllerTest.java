@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 
 import com.openclassrooms.safetynetalerts.controller.URLController;
@@ -94,7 +93,7 @@ public class URLControllerTest {
 		public void childAlertURLTest() throws Exception {
 			ResponseEntity<ChildAlertURLDto> result = urlController.childAlertURL(personChild.getAddress());
 
-			assertEquals(HttpStatusCode.valueOf(200), result.getStatusCode());
+			assertEquals(HttpStatus.valueOf(200), result.getStatusCode());
 			assertEquals(personChild.getFirstName(), result.getBody().getChildren().get(0).getFirstName());
 			assertEquals(personChild.getLastName(), result.getBody().getChildren().get(0).getLastName());
 			assertEquals(medicalRecordChild.calculateAge(), result.getBody().getChildren().get(0).getAge());
@@ -108,7 +107,7 @@ public class URLControllerTest {
 		public void childAlertURLTestIfNoParams() throws Exception {
 			ResponseEntity<ChildAlertURLDto> result = urlController.childAlertURL(null);
 
-			assertEquals(HttpStatusCode.valueOf(400), result.getStatusCode());
+			assertEquals(HttpStatus.valueOf(400), result.getStatusCode());
 			assertEquals(null, result.getBody());
 			verify(personService, Mockito.times(0)).getPerson(any(Person.class));
 			verify(medicalRecordService, Mockito.times(0)).getMedicalRecord(person);
@@ -121,7 +120,7 @@ public class URLControllerTest {
 
 			ResponseEntity<ChildAlertURLDto> result = urlController.childAlertURL(personChild.getAddress());
 
-			assertEquals(HttpStatusCode.valueOf(404), result.getStatusCode());
+			assertEquals(HttpStatus.valueOf(404), result.getStatusCode());
 			assertEquals(null, result.getBody());
 			verify(personService, Mockito.times(1)).getPerson(any(Person.class));
 			verify(medicalRecordService, Mockito.times(0)).getMedicalRecord(person);
@@ -134,7 +133,7 @@ public class URLControllerTest {
 
 			ResponseEntity<ChildAlertURLDto> result = urlController.childAlertURL(personChild.getAddress());
 
-			assertEquals(HttpStatusCode.valueOf(200), result.getStatusCode());
+			assertEquals(HttpStatus.valueOf(200), result.getStatusCode());
 			assertEquals(person, result.getBody().getAdults().get(0));
 			assertEquals(personChild, result.getBody().getAdults().get(1));
 			verify(personService, Mockito.times(1)).getPerson(any(Person.class));
@@ -148,7 +147,7 @@ public class URLControllerTest {
 
 			ResponseEntity<ChildAlertURLDto> result = urlController.childAlertURL(personChild.getAddress());
 
-			assertEquals(HttpStatusCode.valueOf(200), result.getStatusCode());
+			assertEquals(HttpStatus.valueOf(200), result.getStatusCode());
 			assertEquals(person, result.getBody().getAdults().get(0));
 			assertEquals(personChild, result.getBody().getAdults().get(1));
 			verify(personService, Mockito.times(1)).getPerson(any(Person.class));
