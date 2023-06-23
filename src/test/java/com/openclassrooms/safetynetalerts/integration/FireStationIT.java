@@ -8,8 +8,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.util.ArrayList;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -54,22 +52,18 @@ public class FireStationIT {
 		@Test
 		public void putFireStationTestIfNotInDB() throws Exception {
 			mockMvc.perform(put(String.format("/firestation?address=%s&stationNumber=%s",
-					fireStationNotInDB.getAddress(), fireStationNotInDB.getStation()))).andExpect(status().isOk())
-					.andExpect(jsonPath("address", nullValue())).andExpect(jsonPath("station", nullValue()));
+					fireStationNotInDB.getAddress(), fireStationNotInDB.getStation()))).andExpect(status().isNotFound());
 		}
 
-		/*
 		@Test
 		public void putFireStationTestIfEmptyParams() throws Exception {
 			mockMvc.perform(put(String.format("/firestation?address=%s&stationNumber=%s", null, null)))
-					.andExpect(status().isOk()).andExpect(jsonPath("address", nullValue()))
-					.andExpect(jsonPath("station", nullValue()));
+					.andExpect(status().isBadRequest());
 		}
-		*/
 
 		@Test
 		public void putFireStationTestIfNoParams() throws Exception {
-			mockMvc.perform(put("/firestation")).andExpect(status().is(400));
+			mockMvc.perform(put("/firestation")).andExpect(status().isBadRequest());
 		}
 	}
 
@@ -91,16 +85,15 @@ public class FireStationIT {
 					.andExpect(jsonPath("station", nullValue()));
 		}
 
-		/*@Test
+		@Test
 		public void postFireStationTestIfEmptyParams() throws Exception {
 			mockMvc.perform(post(String.format("/firestation?address=%s&stationNumber=%s", null, null)))
-					.andExpect(status().isOk()).andExpect(jsonPath("address", nullValue()))
-					.andExpect(jsonPath("station", nullValue()));
-		}*/
+					.andExpect(status().isBadRequest());
+		}
 
 		@Test
 		public void postFireStationTestIfNoParams() throws Exception {
-			mockMvc.perform(post("/firestation")).andExpect(status().is(400));
+			mockMvc.perform(post("/firestation")).andExpect(status().isBadRequest());
 		}
 	}
 
@@ -118,20 +111,18 @@ public class FireStationIT {
 		@Test
 		public void deleteFireStationIfNotInDB() throws Exception {
 			mockMvc.perform(delete(String.format("/firestation?address=%s&stationNumber=%s",
-					fireStationNotInDB.getAddress(), fireStationNotInDB.getStation()))).andExpect(status().isOk())
-					.andExpect(jsonPath("$", is(new ArrayList<FireStation>())));
+					fireStationNotInDB.getAddress(), fireStationNotInDB.getStation()))).andExpect(status().isNotFound());
 		}
 
 		@Test
 		public void deleteFireStationIfEmptyParams() throws Exception {
 			mockMvc.perform(delete(String.format("/firestation?address=%s&stationNumber=%s", null, null)))
-					.andExpect(status().isOk()).andExpect(jsonPath("$", is(new ArrayList<FireStation>())));
+					.andExpect(status().isBadRequest());
 		}
 
 		@Test
 		public void deleteFireStationIfNoParams() throws Exception {
-			mockMvc.perform(delete(String.format("/firestation"))).andExpect(status().isOk())
-					.andExpect(jsonPath("$", is(new ArrayList<FireStation>())));
+			mockMvc.perform(delete(String.format("/firestation"))).andExpect(status().isBadRequest());
 		}
 
 		@Test
@@ -142,22 +133,10 @@ public class FireStationIT {
 		}
 
 		@Test
-		public void deleteFireStationByAddressIfError() throws Exception {
-			mockMvc.perform(delete(String.format("/firestation?address=%s", fireStationNotInDB.getAddress())))
-					.andExpect(status().isOk()).andExpect(jsonPath("$", is(new ArrayList<FireStation>())));
-		}
-
-		@Test
 		public void deleteFireStationByStation() throws Exception {
 			mockMvc.perform(delete(String.format("/firestation?stationNumber=%s", fireStation.getStation())))
 					.andExpect(status().isOk()).andExpect(jsonPath("$[0].address", is(fireStation.getAddress())))
 					.andExpect(jsonPath("$[0].station", is(fireStation.getStation())));
-		}
-
-		@Test
-		public void deleteFireStationByStationIfError() throws Exception {
-			mockMvc.perform(delete("/firestation?stationNumber=%s", fireStationNotInDB.getStation()))
-					.andExpect(status().isOk()).andExpect(jsonPath("$", is(new ArrayList<FireStation>())));
 		}
 	}
 }

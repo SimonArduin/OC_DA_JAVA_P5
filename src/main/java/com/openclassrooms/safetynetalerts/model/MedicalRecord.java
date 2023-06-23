@@ -76,13 +76,13 @@ public class MedicalRecord {
 		super();
 	}
 
-	public int calculateAge() {
+	public Integer calculateAge() {
 			try {
 				return Period
 						.between(LocalDate.parse(birthdate, DateTimeFormatter.ofPattern("MM/dd/yyyy")), LocalDate.now())
 						.getYears();
 			} catch (Exception e) {
-				return 999;
+				return null;
 			}
 	}
 

@@ -54,32 +54,32 @@ public class FireStationServiceTest {
 
 		@Test
 		public void deleteFireStationTestIfNotInDB() {
-			when(fireStationRepository.get(any(FireStation.class))).thenReturn(new ArrayList<FireStation>());
-			assertEquals(new ArrayList<FireStation>(), fireStationService.deleteFireStation(fireStation));
+			when(fireStationRepository.get(any(FireStation.class))).thenReturn(null);
+			assertEquals(null, fireStationService.deleteFireStation(fireStation));
 			verify(fireStationRepository, Mockito.times(1)).get(any(FireStation.class));
 			verify(fireStationRepository, Mockito.times(0)).delete(any(FireStation.class));
 		}
 
 		@Test
 		public void deleteFireStationTestIfEmpty() {
-			when(fireStationRepository.get(any(FireStation.class))).thenReturn(new ArrayList<FireStation>());
-			assertEquals(new ArrayList<FireStation>(), fireStationService.deleteFireStation(new FireStation()));
+			when(fireStationRepository.get(any(FireStation.class))).thenReturn(null);
+			assertEquals(null, fireStationService.deleteFireStation(new FireStation()));
 			verify(fireStationRepository, Mockito.times(1)).get(any(FireStation.class));
 			verify(fireStationRepository, Mockito.times(0)).delete(any(FireStation.class));
 		}
 
 		@Test
 		public void deleteFireStationTestIfNull() {
-			when(fireStationRepository.get(null)).thenReturn(new ArrayList<FireStation>());
-			assertEquals(new ArrayList<FireStation>(), fireStationService.deleteFireStation(null));
+			when(fireStationRepository.get(null)).thenReturn(null);
+			assertEquals(null, fireStationService.deleteFireStation(null));
 			verify(fireStationRepository, Mockito.times(1)).get(null);
 			verify(fireStationRepository, Mockito.times(0)).delete(any(FireStation.class));
 		}
 
 		@Test
 		public void deleteFireStationTestIfErrorOnDelete() {
-			when(fireStationRepository.delete(any(FireStation.class))).thenReturn(new FireStation());
-			assertEquals(new ArrayList<FireStation>(), fireStationService.deleteFireStation(fireStation));
+			when(fireStationRepository.delete(any(FireStation.class))).thenReturn(null);
+			assertEquals(null, fireStationService.deleteFireStation(fireStation));
 			verify(fireStationRepository, Mockito.times(1)).get(any(FireStation.class));
 			verify(fireStationRepository, Mockito.times(1)).delete(any(FireStation.class));
 		}
@@ -96,22 +96,22 @@ public class FireStationServiceTest {
 
 		@Test
 		public void getFireStationTestIfNotInDB() {
-			when(fireStationRepository.get(any(FireStation.class))).thenReturn(new ArrayList<FireStation>());
-			assertEquals(new ArrayList<FireStation>(), fireStationService.getFireStation(fireStation));
+			when(fireStationRepository.get(any(FireStation.class))).thenReturn(null);
+			assertEquals(null, fireStationService.getFireStation(fireStation));
 			verify(fireStationRepository, Mockito.times(1)).get(any(FireStation.class));
 		}
 
 		@Test
 		public void getFireStationTestIfEmpty() {
-			when(fireStationRepository.get(any(FireStation.class))).thenReturn(new ArrayList<FireStation>());
-			assertEquals(new ArrayList<FireStation>(), fireStationService.getFireStation(new FireStation()));
+			when(fireStationRepository.get(any(FireStation.class))).thenReturn(null);
+			assertEquals(null, fireStationService.getFireStation(new FireStation()));
 			verify(fireStationRepository, Mockito.times(1)).get(any(FireStation.class));
 		}
 
 		@Test
 		public void getFireStationTestIfNull() {
-			when(fireStationRepository.get(null)).thenReturn(new ArrayList<FireStation>());
-			assertEquals(new ArrayList<FireStation>(), fireStationService.getFireStation(null));
+			when(fireStationRepository.get(null)).thenReturn(null);
+			assertEquals(null, fireStationService.getFireStation(null));
 			verify(fireStationRepository, Mockito.times(1)).get(null);
 		}
 	}
@@ -127,22 +127,22 @@ public class FireStationServiceTest {
 
 		@Test
 		public void postFireStationTestIfAlreadyInDB() {
-			when(fireStationRepository.save(any(FireStation.class))).thenReturn(new FireStation());
-			assertEquals(new FireStation(), fireStationService.postFireStation(fireStation));
+			when(fireStationRepository.save(any(FireStation.class))).thenReturn(null);
+			assertEquals(null, fireStationService.postFireStation(fireStation));
 			verify(fireStationRepository, Mockito.times(1)).save(any(FireStation.class));
 		}
 
 		@Test
 		public void postFireStationTestIfEmpty() {
-			when(fireStationRepository.save(any(FireStation.class))).thenReturn(new FireStation());
-			assertEquals(new FireStation(), fireStationService.postFireStation(new FireStation()));
+			when(fireStationRepository.save(any(FireStation.class))).thenReturn(null);
+			assertEquals(null, fireStationService.postFireStation(new FireStation()));
 			verify(fireStationRepository, Mockito.times(1)).save(any(FireStation.class));
 		}
 
 		@Test
 		public void postFireStationTestIfNull() {
-			when(fireStationRepository.save(null)).thenReturn(new FireStation());
-			assertEquals(new FireStation(), fireStationService.postFireStation(null));
+			when(fireStationRepository.save(null)).thenReturn(null);
+			assertEquals(null, fireStationService.postFireStation(null));
 			verify(fireStationRepository, Mockito.times(1)).save(null);
 		}
 	}
@@ -158,21 +158,21 @@ public class FireStationServiceTest {
 
 		@Test
 		public void putFireStationTestIfAlreadyInDB() {
-			when(fireStationRepository.save(any(FireStation.class))).thenReturn(new FireStation());
-			assertEquals(new FireStation(), fireStationService.putFireStation(fireStation));
+			when(fireStationRepository.save(any(FireStation.class))).thenReturn(null);
+			assertEquals(null, fireStationService.putFireStation(fireStation));
 			verify(fireStationRepository, Mockito.times(1)).save(any(FireStation.class));
 		}
 
 		@Test
 		public void putFireStationTestIfEmpty() {
-			assertEquals(new FireStation(), fireStationService.putFireStation(new FireStation()));
+			assertEquals(null, fireStationService.putFireStation(new FireStation()));
 			verify(fireStationRepository, Mockito.times(0)).save(any(FireStation.class));
 		}
 
 		@Test
 		public void putFireStationTestIfNull() {
-			when(fireStationRepository.save(null)).thenReturn(new FireStation());
-			assertEquals(new FireStation(), fireStationService.putFireStation(null));
+			when(fireStationRepository.save(null)).thenReturn(null);
+			assertEquals(null, fireStationService.putFireStation(null));
 			verify(fireStationRepository, Mockito.times(0)).save(null);
 		}
 	}

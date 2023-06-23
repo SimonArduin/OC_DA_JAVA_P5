@@ -68,7 +68,6 @@ public class URLControllerTest {
 	final MedicalRecord medicalRecordChildOnlyName = new MedicalRecord(medicalRecordChild.getFirstName(),
 			medicalRecordChild.getLastName());
 
-	final int ageIfNoBirthdate = 999;
 	final int numberOfAdults = 1;
 	final int numberOfChildren = 1;
 	final int numberOfPersons = numberOfAdults + numberOfChildren;
@@ -118,7 +117,7 @@ public class URLControllerTest {
 
 		@Test
 		public void childAlertURLTestIfNoPerson() throws Exception {
-			Mockito.when(personService.getPerson(any(Person.class))).thenReturn(new ArrayList<Person>());
+			Mockito.when(personService.getPerson(any(Person.class))).thenReturn(null);
 
 			ResponseEntity<ChildAlertURLDto> result = urlController.childAlertURL(personChild.getAddress());
 
@@ -131,7 +130,7 @@ public class URLControllerTest {
 
 		@Test
 		public void childAlertURLTestIfNoMedicalRecord() throws Exception {
-			Mockito.when(medicalRecordService.getMedicalRecord(any(Person.class))).thenReturn(new MedicalRecord());
+			Mockito.when(medicalRecordService.getMedicalRecord(any(Person.class))).thenReturn(null);
 
 			ResponseEntity<ChildAlertURLDto> result = urlController.childAlertURL(personChild.getAddress());
 
@@ -185,7 +184,7 @@ public class URLControllerTest {
 		@Test
 		public void phoneAlertURLTestIfNoFireStation() throws Exception {
 			Mockito.when(fireStationService.getFireStation(any(FireStation.class)))
-					.thenReturn(new ArrayList<FireStation>());
+					.thenReturn(null);
 
 			ResponseEntity<PhoneAlertURLDto> result = urlController.phoneAlertURL(fireStation.getStation());
 
@@ -197,7 +196,7 @@ public class URLControllerTest {
 
 		@Test
 		public void phoneAlertURLTestIfNoPerson() throws Exception {
-			Mockito.when(personService.getPerson(any(Person.class))).thenReturn(new ArrayList<Person>());
+			Mockito.when(personService.getPerson(any(Person.class))).thenReturn(null);
 
 			ResponseEntity<PhoneAlertURLDto> result = urlController.phoneAlertURL(fireStation.getStation());
 
@@ -265,7 +264,7 @@ public class URLControllerTest {
 		@Test
 		public void fireURLTestIfNoFireStation() throws Exception {
 			Mockito.when(fireStationService.getFireStation(any(FireStation.class)))
-					.thenReturn(new ArrayList<FireStation>());
+					.thenReturn(null);
 
 			ResponseEntity<FireURLDto> result = urlController.fireURL(fireStation.getAddress());
 
@@ -278,7 +277,7 @@ public class URLControllerTest {
 
 		@Test
 		public void fireURLTestIfNoPerson() throws Exception {
-			Mockito.when(personService.getPerson(any(Person.class))).thenReturn(new ArrayList<Person>());
+			Mockito.when(personService.getPerson(any(Person.class))).thenReturn(null);
 
 			ResponseEntity<FireURLDto> result = urlController.fireURL(fireStation.getAddress());
 
@@ -291,7 +290,7 @@ public class URLControllerTest {
 
 		@Test
 		public void fireURLTestIfNoMedicalRecord() throws Exception {
-			Mockito.when(medicalRecordService.getMedicalRecord(any(Person.class))).thenReturn(new MedicalRecord());
+			Mockito.when(medicalRecordService.getMedicalRecord(any(Person.class))).thenReturn(null);
 
 			ResponseEntity<FireURLDto> result = urlController.fireURL(fireStation.getAddress());
 
@@ -300,14 +299,14 @@ public class URLControllerTest {
 			assertEquals(person.getFirstName(), result.getBody().getPersons().get(0).getFirstName());
 			assertEquals(person.getLastName(), result.getBody().getPersons().get(0).getLastName());
 			assertEquals(person.getPhone(), result.getBody().getPersons().get(0).getPhone());
-			assertEquals(ageIfNoBirthdate, result.getBody().getPersons().get(0).getAge());
+			assertEquals(null, result.getBody().getPersons().get(0).getAge());
 			assertEquals(null, result.getBody().getPersons().get(0).getMedications());
 			assertEquals(null, result.getBody().getPersons().get(0).getAllergies());
 
 			assertEquals(personChild.getFirstName(), result.getBody().getPersons().get(1).getFirstName());
 			assertEquals(personChild.getLastName(), result.getBody().getPersons().get(1).getLastName());
 			assertEquals(personChild.getPhone(), result.getBody().getPersons().get(1).getPhone());
-			assertEquals(ageIfNoBirthdate, result.getBody().getPersons().get(1).getAge());
+			assertEquals(null, result.getBody().getPersons().get(1).getAge());
 			assertEquals(null, result.getBody().getPersons().get(1).getMedications());
 			assertEquals(null, result.getBody().getPersons().get(1).getAllergies());
 
@@ -396,7 +395,7 @@ public class URLControllerTest {
 		@Test
 		public void floodStationsURLTestIfNoFireStation() throws Exception {
 			Mockito.when(fireStationService.getFireStation(any(FireStation.class)))
-					.thenReturn(new ArrayList<FireStation>());
+					.thenReturn(null);
 
 			ResponseEntity<FloodStationsURLDto> result = urlController.floodStationsURL(fireStationStationsList);
 
@@ -411,7 +410,7 @@ public class URLControllerTest {
 
 		@Test
 		public void floodStationsURLTestIfNoPerson() throws Exception {
-			Mockito.when(personService.getPerson(any(Person.class))).thenReturn(new ArrayList<Person>());
+			Mockito.when(personService.getPerson(any(Person.class))).thenReturn(null);
 
 			ResponseEntity<FloodStationsURLDto> result = urlController.floodStationsURL(fireStationStationsList);
 
@@ -427,7 +426,7 @@ public class URLControllerTest {
 
 		@Test
 		public void floodStationsURLTestIfNoMedicalRecord() throws Exception {
-			Mockito.when(medicalRecordService.getMedicalRecord(any(Person.class))).thenReturn(new MedicalRecord());
+			Mockito.when(medicalRecordService.getMedicalRecord(any(Person.class))).thenReturn(null);
 
 			ResponseEntity<FloodStationsURLDto> result = urlController.floodStationsURL(fireStationStationsList);
 
@@ -436,7 +435,7 @@ public class URLControllerTest {
 			assertEquals(person.getFirstName(), result.getBody().getHomes().get(0).getPersons().get(0).getFirstName());
 			assertEquals(person.getLastName(), result.getBody().getHomes().get(0).getPersons().get(0).getLastName());
 			assertEquals(person.getPhone(), result.getBody().getHomes().get(0).getPersons().get(0).getPhone());
-			assertEquals(ageIfNoBirthdate, result.getBody().getHomes().get(0).getPersons().get(0).getAge());
+			assertEquals(null, result.getBody().getHomes().get(0).getPersons().get(0).getAge());
 			assertEquals(null, result.getBody().getHomes().get(0).getPersons().get(0).getMedications());
 			assertEquals(null, result.getBody().getHomes().get(0).getPersons().get(0).getAllergies());
 
@@ -445,7 +444,7 @@ public class URLControllerTest {
 			assertEquals(personChild.getLastName(),
 					result.getBody().getHomes().get(0).getPersons().get(1).getLastName());
 			assertEquals(personChild.getPhone(), result.getBody().getHomes().get(0).getPersons().get(1).getPhone());
-			assertEquals(ageIfNoBirthdate, result.getBody().getHomes().get(0).getPersons().get(1).getAge());
+			assertEquals(null, result.getBody().getHomes().get(0).getPersons().get(1).getAge());
 			assertEquals(null, result.getBody().getHomes().get(0).getPersons().get(1).getMedications());
 			assertEquals(null, result.getBody().getHomes().get(0).getPersons().get(1).getAllergies());
 
@@ -454,7 +453,7 @@ public class URLControllerTest {
 			assertEquals(person.getFirstName(), result.getBody().getHomes().get(1).getPersons().get(0).getFirstName());
 			assertEquals(person.getLastName(), result.getBody().getHomes().get(1).getPersons().get(0).getLastName());
 			assertEquals(person.getPhone(), result.getBody().getHomes().get(1).getPersons().get(0).getPhone());
-			assertEquals(ageIfNoBirthdate, result.getBody().getHomes().get(1).getPersons().get(0).getAge());
+			assertEquals(null, result.getBody().getHomes().get(1).getPersons().get(0).getAge());
 			assertEquals(null, result.getBody().getHomes().get(1).getPersons().get(0).getMedications());
 			assertEquals(null, result.getBody().getHomes().get(1).getPersons().get(0).getAllergies());
 
@@ -463,7 +462,7 @@ public class URLControllerTest {
 			assertEquals(personChild.getLastName(),
 					result.getBody().getHomes().get(1).getPersons().get(1).getLastName());
 			assertEquals(personChild.getPhone(), result.getBody().getHomes().get(1).getPersons().get(1).getPhone());
-			assertEquals(ageIfNoBirthdate, result.getBody().getHomes().get(1).getPersons().get(1).getAge());
+			assertEquals(null, result.getBody().getHomes().get(1).getPersons().get(1).getAge());
 			assertEquals(null, result.getBody().getHomes().get(1).getPersons().get(1).getMedications());
 			assertEquals(null, result.getBody().getHomes().get(1).getPersons().get(1).getAllergies());
 
@@ -533,7 +532,7 @@ public class URLControllerTest {
 		
 		@Test
 		public void personInfoURLTestIfNoPerson() throws Exception {
-			Mockito.when(personService.getPerson(any(Person.class))).thenReturn(new ArrayList<Person>());
+			Mockito.when(personService.getPerson(any(Person.class))).thenReturn(null);
 
 			ResponseEntity<PersonInfoURLDto> result = urlController.personInfoURL(person.getFirstName(),
 					person.getLastName());
@@ -547,7 +546,7 @@ public class URLControllerTest {
 
 		@Test
 		public void personInfoURLTestIfNoMedicalRecord() throws Exception {
-			Mockito.when(medicalRecordService.getMedicalRecord(any(Person.class))).thenReturn(new MedicalRecord());
+			Mockito.when(medicalRecordService.getMedicalRecord(any(Person.class))).thenReturn(null);
 			
 			ResponseEntity<PersonInfoURLDto> result = urlController.personInfoURL(person.getFirstName(),
 					person.getLastName());
@@ -556,7 +555,7 @@ public class URLControllerTest {
 
 			assertEquals(person.getFirstName(), result.getBody().getPersons().get(0).getFirstName());
 			assertEquals(person.getLastName(), result.getBody().getPersons().get(0).getLastName());
-			assertEquals(ageIfNoBirthdate, result.getBody().getPersons().get(0).getAge());
+			assertEquals(null, result.getBody().getPersons().get(0).getAge());
 			assertEquals(person.getAddress(), result.getBody().getPersons().get(0).getAddress());
 			assertEquals(null, result.getBody().getPersons().get(0).getMedications());
 			assertEquals(null, result.getBody().getPersons().get(0).getAllergies());
@@ -592,7 +591,7 @@ public class URLControllerTest {
 
 		@Test
 		public void communityEmailURLTestIfNoPerson() throws Exception {
-			Mockito.when(personService.getPerson(any(Person.class))).thenReturn(new ArrayList<Person>());
+			Mockito.when(personService.getPerson(any(Person.class))).thenReturn(null);
 			
 			ResponseEntity<CommunityEmailURLDto> result = urlController.communityEmailURL(person.getCity());
 

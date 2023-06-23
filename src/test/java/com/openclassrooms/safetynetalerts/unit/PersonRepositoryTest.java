@@ -52,22 +52,22 @@ public class PersonRepositoryTest {
 
 		@Test
 		public void deleteTestIfNotInDB() {
-			Mockito.when(dataBase.removePerson(any(Person.class))).thenReturn(new Person());
-			assertEquals(new Person(), personRepository.delete(person));
+			Mockito.when(dataBase.removePerson(any(Person.class))).thenReturn(null);
+			assertEquals(null, personRepository.delete(person));
 			verify(dataBase, Mockito.times(1)).removePerson(any(Person.class));
 		}
 
 		@Test
 		public void deleteTestIfEmpty() {
-			Mockito.when(dataBase.removePerson(any(Person.class))).thenReturn(new Person());
-			assertEquals(new Person(), personRepository.delete(new Person()));
+			Mockito.when(dataBase.removePerson(any(Person.class))).thenReturn(null);
+			assertEquals(null, personRepository.delete(new Person()));
 			verify(dataBase, Mockito.times(1)).removePerson(any(Person.class));
 		}
 
 		@Test
 		public void deleteTestIfNull() {
-			Mockito.when(dataBase.removePerson(null)).thenReturn(new Person());
-			assertEquals(new Person(), personRepository.delete(null));
+			Mockito.when(dataBase.removePerson(null)).thenReturn(null);
+			assertEquals(null, personRepository.delete(null));
 			verify(dataBase, Mockito.times(1)).removePerson(null);
 		}
 	}
@@ -87,22 +87,22 @@ public class PersonRepositoryTest {
 
 		@Test
 		public void getTestIfNotInDB() {
-			Mockito.when(dataBase.getPersons(any(Person.class))).thenReturn(new ArrayList<Person>());
-			assertEquals(new ArrayList<Person>(), personRepository.get(person));
+			Mockito.when(dataBase.getPersons(any(Person.class))).thenReturn(null);
+			assertEquals(null, personRepository.get(person));
 			verify(dataBase, Mockito.times(1)).getPersons(any(Person.class));
 		}
 
 		@Test
 		public void getTestIfEmpty() {
-			Mockito.when(dataBase.getPersons(any(Person.class))).thenReturn(new ArrayList<Person>());
-			assertEquals(new ArrayList<Person>(), personRepository.get(new Person()));
+			Mockito.when(dataBase.getPersons(any(Person.class))).thenReturn(null);
+			assertEquals(null, personRepository.get(new Person()));
 			verify(dataBase, Mockito.times(1)).getPersons(any(Person.class));
 		}
 
 		@Test
 		public void getTestIfNull() {
-			Mockito.when(dataBase.getPersons(null)).thenReturn(new ArrayList<Person>());
-			assertEquals(new ArrayList<Person>(), personRepository.get(null));
+			Mockito.when(dataBase.getPersons(null)).thenReturn(null);
+			assertEquals(null, personRepository.get(null));
 			verify(dataBase, Mockito.times(1)).getPersons(null);
 		}
 	}
@@ -119,22 +119,22 @@ public class PersonRepositoryTest {
 
 		@Test
 		public void saveTestIfAlreadyInDB() {
-			Mockito.when(dataBase.addPerson(any(Person.class))).thenReturn(new Person());
-			assertEquals(new Person(), personRepository.save(person));
+			Mockito.when(dataBase.addPerson(any(Person.class))).thenReturn(null);
+			assertEquals(null, personRepository.save(person));
 			verify(dataBase, Mockito.times(1)).addPerson(any(Person.class));
 		}
 
 		@Test
 		public void saveTestIfEmpty() {
-			Mockito.when(dataBase.addPerson(any(Person.class))).thenReturn(new Person());
-			assertEquals(new Person(), personRepository.save(new Person()));
+			Mockito.when(dataBase.addPerson(any(Person.class))).thenReturn(null);
+			assertEquals(null, personRepository.save(new Person()));
 			verify(dataBase, Mockito.times(1)).addPerson(any(Person.class));
 		}
 
 		@Test
 		public void saveTestIfNull() {
-			Mockito.when(dataBase.addPerson(null)).thenReturn(new Person());
-			assertEquals(new Person(), personRepository.save(null));
+			Mockito.when(dataBase.addPerson(null)).thenReturn(null);
+			assertEquals(null, personRepository.save(null));
 			verify(dataBase, Mockito.times(1)).addPerson(null);
 		}
 	}

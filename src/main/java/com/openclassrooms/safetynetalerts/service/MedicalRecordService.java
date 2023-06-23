@@ -22,30 +22,49 @@ public class MedicalRecordService {
 
 	public MedicalRecord getMedicalRecord(Person person) {
 		if (person == null)
-			return new MedicalRecord();
-		ArrayList<MedicalRecord> medicalRecordsInDB = new ArrayList<MedicalRecord>(
-				getMedicalRecord(new MedicalRecord(person.getFirstName(), person.getLastName())));
-		if (!medicalRecordsInDB.isEmpty())
-			return medicalRecordsInDB.get(0);
-		return new MedicalRecord();
+			return null;
+		List<MedicalRecord> medicalRecordsInDB = getMedicalRecord(new MedicalRecord(person.getFirstName(), person.getLastName()));
+		if (medicalRecordsInDB == null)
+			return null;
+		ArrayList<MedicalRecord> medicalRecordsArrayList = new ArrayList<MedicalRecord>(medicalRecordsInDB);
+		if (!medicalRecordsArrayList.isEmpty())
+			return medicalRecordsArrayList.get(0);
+		return null;
 	}
+
+	/*
+	 * Updates the content of the specified medical record
+	 * 
+	 * If several medical records have the same identifier as the specified medical record,
+	 * only one of them will remain, and its fields will be updated
+	 * 
+	 * @param - A MedicalRecord representing containing the new information
+	 * 
+	 * @return - true if the medical record was correctly saved
+	 */
 
 	public MedicalRecord putMedicalRecord(MedicalRecord medicalRecord) {
 		if (medicalRecord == null)
-			return new MedicalRecord();
+			return null;
+		boolean isInDB = false;
+		MedicalRecord medicalRecordToPut = new MedicalRecord();
 		if (medicalRecord.getFirstName() != null && medicalRecord.getLastName() != null) {
-			ArrayList<MedicalRecord> medicalRecordsInDB = new ArrayList<MedicalRecord>(
-					medicalRecordRepository.get(medicalRecord));
-			if (!medicalRecordsInDB.isEmpty()) {
-				MedicalRecord medicalRecordToPut = medicalRecordsInDB.get(0);
-				if (!medicalRecordToPut.isEmpty()) {
-					medicalRecordRepository.delete(medicalRecordToPut);
-					medicalRecordToPut.update(medicalRecord);
-					return medicalRecordRepository.save(medicalRecordToPut);
+			List<MedicalRecord> medicalRecordsInDB = medicalRecordRepository.get(medicalRecord);
+			if (medicalRecordsInDB == null)
+				return null;
+			for (MedicalRecord medicalRecordInDB : medicalRecordsInDB) {
+				if (medicalRecordInDB.equals(medicalRecord)) {
+					isInDB = true;
+					medicalRecordToPut = medicalRecordInDB;
+					medicalRecordRepository.delete(medicalRecordInDB);
 				}
 			}
 		}
-		return new MedicalRecord();
+		if (isInDB) {
+			medicalRecordToPut.update(medicalRecord);
+			return medicalRecordRepository.save(medicalRecordToPut);
+		} else
+			return null;
 	}
 
 	public MedicalRecord postMedicalRecord(MedicalRecord medicalRecord) {

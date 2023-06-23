@@ -15,46 +15,8 @@ public class FireStationService {
 	@Autowired
 	private FireStationRepository fireStationRepository;
 
-	/*
-	 * Deletes every fire station corresponding to the specified fire station
-	 * 
-	 * @param - A FireStation representing a fire station
-	 * 
-	 * @return - An ArrayList<FireStation> of all fire stations deleted
-	 */
-	public List<FireStation> deleteFireStation(FireStation fireStation) {
-		ArrayList<FireStation> result = new ArrayList<FireStation>();
-		ArrayList<FireStation> fireStations = new ArrayList<FireStation>(fireStationRepository.get(fireStation));
-		if (fireStations.isEmpty())
-			return result;
-		else {
-			for (FireStation fireStationInDB : fireStations)
-				if (fireStationInDB.equals(fireStationRepository.delete(fireStationInDB)))
-					result.add(fireStationInDB);
-			return result;
-		}
-	}
-
-	/*
-	 * Get every fire station corresponding to the specified fire station
-	 * 
-	 * @param - A FireStation representing a fire station
-	 * 
-	 * @return - An Iterable<FireStation>
-	 */
 	public List<FireStation> getFireStation(FireStation fireStation) {
 		return fireStationRepository.get(fireStation);
-	}
-
-	/*
-	 * Adds a fire station
-	 * 
-	 * @param - A FireStation representing a fire station
-	 * 
-	 * @return - true if the fire station was correctly saved
-	 */
-	public FireStation postFireStation(FireStation fireStation) {
-		return fireStationRepository.save(fireStation);
 	}
 
 	/*
@@ -63,14 +25,14 @@ public class FireStationService {
 	 * If several fire stations have the same address as the specified fire station,
 	 * only one of them will remain, and its station number will be updated
 	 * 
-	 * @param - A FireStation representing a fire station
+	 * @param - A FireStation representing containing the new information
 	 * 
 	 * @return - true if the fire station was correctly saved
 	 */
 
 	public FireStation putFireStation(FireStation fireStation) {
 		if (fireStation == null)
-			return new FireStation();
+			return null;
 		boolean isInDB = false;
 		FireStation fireStationToPut = new FireStation();
 		if (fireStation.getAddress() != null)
@@ -85,6 +47,24 @@ public class FireStationService {
 			fireStationToPut.update(fireStation);
 			return fireStationRepository.save(fireStationToPut);
 		} else
-			return new FireStation();
+			return null;
+	}
+	
+	public FireStation postFireStation(FireStation fireStation) {
+		return fireStationRepository.save(fireStation);
+	}
+
+	public List<FireStation> deleteFireStation(FireStation fireStation) {
+		List<FireStation> fireStationsInDB = fireStationRepository.get(fireStation);
+		if (fireStationsInDB == null)
+			return null;
+		ArrayList<FireStation> fireStations = new ArrayList<FireStation>(fireStationsInDB);
+		ArrayList<FireStation> result = new ArrayList<FireStation>();
+		for (FireStation fireStationInDB : fireStations)
+			if (fireStationInDB.equals(fireStationRepository.delete(fireStationInDB)))
+				result.add(fireStationInDB);
+		if (result.isEmpty())
+			return null;
+		return result;
 	}
 }

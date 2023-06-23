@@ -15,7 +15,7 @@ public class FloodStationsURLPerson {
 	private String firstName;
 	private String lastName;
 	private String phone;
-	private int age;
+	private Integer age;
 	private List<String> medications;
 	private List<String> allergies;
 
@@ -31,7 +31,7 @@ public class FloodStationsURLPerson {
 		return phone;
 	}
 
-	public int getAge() {
+	public Integer getAge() {
 		return age;
 	}
 
@@ -45,11 +45,15 @@ public class FloodStationsURLPerson {
 
 	public FloodStationsURLPerson(Person person, MedicalRecord medicalRecord) {
 		super();
-		this.firstName = person.getFirstName();
-		this.lastName = person.getLastName();
-		this.phone = person.getPhone();
-		this.age = medicalRecord.calculateAge();
-		this.medications = medicalRecord.getMedications();
-		this.allergies = medicalRecord.getAllergies();
+		if (person != null) {
+			this.firstName = person.getFirstName();
+			this.lastName = person.getLastName();
+			this.phone = person.getPhone();
+		}
+		if (medicalRecord != null) {
+			this.age = medicalRecord.calculateAge();
+			this.medications = medicalRecord.getMedications();
+			this.allergies = medicalRecord.getAllergies();
+		}
 	}
 }

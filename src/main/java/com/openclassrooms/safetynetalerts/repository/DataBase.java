@@ -64,33 +64,31 @@ public class DataBase {
 	}
 
 	public List<FireStation> getFireStations(FireStation fireStation) {
-		if (fireStation == null)
-			return new ArrayList<FireStation>();
-		if (fireStation.isEmpty())
-			return new ArrayList<FireStation>();
+		if (fireStation == null || fireStation.isEmpty())
+			return null;
 		ArrayList<FireStation> result = new ArrayList<FireStation>();
 		for (FireStation fireStationInDB : instance.firestations) {
 			if (fireStation.equals(fireStationInDB))
 				result.add(fireStationInDB);
 		}
+		if (result.isEmpty())
+			return null;
 		return result;
 	}
 
 	public FireStation addFireStation(FireStation fireStation) {
-		if (fireStation == null)
-			return new FireStation();
-		if (fireStation.isEmpty())
-			return new FireStation();
+		if (fireStation == null || fireStation.isEmpty())
+			return null;
 		if (!instance.firestations.contains(fireStation))
 			if (instance.firestations.add(fireStation))
 				return fireStation;
-		return new FireStation();
+		return null;
 	}
 
 	public FireStation removeFireStation(FireStation fireStation) {
 		if (instance.firestations.remove(fireStation))
 			return fireStation;
-		return new FireStation();
+		return null;
 	}
 
 	public List<Person> getPersons() {
@@ -98,39 +96,35 @@ public class DataBase {
 	}
 
 	public List<Person> getPersons(Person person) {
-		if (person == null)
-			return new ArrayList<Person>();
-		if (person.isEmpty())
-			return new ArrayList<Person>();
+		if (person == null || person.isEmpty())
+			return null;
 		ArrayList<Person> result = new ArrayList<Person>();
 		for (Person personInDB : instance.persons) {
 			if (person.equals(personInDB))
 				result.add(personInDB);
 		}
+		if (result.isEmpty())
+			return null;
 		return result;
 	}
 
 	public Person addPerson(Person person) {
-		if (person == null)
-			return new Person();
-		if (person.isEmpty())
-			return new Person();
+		if (person == null || person.isEmpty())
+			return null;
 		if (!instance.persons.contains(person))
 			if (instance.persons.add(person))
 				return person;
-		return new Person();
+		return null;
 	}
 
 	public Person removePerson(Person person) {
-		if (person == null)
-			return new Person();
-		if (person.isEmpty())
-			return new Person();
+		if (person == null || person.isEmpty())
+			return null;
 		for (Person personInDB : instance.persons)
 			if (person.equals(personInDB))
 				if (instance.persons.remove(personInDB))
 					return personInDB;
-		return new Person();
+		return null;
 	}
 
 	public List<MedicalRecord> getMedicalRecords() {
@@ -138,38 +132,34 @@ public class DataBase {
 	}
 
 	public List<MedicalRecord> getMedicalRecords(MedicalRecord medicalRecord) {
-		if (medicalRecord == null)
-			return new ArrayList<MedicalRecord>();
-		if (medicalRecord.isEmpty())
-			return new ArrayList<MedicalRecord>();
+		if (medicalRecord == null || medicalRecord.isEmpty())
+			return null;
 		ArrayList<MedicalRecord> result = new ArrayList<MedicalRecord>();
 		for (MedicalRecord medicalRecordInDB : instance.medicalrecords) {
 			if (medicalRecord.equals(medicalRecordInDB))
 				result.add(medicalRecordInDB);
 		}
+		if (result.isEmpty())
+			return null;
 		return result;
 	}
 
 	public MedicalRecord addMedicalRecord(MedicalRecord medicalRecord) {
-		if (medicalRecord == null)
-			return new MedicalRecord();
-		if (medicalRecord.isEmpty())
-			return new MedicalRecord();
+		if (medicalRecord == null || medicalRecord.isEmpty())
+			return null;
 		if (!instance.medicalrecords.contains(medicalRecord))
 			if (instance.medicalrecords.add(medicalRecord))
 				return medicalRecord;
-		return new MedicalRecord();
+		return null;
 	}
 
 	public MedicalRecord removeMedicalRecord(MedicalRecord medicalRecord) {
-		if (medicalRecord == null)
-			return new MedicalRecord();
-		if (medicalRecord.isEmpty())
-			return new MedicalRecord();
+		if (medicalRecord == null || medicalRecord.isEmpty())
+			return null;
 		for (MedicalRecord medicalRecordInDB : instance.medicalrecords)
 			if (medicalRecord.equals(medicalRecordInDB))
 				if (instance.medicalrecords.remove(medicalRecordInDB))
 					return medicalRecordInDB;
-		return new MedicalRecord();
+		return null;
 	}
 }

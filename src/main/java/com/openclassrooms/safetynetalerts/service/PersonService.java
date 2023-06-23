@@ -18,24 +18,39 @@ public class PersonService {
 		return personRepository.get(person);
 	}
 
+	/*
+	 * Updates the content of the specified person
+	 * 
+	 * If several persons have the same identifier as the specified person,
+	 * only one of them will remain, and its fields will be updated
+	 * 
+	 * @param - A Person representing containing the new information
+	 * 
+	 * @return - true if the person was correctly saved
+	 */
+
 	public Person putPerson(Person person) {
 		if (person == null)
-			return new Person ();
+			return null;
 		boolean isInDB = false;
 		Person personToPut = new Person();
-		if (person.getFirstName() != null && person.getLastName() != null)
-			for (Person personInDB : personRepository.get(person)) {
+		if (person.getFirstName() != null && person.getLastName() != null) {
+			List<Person> personsInDB = personRepository.get(person);
+			if (personsInDB == null)
+				return null;
+			for (Person personInDB : personsInDB) {
 				if (personInDB.equals(person)) {
 					isInDB = true;
 					personToPut = personInDB;
 					personRepository.delete(personInDB);
 				}
 			}
+		}
 		if (isInDB) {
 			personToPut.update(person);
 			return personRepository.save(personToPut);
 		} else
-			return new Person();
+			return null;
 	}
 
 	public Person postPerson(Person person) {

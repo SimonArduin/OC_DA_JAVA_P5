@@ -16,10 +16,10 @@ public class FireURLPerson {
 	private String lastName;
 	private String address;
 	private String phone;
-	private int age;
+	private Integer age;
 	private List<String> medications;
 	private List<String> allergies;
-	
+
 	public String getFirstName() {
 		return firstName;
 	}
@@ -36,7 +36,7 @@ public class FireURLPerson {
 		return phone;
 	}
 
-	public int getAge() {
+	public Integer getAge() {
 		return age;
 	}
 
@@ -50,12 +50,16 @@ public class FireURLPerson {
 
 	public FireURLPerson(Person person, MedicalRecord medicalRecord) {
 		super();
-		this.firstName = person.getFirstName();
-		this.lastName = person.getLastName();
-		this.address = person.getAddress();
-		this.phone = person.getPhone();
-		this.age = medicalRecord.calculateAge();
-		this.medications = medicalRecord.getMedications();
-		this.allergies = medicalRecord.getAllergies();
+		if (person != null) {
+			this.firstName = person.getFirstName();
+			this.lastName = person.getLastName();
+			this.address = person.getAddress();
+			this.phone = person.getPhone();
+		}
+		if (medicalRecord != null) {
+			this.age = medicalRecord.calculateAge();
+			this.medications = medicalRecord.getMedications();
+			this.allergies = medicalRecord.getAllergies();
+		}
 	}
 }

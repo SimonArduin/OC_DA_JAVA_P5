@@ -38,7 +38,7 @@ public class URLController {
 	@Autowired
 	private MedicalRecordService medicalRecordService;
 
-	private int ageMaxChild = 18;
+	private Integer ageMaxChild = 18;
 
 	@GetMapping(value = "/childAlert", params = "address")
 	public ResponseEntity<ChildAlertURLDto> childAlertURL(@RequestParam(value = "address") String address) {
@@ -59,20 +59,27 @@ public class URLController {
 
 		// get persons at the address
 		personToSearch.setAddress(address);
-		ArrayList<Person> persons = new ArrayList<Person>(personService.getPerson(personToSearch));
+		List<Person> personsInDB = personService.getPerson(personToSearch);
+		if (personsInDB == null)
+			return ResponseEntity.notFound().build();
+		ArrayList<Person> persons = new ArrayList<Person>(personsInDB);
 		if (persons.isEmpty())
 			return ResponseEntity.notFound().build();
 		for (Person person : persons) {
 			// get medical record of a person
 			MedicalRecord medicalRecord = medicalRecordService.getMedicalRecord(person);
 			// split between children and adults
-			int age = medicalRecord.calculateAge();
-			if (age <= ageMaxChild)
-				result.addChild(person, age);
-			else
+			if (medicalRecord != null) {
+				Integer age = medicalRecord.calculateAge();
+				if (age != null && age <= ageMaxChild)
+					result.addChild(person, age);
+				else
+					result.addAdult(person);
+			} else
 				result.addAdult(person);
 		}
 		return ResponseEntity.ok().body(result);
+
 	}
 
 	@GetMapping(value = "/phoneAlert", params = "firestation")
@@ -95,17 +102,20 @@ public class URLController {
 
 		// get fire stations
 		fireStationToSearch.setStation(firestation);
-		ArrayList<FireStation> fireStations = new ArrayList<FireStation>(
-				fireStationService.getFireStation(fireStationToSearch));
-		if (fireStations.isEmpty())
+		List<FireStation> fireStationsInDB = fireStationService.getFireStation(fireStationToSearch);
+		if (fireStationsInDB == null)
 			return ResponseEntity.notFound().build();
+		ArrayList<FireStation> fireStations = new ArrayList<FireStation>(fireStationsInDB);
 		for (FireStation fireStationInDB : fireStations) {
 			// get persons
 			personToSearch.setAddress(fireStationInDB.getAddress());
-			ArrayList<Person> persons = new ArrayList<Person>(personService.getPerson(personToSearch));
-			for (Person personInDB : persons) {
-				if (personInDB.getPhone() != null)
-					result.addPhone(personInDB.getPhone());
+			List<Person> personsInDB = personService.getPerson(personToSearch);
+			if (personsInDB != null) {
+				ArrayList<Person> persons = new ArrayList<Person>(personsInDB);
+				for (Person personInDB : persons) {
+					if (personInDB.getPhone() != null)
+						result.addPhone(personInDB.getPhone());
+				}
 			}
 		}
 		if (result.getPhones().isEmpty())
@@ -132,19 +142,20 @@ public class URLController {
 
 		// get fire station
 		fireStationToSearch.setAddress(address);
-		ArrayList<FireStation> fireStations = new ArrayList<FireStation>(
-				fireStationService.getFireStation(fireStationToSearch));
-		if (fireStations.isEmpty())
+		List<FireStation> fireStationsInDB = fireStationService.getFireStation(fireStationToSearch);
+		if (fireStationsInDB == null || fireStationsInDB.isEmpty())
 			return ResponseEntity.notFound().build();
-		else
-			result.setFireStationNumber(fireStations.get(0).getStation());
+		ArrayList<FireStation> fireStations = new ArrayList<FireStation>(fireStationsInDB);
+		result.setFireStationNumber(fireStations.get(0).getStation());
 		// get persons
 		personToSearch.setAddress(address);
-		ArrayList<Person> persons = new ArrayList<Person>(personService.getPerson(personToSearch));
-		for (Person person : persons) {
-			MedicalRecord medicalRecord = medicalRecordService.getMedicalRecord(person);
-			if (medicalRecord != null)
+		List<Person> personsInDB = personService.getPerson(personToSearch);
+		if (personsInDB != null) {
+			ArrayList<Person> persons = new ArrayList<Person>(personsInDB);
+			for (Person person : persons) {
+				MedicalRecord medicalRecord = medicalRecordService.getMedicalRecord(person);
 				result.addPerson(person, medicalRecord);
+			}
 		}
 		if (result.getPersons().isEmpty())
 			return ResponseEntity.notFound().build();
@@ -172,21 +183,25 @@ public class URLController {
 		for (String station : stations) {
 			// get fire stations
 			fireStationToSearch.setStation(station);
-			ArrayList<FireStation> fireStations = new ArrayList<FireStation>(
-					fireStationService.getFireStation(fireStationToSearch));
-			// get homes
-			for (FireStation fireStation : fireStations) {
-				FloodStationsURLHome home = new FloodStationsURLHome();
-				home.setFireStationNumber(fireStation.getStation());
-				// get residents
-				personToSearch.setAddress(fireStation.getAddress());
-				ArrayList<Person> persons = new ArrayList<Person>(personService.getPerson(personToSearch));
-				for (Person person : persons) {
-					MedicalRecord medicalRecord = medicalRecordService.getMedicalRecord(person);
-					if (medicalRecord != null)
-						home.addResident(person, medicalRecord);
+			List<FireStation> fireStationsInDB = fireStationService.getFireStation(fireStationToSearch);
+			if (fireStationsInDB != null) {
+				ArrayList<FireStation> fireStations = new ArrayList<FireStation>(fireStationsInDB);
+				// get homes
+				for (FireStation fireStation : fireStations) {
+					FloodStationsURLHome home = new FloodStationsURLHome();
+					home.setFireStationNumber(fireStation.getStation());
+					// get residents
+					personToSearch.setAddress(fireStation.getAddress());
+					List<Person> personsInDB = personService.getPerson(personToSearch);
+					if (personsInDB != null) {
+						ArrayList<Person> persons = new ArrayList<Person>(personsInDB);
+						for (Person person : persons) {
+							MedicalRecord medicalRecord = medicalRecordService.getMedicalRecord(person);
+							home.addResident(person, medicalRecord);
+						}
+					}
+					result.addHome(home);
 				}
-				result.addHome(home);
 			}
 		}
 		if (result.getHomes().isEmpty())
@@ -213,14 +228,16 @@ public class URLController {
 		personToSearch.setFirstName(firstName);
 		personToSearch.setLastName(lastName);
 		// get persons
-		ArrayList<Person> persons = new ArrayList<Person>(personService.getPerson(personToSearch));
+		List<Person> personsInDB = personService.getPerson(personToSearch);
+		if (personsInDB == null)
+			return ResponseEntity.notFound().build();
+		ArrayList<Person> persons = new ArrayList<Person>(personsInDB);
 		if (persons.isEmpty())
 			return ResponseEntity.notFound().build();
 		// get medical record
 		for (Person person : persons) {
 			MedicalRecord medicalRecord = medicalRecordService.getMedicalRecord(person);
-			if (medicalRecord != null)
-				result.addPerson(new PersonInfoURLPerson(person, medicalRecord));
+			result.addPerson(new PersonInfoURLPerson(person, medicalRecord));
 		}
 		if (result.getPersons().isEmpty())
 			return ResponseEntity.notFound().build();
@@ -243,8 +260,11 @@ public class URLController {
 		CommunityEmailURLDto result = new CommunityEmailURLDto();
 		Person personToSearch = new Person();
 		personToSearch.setCity(city);
+		List<Person> personsInDB = personService.getPerson(personToSearch);
+		if (personsInDB == null)
+			return ResponseEntity.notFound().build();
 		// get persons
-		ArrayList<Person> persons = new ArrayList<Person>(personService.getPerson(personToSearch));
+		ArrayList<Person> persons = new ArrayList<Person>(personsInDB);
 		if (persons.isEmpty())
 			return ResponseEntity.notFound().build();
 		// get emails

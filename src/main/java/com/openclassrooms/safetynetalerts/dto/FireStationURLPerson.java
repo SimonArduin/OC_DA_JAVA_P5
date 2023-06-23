@@ -32,9 +32,11 @@ public class FireStationURLPerson {
 
 	public FireStationURLPerson(Person person) {
 		super();
-		this.firstName = person.getFirstName();
-		this.lastName = person.getLastName();
-		this.address = person.getAddress();
-		this.phone = person.getPhone();
+		if (person != null) {
+			this.firstName = person.getFirstName();
+			this.lastName = person.getLastName();
+			this.address = person.getAddress();
+			this.phone = person.getPhone();
+		}
 	}
 }

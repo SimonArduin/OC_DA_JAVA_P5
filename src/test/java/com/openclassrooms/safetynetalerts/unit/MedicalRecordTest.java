@@ -28,7 +28,6 @@ public class MedicalRecordTest {
 	MedicalRecord medicalRecordOther;
 	MedicalRecord medicalRecordTest;
 	String birthdate = "06/06/1966";
-	int ageIfError = 999;
 
 	@BeforeEach
 	void setUpPerTest() {
@@ -251,12 +250,12 @@ public class MedicalRecordTest {
 		
 		@Test
 		void calculateAgeTestIfBirthdateNull() {
-			assertEquals(ageIfError, medicalRecordTest.calculateAge());
+			assertEquals(null, medicalRecordTest.calculateAge());
 		}
 
 		@Test
 		void calculateAgeTestIfBirthdateNotCorrectFormat() {
-			assertEquals(ageIfError, medicalRecordOther.calculateAge());
+			assertEquals(null, medicalRecordOther.calculateAge());
 		}
 	}
 }

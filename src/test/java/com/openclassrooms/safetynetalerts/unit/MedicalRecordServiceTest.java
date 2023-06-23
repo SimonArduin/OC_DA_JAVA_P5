@@ -60,22 +60,22 @@ public class MedicalRecordServiceTest {
 
 		@Test
 		public void getMedicalRecordByMedicalRecordTestIfNotInDB() {
-			Mockito.when(medicalRecordRepository.get(any(MedicalRecord.class))).thenReturn(emptyMedicalRecordList);
-			assertEquals(emptyMedicalRecordList, medicalRecordService.getMedicalRecord(medicalRecord));
+			Mockito.when(medicalRecordRepository.get(any(MedicalRecord.class))).thenReturn(null);
+			assertEquals(null, medicalRecordService.getMedicalRecord(medicalRecord));
 			verify(medicalRecordRepository, Mockito.times(1)).get(any(MedicalRecord.class));
 		}
 
 		@Test
 		public void getMedicalRecordByMedicalRecordTestIfEmpty() {
-			Mockito.when(medicalRecordRepository.get(any(MedicalRecord.class))).thenReturn(emptyMedicalRecordList);
-			assertEquals(emptyMedicalRecordList, medicalRecordService.getMedicalRecord(emptyMedicalRecord));
+			Mockito.when(medicalRecordRepository.get(any(MedicalRecord.class))).thenReturn(null);
+			assertEquals(null, medicalRecordService.getMedicalRecord(emptyMedicalRecord));
 			verify(medicalRecordRepository, Mockito.times(1)).get(any(MedicalRecord.class));
 		}
 
 		@Test
 		public void getMedicalRecordByMedicalRecordTestIfNull() {
-			Mockito.when(medicalRecordRepository.get(null)).thenReturn(emptyMedicalRecordList);
-			assertEquals(emptyMedicalRecordList, medicalRecordService.getMedicalRecord((MedicalRecord) null));
+			Mockito.when(medicalRecordRepository.get(null)).thenReturn(null);
+			assertEquals(null, medicalRecordService.getMedicalRecord((MedicalRecord) null));
 			verify(medicalRecordRepository, Mockito.times(1)).get(null);
 		}
 	}
@@ -91,22 +91,22 @@ public class MedicalRecordServiceTest {
 
 		@Test
 		public void getMedicalRecordByPersonTestIfNotInDB() {
-			Mockito.when(medicalRecordRepository.get(any(MedicalRecord.class))).thenReturn(emptyMedicalRecordList);
-			assertEquals(emptyMedicalRecord, medicalRecordService.getMedicalRecord(person));
+			Mockito.when(medicalRecordRepository.get(any(MedicalRecord.class))).thenReturn(null);
+			assertEquals(null, medicalRecordService.getMedicalRecord(person));
 			verify(medicalRecordRepository, Mockito.times(1)).get(any(MedicalRecord.class));
 		}
 
 		@Test
 		public void getMedicalRecordByPersonTestIfEmpty() {
-			Mockito.when(medicalRecordRepository.get(any(MedicalRecord.class))).thenReturn(emptyMedicalRecordList);
-			assertEquals(emptyMedicalRecord, medicalRecordService.getMedicalRecord(new Person()));
+			Mockito.when(medicalRecordRepository.get(any(MedicalRecord.class))).thenReturn(null);
+			assertEquals(null, medicalRecordService.getMedicalRecord(new Person()));
 			verify(medicalRecordRepository, Mockito.times(1)).get(any(MedicalRecord.class));
 		}
 
 		@Test
 		public void getMedicalRecordByPersonTestIfNull() {
-			Mockito.when(medicalRecordRepository.get(null)).thenReturn(emptyMedicalRecordList);
-			assertEquals(emptyMedicalRecord, medicalRecordService.getMedicalRecord((Person) null));
+			Mockito.when(medicalRecordRepository.get(null)).thenReturn(null);
+			assertEquals(null, medicalRecordService.getMedicalRecord((Person) null));
 			verify(medicalRecordRepository, Mockito.times(0)).get(null);
 		}
 	}
@@ -124,8 +124,8 @@ public class MedicalRecordServiceTest {
 
 		@Test
 		public void putMedicalRecordTestIfNotInDB() {
-			Mockito.when(medicalRecordRepository.get(any(MedicalRecord.class))).thenReturn(emptyMedicalRecordList);
-			assertEquals(emptyMedicalRecord, medicalRecordService.putMedicalRecord(medicalRecord));
+			Mockito.when(medicalRecordRepository.get(any(MedicalRecord.class))).thenReturn(null);
+			assertEquals(null, medicalRecordService.putMedicalRecord(medicalRecord));
 			verify(medicalRecordRepository, Mockito.times(1)).get(any(MedicalRecord.class));
 			verify(medicalRecordRepository, Mockito.times(0)).delete(any(MedicalRecord.class));
 			verify(medicalRecordRepository, Mockito.times(0)).save(any(MedicalRecord.class));
@@ -133,7 +133,7 @@ public class MedicalRecordServiceTest {
 
 		@Test
 		public void putMedicalRecordTestIfEmpty() {
-			assertEquals(new MedicalRecord(), medicalRecordService.putMedicalRecord(new MedicalRecord()));
+			assertEquals(null, medicalRecordService.putMedicalRecord(new MedicalRecord()));
 			verify(medicalRecordRepository, Mockito.times(0)).get(any(MedicalRecord.class));
 			verify(medicalRecordRepository, Mockito.times(0)).delete(any(MedicalRecord.class));
 			verify(medicalRecordRepository, Mockito.times(0)).save(any(MedicalRecord.class));
@@ -141,7 +141,7 @@ public class MedicalRecordServiceTest {
 
 		@Test
 		public void putMedicalRecordTestIfNull() {
-			assertEquals(new MedicalRecord(), medicalRecordService.putMedicalRecord(null));
+			assertEquals(null, medicalRecordService.putMedicalRecord(null));
 			verify(medicalRecordRepository, Mockito.times(0)).get(any(MedicalRecord.class));
 			verify(medicalRecordRepository, Mockito.times(0)).delete(any(MedicalRecord.class));
 			verify(medicalRecordRepository, Mockito.times(0)).save(any(MedicalRecord.class));
@@ -159,22 +159,22 @@ public class MedicalRecordServiceTest {
 
 		@Test
 		public void postMedicalRecordTestIfAlreadyInDB() {
-			Mockito.when(medicalRecordRepository.save(any(MedicalRecord.class))).thenReturn(emptyMedicalRecord);
-			assertEquals(emptyMedicalRecord, medicalRecordService.postMedicalRecord(medicalRecord));
+			Mockito.when(medicalRecordRepository.save(any(MedicalRecord.class))).thenReturn(null);
+			assertEquals(null, medicalRecordService.postMedicalRecord(medicalRecord));
 			verify(medicalRecordRepository, Mockito.times(1)).save(any(MedicalRecord.class));
 		}
 
 		@Test
 		public void postMedicalRecordTestIfEmpty() {
-			Mockito.when(medicalRecordRepository.save(any(MedicalRecord.class))).thenReturn(emptyMedicalRecord);
-			assertEquals(emptyMedicalRecord, medicalRecordService.postMedicalRecord(emptyMedicalRecord));
+			Mockito.when(medicalRecordRepository.save(any(MedicalRecord.class))).thenReturn(null);
+			assertEquals(null, medicalRecordService.postMedicalRecord(emptyMedicalRecord));
 			verify(medicalRecordRepository, Mockito.times(1)).save(any(MedicalRecord.class));
 		}
 
 		@Test
 		public void postMedicalRecordTestIfNull() {
-			Mockito.when(medicalRecordRepository.save(null)).thenReturn(emptyMedicalRecord);
-			assertEquals(emptyMedicalRecord, medicalRecordService.postMedicalRecord(null));
+			Mockito.when(medicalRecordRepository.save(null)).thenReturn(null);
+			assertEquals(null, medicalRecordService.postMedicalRecord(null));
 			verify(medicalRecordRepository, Mockito.times(1)).save(null);
 		}
 	}
@@ -190,22 +190,22 @@ public class MedicalRecordServiceTest {
 
 		@Test
 		public void deleteMedicalRecordTestIfNotInDB() {
-			Mockito.when(medicalRecordRepository.delete(any(MedicalRecord.class))).thenReturn(emptyMedicalRecord);
-			assertEquals(emptyMedicalRecord, medicalRecordService.deleteMedicalRecord(medicalRecord));
+			Mockito.when(medicalRecordRepository.delete(any(MedicalRecord.class))).thenReturn(null);
+			assertEquals(null, medicalRecordService.deleteMedicalRecord(medicalRecord));
 			verify(medicalRecordRepository, Mockito.times(1)).delete(any(MedicalRecord.class));
 		}
 
 		@Test
 		public void deleteMedicalRecordTestIfEmpty() {
-			Mockito.when(medicalRecordRepository.delete(any(MedicalRecord.class))).thenReturn(emptyMedicalRecord);
-			assertEquals(emptyMedicalRecord, medicalRecordService.deleteMedicalRecord(emptyMedicalRecord));
+			Mockito.when(medicalRecordRepository.delete(any(MedicalRecord.class))).thenReturn(null);
+			assertEquals(null, medicalRecordService.deleteMedicalRecord(emptyMedicalRecord));
 			verify(medicalRecordRepository, Mockito.times(1)).delete(any(MedicalRecord.class));
 		}
 
 		@Test
 		public void deleteMedicalRecordTestIfNull() {
-			Mockito.when(medicalRecordRepository.delete(null)).thenReturn(emptyMedicalRecord);
-			assertEquals(emptyMedicalRecord, medicalRecordService.deleteMedicalRecord(null));
+			Mockito.when(medicalRecordRepository.delete(null)).thenReturn(null);
+			assertEquals(null, medicalRecordService.deleteMedicalRecord(null));
 			verify(medicalRecordRepository, Mockito.times(1)).delete(null);
 		}
 	}

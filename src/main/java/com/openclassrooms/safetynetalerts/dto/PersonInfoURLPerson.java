@@ -14,11 +14,11 @@ public class PersonInfoURLPerson {
 
 	private String firstName;
 	private String lastName;
-	private int age;
+	private Integer age;
 	private String address;
 	private List<String> medications;
 	private List<String> allergies;
-		
+
 	public String getFirstName() {
 		return firstName;
 	}
@@ -27,7 +27,7 @@ public class PersonInfoURLPerson {
 		return lastName;
 	}
 
-	public int getAge() {
+	public Integer getAge() {
 		return age;
 	}
 
@@ -45,11 +45,15 @@ public class PersonInfoURLPerson {
 
 	public PersonInfoURLPerson(Person person, MedicalRecord medicalRecord) {
 		super();
-		this.firstName = person.getFirstName();
-		this.lastName = person.getLastName();
-		this.age = medicalRecord.calculateAge();
-		this.address = person.getAddress();
-		this.medications = medicalRecord.getMedications();
-		this.allergies = medicalRecord.getAllergies();
+		if (person != null) {
+			this.firstName = person.getFirstName();
+			this.lastName = person.getLastName();
+			this.address = person.getAddress();
+		}
+		if (medicalRecord != null) {
+			this.age = medicalRecord.calculateAge();
+			this.medications = medicalRecord.getMedications();
+			this.allergies = medicalRecord.getAllergies();
+		}
 	}
 }
