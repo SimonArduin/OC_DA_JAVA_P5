@@ -13,6 +13,8 @@ import springfox.documentation.spring.web.plugins.Docket;
 @Configuration
 public class ApplicationConfiguration {
 
+	public final static int ageOfMajority = 18;
+
 	@Bean
 	HttpTraceRepository httpTraceRepository() {
 		return new InMemoryHttpTraceRepository();

@@ -37,8 +37,6 @@ public class URLController {
 	@Autowired
 	private MedicalRecordService medicalRecordService;
 
-	private Integer ageMaxChild = 18;
-
 	@GetMapping(value = "/childAlert", params = "address")
 	public ResponseEntity<ChildAlertURLDto> childAlertURL(@RequestParam(value = "address") String address) {
 
@@ -66,11 +64,10 @@ public class URLController {
 			MedicalRecord medicalRecord = medicalRecordService.getMedicalRecord(person);
 			// split between children and adults
 			if (medicalRecord != null) {
-				Integer age = medicalRecord.calculateAge();
-				if (age != null && age <= ageMaxChild)
-					result.addChild(person, age);
-				else
+				if (medicalRecord.isAdult())
 					result.addAdult(person);
+				else
+					result.addChild(person, medicalRecord.calculateAge());
 			} else
 				result.addAdult(person);
 		}

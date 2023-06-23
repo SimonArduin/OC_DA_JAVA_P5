@@ -7,6 +7,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.openclassrooms.safetynetalerts.ApplicationConfiguration;
 
 public class MedicalRecord {
 
@@ -77,13 +78,21 @@ public class MedicalRecord {
 	}
 
 	public Integer calculateAge() {
-			try {
-				return Period
-						.between(LocalDate.parse(birthdate, DateTimeFormatter.ofPattern("MM/dd/yyyy")), LocalDate.now())
-						.getYears();
-			} catch (Exception e) {
-				return null;
-			}
+		try {
+			return Period
+					.between(LocalDate.parse(birthdate, DateTimeFormatter.ofPattern("MM/dd/yyyy")), LocalDate.now())
+					.getYears();
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	@JsonIgnore
+	public boolean isAdult() {
+		Integer age = this.calculateAge();
+		if (age != null)
+			return (age > ApplicationConfiguration.ageOfMajority);
+		return true;
 	}
 
 	@JsonIgnore

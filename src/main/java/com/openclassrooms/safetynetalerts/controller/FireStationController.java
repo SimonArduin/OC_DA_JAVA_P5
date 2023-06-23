@@ -36,8 +36,6 @@ public class FireStationController {
 	@Autowired
 	private MedicalRecordService medicalRecordService;
 
-	private int ageMaxChild = 18;
-
 	/**
 	 * Put - Changes the fields of a fireStation in the database
 	 * 
@@ -131,7 +129,7 @@ public class FireStationController {
 					// get medical record of the resident
 					MedicalRecord medicalRecord = medicalRecordService.getMedicalRecord(personInFireStation);
 					// count as adult or child
-					if (medicalRecord.calculateAge() > ageMaxChild)
+					if (medicalRecord.isAdult())
 						result.addAdult();
 					else
 						result.addChild();
