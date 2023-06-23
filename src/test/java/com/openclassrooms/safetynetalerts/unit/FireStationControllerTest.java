@@ -86,7 +86,7 @@ public class FireStationControllerTest {
 		@Test
 		public void putFireStation() throws Exception {
 			ResponseEntity<FireStation> result = fireStationController.putFireStation(fireStation);
-			assertEquals(HttpStatus.valueOf(200), result.getStatusCode());
+			assertEquals(HttpStatus.valueOf(201), result.getStatusCode());
 			assertEquals(fireStation, result.getBody());
 			verify(fireStationService, Mockito.times(1)).putFireStation(any(FireStation.class));
 		}
@@ -115,7 +115,7 @@ public class FireStationControllerTest {
 		@Test
 		public void postFireStation() throws Exception {
 			ResponseEntity<FireStation> result = fireStationController.postFireStation(fireStation);
-			assertEquals(HttpStatus.valueOf(200), result.getStatusCode());
+			assertEquals(HttpStatus.valueOf(201), result.getStatusCode());
 			assertEquals(fireStation, result.getBody());
 			verify(fireStationService, Mockito.times(1)).postFireStation(any(FireStation.class));
 		}

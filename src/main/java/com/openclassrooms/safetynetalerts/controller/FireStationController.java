@@ -55,7 +55,7 @@ public class FireStationController {
 		FireStation putFireStation = fireStationService.putFireStation(fireStation);
 		if (putFireStation == null || putFireStation.isEmpty())
 			return ResponseEntity.notFound().build();
-		return ResponseEntity.ok().body(putFireStation);
+		return ResponseEntity.created(null).body(putFireStation);
 	}
 
 	/**
@@ -71,7 +71,7 @@ public class FireStationController {
 		FireStation postedFireStation = fireStationService.postFireStation(fireStation);
 		if (postedFireStation == null || postedFireStation.isEmpty())
 			return ResponseEntity.notFound().build();
-		return ResponseEntity.ok().body(postedFireStation);
+		return ResponseEntity.created(null).body(postedFireStation);
 	}
 
 	/**

@@ -52,7 +52,7 @@ public class MedicalRecordControllerTest {
 		@Test
 		public void putMedicalRecord() throws Exception {
 			ResponseEntity<MedicalRecord> result = medicalRecordController.putMedicalRecord(medicalRecord);
-			assertEquals(HttpStatus.valueOf(200), result.getStatusCode());
+			assertEquals(HttpStatus.valueOf(201), result.getStatusCode());
 			assertEquals(medicalRecord, result.getBody());
 			verify(medicalRecordService, Mockito.times(1)).putMedicalRecord(any(MedicalRecord.class));
 		}
@@ -81,7 +81,7 @@ public class MedicalRecordControllerTest {
 		@Test
 		public void postMedicalRecord() throws Exception {
 			ResponseEntity<MedicalRecord> result = medicalRecordController.postMedicalRecord(medicalRecord);
-			assertEquals(HttpStatus.valueOf(200), result.getStatusCode());
+			assertEquals(HttpStatus.valueOf(201), result.getStatusCode());
 			assertEquals(medicalRecord, result.getBody());
 			verify(medicalRecordService, Mockito.times(1)).postMedicalRecord(any(MedicalRecord.class));
 		}

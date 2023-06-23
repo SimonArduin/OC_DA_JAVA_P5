@@ -37,7 +37,7 @@ public class PersonController {
 		Person putPerson = personService.putPerson(person);
 		if (putPerson == null || putPerson.isEmpty())
 			return ResponseEntity.notFound().build();
-		return ResponseEntity.ok().body(putPerson);
+		return ResponseEntity.created(null).body(putPerson);
 	}
 
 	/**
@@ -53,7 +53,7 @@ public class PersonController {
 		Person postedPerson = personService.postPerson(person);
 		if (postedPerson == null || postedPerson.isEmpty())
 			return ResponseEntity.notFound().build();
-		return ResponseEntity.ok().body(postedPerson);
+		return ResponseEntity.created(null).body(postedPerson);
 	}
 
 	/**

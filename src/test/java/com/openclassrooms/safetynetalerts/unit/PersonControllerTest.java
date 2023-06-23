@@ -48,7 +48,7 @@ public class PersonControllerTest {
 		@Test
 		public void putPerson() throws Exception {
 			ResponseEntity<Person> result = personController.putPerson(person);
-			assertEquals(HttpStatus.valueOf(200), result.getStatusCode());
+			assertEquals(HttpStatus.valueOf(201), result.getStatusCode());
 			assertEquals(person, result.getBody());
 			verify(personService, Mockito.times(1)).putPerson(any(Person.class));
 		}
@@ -77,7 +77,7 @@ public class PersonControllerTest {
 		@Test
 		public void postPerson() throws Exception {
 			ResponseEntity<Person> result = personController.postPerson(person);
-			assertEquals(HttpStatus.valueOf(200), result.getStatusCode());
+			assertEquals(HttpStatus.valueOf(201), result.getStatusCode());
 			assertEquals(person, result.getBody());
 			verify(personService, Mockito.times(1)).postPerson(any(Person.class));
 		}

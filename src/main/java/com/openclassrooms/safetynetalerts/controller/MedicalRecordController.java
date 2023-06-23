@@ -37,7 +37,7 @@ public class MedicalRecordController {
 		MedicalRecord putMedicalRecord = medicalRecordService.putMedicalRecord(medicalRecord);
 		if (putMedicalRecord == null || putMedicalRecord.isEmpty())
 			return ResponseEntity.notFound().build();
-		return ResponseEntity.ok().body(putMedicalRecord);
+		return ResponseEntity.created(null).body(putMedicalRecord);
 	}
 
 	/**
@@ -53,7 +53,7 @@ public class MedicalRecordController {
 		MedicalRecord postedMedicalRecord = medicalRecordService.postMedicalRecord(medicalRecord);
 		if (postedMedicalRecord == null || postedMedicalRecord.isEmpty())
 			return ResponseEntity.notFound().build();
-		return ResponseEntity.ok().body(postedMedicalRecord);
+		return ResponseEntity.created(null).body(postedMedicalRecord);
 	}
 
 	/**
