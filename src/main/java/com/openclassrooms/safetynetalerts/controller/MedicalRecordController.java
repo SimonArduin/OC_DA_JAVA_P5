@@ -52,7 +52,7 @@ public class MedicalRecordController {
 			return ResponseEntity.badRequest().build();
 		MedicalRecord postedMedicalRecord = medicalRecordService.postMedicalRecord(medicalRecord);
 		if (postedMedicalRecord == null || postedMedicalRecord.isEmpty())
-			return ResponseEntity.notFound().build();
+			return ResponseEntity.status(409).build();
 		return ResponseEntity.created(null).body(postedMedicalRecord);
 	}
 
