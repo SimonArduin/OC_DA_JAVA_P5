@@ -21,7 +21,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.openclassrooms.safetynetalerts.controller.FireStationController;
 import com.openclassrooms.safetynetalerts.model.FireStation;
 import com.openclassrooms.safetynetalerts.model.MedicalRecord;
 import com.openclassrooms.safetynetalerts.model.Person;
@@ -30,9 +29,6 @@ import com.openclassrooms.safetynetalerts.repository.DataBase;
 @SpringBootTest
 @AutoConfigureMockMvc
 public class FireStationIT {
-
-	@Autowired
-	FireStationController fireStationController = new FireStationController();;
 
 	@Autowired
 	private MockMvc mockMvc;

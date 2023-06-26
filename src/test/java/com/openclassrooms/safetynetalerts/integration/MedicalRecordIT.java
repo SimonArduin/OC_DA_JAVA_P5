@@ -20,16 +20,12 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.openclassrooms.safetynetalerts.controller.MedicalRecordController;
 import com.openclassrooms.safetynetalerts.model.MedicalRecord;
 import com.openclassrooms.safetynetalerts.repository.DataBase;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 public class MedicalRecordIT {
-
-	@Autowired
-	MedicalRecordController medicalRecordController = new MedicalRecordController();;
 
 	@Autowired
 	private MockMvc mockMvc;
