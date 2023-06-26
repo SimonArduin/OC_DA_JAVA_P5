@@ -67,7 +67,9 @@ public class DataBase {
 		if (fireStation == null || fireStation.isEmpty())
 			return null;
 		ArrayList<FireStation> result = new ArrayList<FireStation>();
-		for (FireStation fireStationInDB : instance.firestations) {
+		List<FireStation> fireStationsInDB = instance.firestations;
+		if (fireStationsInDB != null && !fireStationsInDB.isEmpty())
+		for (FireStation fireStationInDB : fireStationsInDB) {
 			if (fireStation.equals(fireStationInDB))
 				result.add(fireStationInDB);
 		}
@@ -99,7 +101,9 @@ public class DataBase {
 		if (person == null || person.isEmpty())
 			return null;
 		ArrayList<Person> result = new ArrayList<Person>();
-		for (Person personInDB : instance.persons) {
+		List<Person> personsInDB = instance.persons;
+		if (personsInDB != null && !personsInDB.isEmpty())
+		for (Person personInDB : personsInDB) {
 			if (person.equals(personInDB))
 				result.add(personInDB);
 		}
@@ -135,7 +139,9 @@ public class DataBase {
 		if (medicalRecord == null || medicalRecord.isEmpty())
 			return null;
 		ArrayList<MedicalRecord> result = new ArrayList<MedicalRecord>();
-		for (MedicalRecord medicalRecordInDB : instance.medicalrecords) {
+		List<MedicalRecord> medicalRecordsInDB = instance.medicalrecords;
+		if (medicalRecordsInDB != null && !medicalRecordsInDB.isEmpty())
+		for (MedicalRecord medicalRecordInDB : medicalRecordsInDB) {
 			if (medicalRecord.equals(medicalRecordInDB))
 				result.add(medicalRecordInDB);
 		}

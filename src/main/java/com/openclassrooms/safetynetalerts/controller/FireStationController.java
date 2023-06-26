@@ -115,28 +115,28 @@ public class FireStationController {
 		// get fire stations
 		fireStationToSearch.setStation(stationNumber);
 		List<FireStation> fireStations = fireStationService.getFireStation(fireStationToSearch);
-		if (fireStations == null)
+		if (fireStations == null || fireStations.isEmpty())
 			return ResponseEntity.notFound().build();
 		// for every person covered by each fire station
 		for (FireStation fireStation : fireStations) {
 			Person personToSearch = new Person();
 			personToSearch.setAddress(fireStation.getAddress());
 			List<Person> persons = personService.getPerson(personToSearch);
-			if (persons != null)
+			if (persons == null || persons.isEmpty())
+				return ResponseEntity.notFound().build();
+			else
 				for (Person personInFireStation : persons) {
 					// get first name, last name, address and phone number of the resident
 					result.addPerson(new FireStationURLPerson(personInFireStation));
 					// get medical record of the resident
 					MedicalRecord medicalRecord = medicalRecordService.getMedicalRecord(personInFireStation);
 					// count as adult or child
-					if (medicalRecord.isAdult())
-						result.addAdult();
-					else
+					if (medicalRecord != null && !medicalRecord.isAdult())
 						result.addChild();
+					else
+						result.addAdult();
 				}
 		}
-		if (result.getPersons().isEmpty())
-			return ResponseEntity.notFound().build();
 		return ResponseEntity.ok().body(result);
 	}
 }
