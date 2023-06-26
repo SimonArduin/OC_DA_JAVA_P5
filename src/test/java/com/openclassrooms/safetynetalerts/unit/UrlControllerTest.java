@@ -230,6 +230,7 @@ public class URLControllerTest {
 
 			assertEquals(person.getFirstName(), result.getBody().getPersons().get(0).getFirstName());
 			assertEquals(person.getLastName(), result.getBody().getPersons().get(0).getLastName());
+			assertEquals(person.getAddress(), result.getBody().getPersons().get(0).getAddress());
 			assertEquals(person.getPhone(), result.getBody().getPersons().get(0).getPhone());
 			assertEquals(medicalRecord.calculateAge(), result.getBody().getPersons().get(0).getAge());
 			assertEquals(medicalRecord.getMedications(), result.getBody().getPersons().get(0).getMedications());
@@ -237,6 +238,7 @@ public class URLControllerTest {
 
 			assertEquals(personChild.getFirstName(), result.getBody().getPersons().get(1).getFirstName());
 			assertEquals(personChild.getLastName(), result.getBody().getPersons().get(1).getLastName());
+			assertEquals(personChild.getAddress(), result.getBody().getPersons().get(1).getAddress());
 			assertEquals(personChild.getPhone(), result.getBody().getPersons().get(1).getPhone());
 			assertEquals(medicalRecordChild.calculateAge(), result.getBody().getPersons().get(1).getAge());
 			assertEquals(medicalRecordChild.getMedications(), result.getBody().getPersons().get(1).getMedications());
@@ -297,6 +299,7 @@ public class URLControllerTest {
 
 			assertEquals(person.getFirstName(), result.getBody().getPersons().get(0).getFirstName());
 			assertEquals(person.getLastName(), result.getBody().getPersons().get(0).getLastName());
+			assertEquals(person.getAddress(), result.getBody().getPersons().get(0).getAddress());
 			assertEquals(person.getPhone(), result.getBody().getPersons().get(0).getPhone());
 			assertEquals(null, result.getBody().getPersons().get(0).getAge());
 			assertEquals(null, result.getBody().getPersons().get(0).getMedications());
@@ -304,6 +307,7 @@ public class URLControllerTest {
 
 			assertEquals(personChild.getFirstName(), result.getBody().getPersons().get(1).getFirstName());
 			assertEquals(personChild.getLastName(), result.getBody().getPersons().get(1).getLastName());
+			assertEquals(personChild.getAddress(), result.getBody().getPersons().get(1).getAddress());
 			assertEquals(personChild.getPhone(), result.getBody().getPersons().get(1).getPhone());
 			assertEquals(null, result.getBody().getPersons().get(1).getAge());
 			assertEquals(null, result.getBody().getPersons().get(1).getMedications());

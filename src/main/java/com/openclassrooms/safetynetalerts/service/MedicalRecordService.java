@@ -1,6 +1,5 @@
 package com.openclassrooms.safetynetalerts.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,12 +23,9 @@ public class MedicalRecordService {
 		if (person == null)
 			return null;
 		List<MedicalRecord> medicalRecordsInDB = getMedicalRecord(new MedicalRecord(person.getFirstName(), person.getLastName()));
-		if (medicalRecordsInDB == null)
+		if (medicalRecordsInDB == null || medicalRecordsInDB.isEmpty())
 			return null;
-		ArrayList<MedicalRecord> medicalRecordsArrayList = new ArrayList<MedicalRecord>(medicalRecordsInDB);
-		if (!medicalRecordsArrayList.isEmpty())
-			return medicalRecordsArrayList.get(0);
-		return null;
+		return medicalRecordsInDB.get(0);
 	}
 
 	/*

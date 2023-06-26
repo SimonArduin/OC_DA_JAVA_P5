@@ -172,12 +172,21 @@ public class FireStationControllerTest {
 
 		@Test
 		public void FireStationURLTest() throws Exception {
+			
 			ResponseEntity<FireStationURLDto> result = fireStationController.fireStationURL(fireStation.getStation());
+			
 			assertEquals(HttpStatus.valueOf(200), result.getStatusCode());
+		
 			assertEquals(person.getFirstName(), result.getBody().getPersons().get(0).getFirstName());
 			assertEquals(person.getLastName(), result.getBody().getPersons().get(0).getLastName());
+			assertEquals(person.getAddress(), result.getBody().getPersons().get(0).getAddress());
+			assertEquals(person.getPhone(), result.getBody().getPersons().get(0).getPhone());
+			
 			assertEquals(personChild.getFirstName(), result.getBody().getPersons().get(1).getFirstName());
 			assertEquals(personChild.getLastName(), result.getBody().getPersons().get(1).getLastName());
+			assertEquals(personChild.getAddress(), result.getBody().getPersons().get(1).getAddress());
+			assertEquals(personChild.getPhone(), result.getBody().getPersons().get(1).getPhone());
+			
 			assertEquals(numberOfAdults, result.getBody().getNumberOfAdults());
 			assertEquals(numberOfChildren, result.getBody().getNumberOfChildren());
 
@@ -188,9 +197,12 @@ public class FireStationControllerTest {
 		
 		@Test
 		public void FireStationURLTestIfNoParams() throws Exception {
+			
 			ResponseEntity<FireStationURLDto> result = fireStationController.fireStationURL(null);
+			
 			assertEquals(HttpStatus.valueOf(400), result.getStatusCode());
 			assertEquals(null, result.getBody());
+			
 			verify(fireStationService, Mockito.times(0)).getFireStation(any(FireStation.class));
 			verify(personService, Mockito.times(0)).getPerson(any(Person.class));
 			verify(medicalRecordService, Mockito.times(0)).getMedicalRecord(any(Person.class));
@@ -198,11 +210,15 @@ public class FireStationControllerTest {
 
 		@Test
 		public void FireStationURLTestIfNoFireStationInDB() throws Exception {
+			
 			Mockito.when(fireStationService.getFireStation(any(FireStation.class)))
 					.thenReturn(null);
+			
 			ResponseEntity<FireStationURLDto> result = fireStationController.fireStationURL(fireStation.getStation());
+			
 			assertEquals(HttpStatus.valueOf(404), result.getStatusCode());
 			assertEquals(null, result.getBody());
+			
 			verify(fireStationService, Mockito.times(1)).getFireStation(any(FireStation.class));
 			verify(personService, Mockito.times(0)).getPerson(any(Person.class));
 			verify(medicalRecordService, Mockito.times(0)).getMedicalRecord(any(Person.class));
@@ -210,10 +226,14 @@ public class FireStationControllerTest {
 
 		@Test
 		public void FireStationURLTestIfNoPersonsInDB() throws Exception {
+			
 			Mockito.when(personService.getPerson(any(Person.class))).thenReturn(null);
+			
 			ResponseEntity<FireStationURLDto> result = fireStationController.fireStationURL(fireStation.getStation());
+			
 			assertEquals(HttpStatus.valueOf(404), result.getStatusCode());
 			assertEquals(null, result.getBody());
+			
 			verify(fireStationService, Mockito.times(1)).getFireStation(any(FireStation.class));
 			verify(personService, Mockito.times(numberOfFireStationByStationNumber)).getPerson(any(Person.class));
 			verify(medicalRecordService, Mockito.times(0)).getMedicalRecord(any(Person.class));

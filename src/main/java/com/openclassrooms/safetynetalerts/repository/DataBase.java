@@ -46,12 +46,8 @@ public class DataBase {
 
 	public static DataBase getDataBase() {
 		if (instance == null)
-			instance = readDataBase();
+			instance = new DataBase();
 		return instance;
-	}
-	
-	public static DataBase readDataBase() {
-		return instance = new DataBase();
 	}
 
 	public static DataBase setDataBase(ArrayList<FireStation> fireStations, ArrayList<Person> persons,
