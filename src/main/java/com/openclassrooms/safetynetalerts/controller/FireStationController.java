@@ -67,7 +67,7 @@ public class FireStationController {
 			return ResponseEntity.badRequest().build();
 		FireStation postedFireStation = fireStationService.postFireStation(fireStation);
 		if (postedFireStation == null || postedFireStation.isEmpty())
-			return ResponseEntity.notFound().build();
+			return ResponseEntity.status(409).build();
 		return ResponseEntity.created(null).body(postedFireStation);
 	}
 

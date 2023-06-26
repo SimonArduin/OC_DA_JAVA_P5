@@ -35,21 +35,24 @@ public class FireStationService {
 			return null;
 		boolean isInDB = false;
 		FireStation fireStationToPut = new FireStation();
-		if (fireStation.getAddress() != null)
-			for (FireStation fireStationInDB : fireStationRepository.get(fireStation)) {
-				if (fireStationInDB.equals(fireStation)) {
-					isInDB = true;
-					fireStationToPut = fireStationInDB;
-					fireStationRepository.delete(fireStationInDB);
+		if (fireStation.getAddress() != null) {
+			List<FireStation> fireStationsInDB = fireStationRepository.get(fireStation);
+			if (fireStationsInDB!=null && !fireStationsInDB.isEmpty())
+				for (FireStation fireStationInDB : fireStationRepository.get(fireStation)) {
+					if (fireStationInDB.equals(fireStation)) {
+						isInDB = true;
+						fireStationToPut = fireStationInDB;
+						fireStationRepository.delete(fireStationInDB);
+					}
 				}
-			}
+		}
 		if (isInDB) {
 			fireStationToPut.update(fireStation);
 			return fireStationRepository.save(fireStationToPut);
 		} else
 			return null;
 	}
-	
+
 	public FireStation postFireStation(FireStation fireStation) {
 		return fireStationRepository.save(fireStation);
 	}
