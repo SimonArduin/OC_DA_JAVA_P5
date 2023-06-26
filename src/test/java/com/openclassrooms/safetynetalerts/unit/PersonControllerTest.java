@@ -86,7 +86,7 @@ public class PersonControllerTest {
 		public void postPersonTestIfNotInDB() throws Exception {
 			Mockito.when(personService.postPerson(any(Person.class))).thenReturn(null);
 			ResponseEntity<Person> result = personController.postPerson(person);
-			assertEquals(HttpStatus.valueOf(404), result.getStatusCode());
+			assertEquals(HttpStatus.valueOf(409), result.getStatusCode());
 			assertEquals(null, result.getBody());
 			verify(personService, Mockito.times(1)).postPerson(any(Person.class));
 		}

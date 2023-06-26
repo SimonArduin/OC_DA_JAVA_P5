@@ -90,7 +90,7 @@ public class MedicalRecordControllerTest {
 		public void postMedicalRecordTestIfNotInDB() throws Exception {
 			Mockito.when(medicalRecordService.postMedicalRecord(any(MedicalRecord.class))).thenReturn(null);
 			ResponseEntity<MedicalRecord> result = medicalRecordController.postMedicalRecord(medicalRecord);
-			assertEquals(HttpStatus.valueOf(404), result.getStatusCode());
+			assertEquals(HttpStatus.valueOf(409), result.getStatusCode());
 			assertEquals(null, result.getBody());
 			verify(medicalRecordService, Mockito.times(1)).postMedicalRecord(any(MedicalRecord.class));
 		}

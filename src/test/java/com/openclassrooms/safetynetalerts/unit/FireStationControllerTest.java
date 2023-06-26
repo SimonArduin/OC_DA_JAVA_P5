@@ -124,7 +124,7 @@ public class FireStationControllerTest {
 		public void postFireStationTestIfNotInDB() throws Exception {
 			Mockito.when(fireStationService.postFireStation(any(FireStation.class))).thenReturn(null);
 			ResponseEntity<FireStation> result = fireStationController.postFireStation(fireStation);
-			assertEquals(HttpStatus.valueOf(404), result.getStatusCode());
+			assertEquals(HttpStatus.valueOf(409), result.getStatusCode());
 			assertEquals(null, result.getBody());
 			verify(fireStationService, Mockito.times(1)).postFireStation(any(FireStation.class));
 		}
