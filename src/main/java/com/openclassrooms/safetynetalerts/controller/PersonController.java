@@ -52,7 +52,7 @@ public class PersonController {
 			return ResponseEntity.badRequest().build();
 		Person postedPerson = personService.postPerson(person);
 		if (postedPerson == null || postedPerson.isEmpty())
-			return ResponseEntity.notFound().build();
+			return ResponseEntity.status(409).build();
 		return ResponseEntity.created(null).body(postedPerson);
 	}
 
