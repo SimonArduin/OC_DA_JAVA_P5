@@ -36,6 +36,7 @@ public class PersonController {
 	 */
 	@PutMapping
 	public ResponseEntity<Person> putPerson(@RequestBody Person person) {
+		logger.debug(String.format("call of putPerson, args : %s", person));
 		if (person == null) {
 			logger.error(String.format("bad request on /person PUT, args : %s", person));
 			return ResponseEntity.badRequest().build();
@@ -57,6 +58,7 @@ public class PersonController {
 	 */
 	@PostMapping
 	public ResponseEntity<Person> postPerson(@RequestBody Person person) {
+		logger.debug(String.format("call of postPerson, args : %s", person));
 		if (person == null) {
 			logger.error(String.format("bad request on /person POST, args : %s", person));
 			return ResponseEntity.badRequest().build();
@@ -78,6 +80,7 @@ public class PersonController {
 	 */
 	@DeleteMapping
 	public ResponseEntity<Person> deletePerson(@RequestBody Person person) {
+		logger.debug(String.format("call of deletePerson, args : %s", person));
 		if (person == null) {
 			logger.error(String.format("bad request on /person DELETE, args : %s", person));
 			return ResponseEntity.badRequest().build();

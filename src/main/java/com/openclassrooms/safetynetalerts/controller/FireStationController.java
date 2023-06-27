@@ -51,6 +51,7 @@ public class FireStationController {
 	 */
 	@PutMapping
 	public ResponseEntity<FireStation> putFireStation(@RequestBody FireStation fireStation) {
+		logger.debug(String.format("call of putFireStation, args : %s", fireStation));
 		if (fireStation == null) {
 			logger.error(String.format("bad request on /firestation PUT, args : %s", fireStation));
 			return ResponseEntity.badRequest().build();
@@ -72,6 +73,7 @@ public class FireStationController {
 	 */
 	@PostMapping
 	public ResponseEntity<FireStation> postFireStation(@RequestBody FireStation fireStation) {
+		logger.debug(String.format("call of postFireStation, args : %s", fireStation));
 		if (fireStation == null) {
 			logger.error(String.format("bad request on /firestation POST, args : %s", fireStation));
 			return ResponseEntity.badRequest().build();
@@ -93,6 +95,7 @@ public class FireStationController {
 	 */
 	@DeleteMapping
 	public ResponseEntity<List<FireStation>> deleteFireStation(@RequestBody FireStation fireStation) {
+		logger.debug(String.format("call of deleteFireStation, args : %s", fireStation));
 		if (fireStation == null) {
 			logger.error(String.format("bad request on /firestation DELETE, args : %s", fireStation));
 			return ResponseEntity.badRequest().build();
@@ -124,6 +127,8 @@ public class FireStationController {
 		 *         -- an int corresponding to the number of children covered by the
 		 *         fireStation
 		 */
+		
+		logger.debug(String.format("call of fireStationURL, args : %s", stationNumber));
 
 		if (stationNumber == null) {
 			logger.error(String.format("bad request on /firestation GET, args : %s", stationNumber));
@@ -136,6 +141,7 @@ public class FireStationController {
 		// get fire stations
 		fireStationToSearch.setStation(stationNumber);
 		List<FireStation> fireStations = fireStationService.getFireStation(fireStationToSearch);
+		logger.debug(String.format("fireStations found in fireStationURL : %s", fireStations));
 		if (fireStations == null || fireStations.isEmpty()) {
 			logger.error(String.format("no firestations found on /firestation GET, args : %s", stationNumber));
 			return ResponseEntity.notFound().build();
@@ -145,6 +151,7 @@ public class FireStationController {
 			Person personToSearch = new Person();
 			personToSearch.setAddress(fireStation.getAddress());
 			List<Person> persons = personService.getPerson(personToSearch);
+			logger.debug(String.format("persons found for fireStation %s in fireStationURL : %s", fireStation, persons));
 			if (persons == null || persons.isEmpty()) {
 				logger.error(String.format("no persons found on /firestation GET, args : %s", stationNumber));
 				return ResponseEntity.notFound().build();
@@ -155,11 +162,13 @@ public class FireStationController {
 					result.addPerson(new FireStationURLPerson(personInFireStation));
 					// get medical record of the resident
 					MedicalRecord medicalRecord = medicalRecordService.getMedicalRecord(personInFireStation);
+					logger.debug(String.format("medicalRecord found for person %s in fireStationURL : %s", personInFireStation, medicalRecord));
 					// count as adult or child
 					if (medicalRecord != null && !medicalRecord.isAdult())
 						result.addChild();
 					else
 						result.addAdult();
+					logger.debug(String.format("current result for fireStationURL : %s", result));
 				}
 		}
 		logger.info(String.format("successful request on /firestation GET, args : %s", stationNumber));

@@ -52,6 +52,8 @@ public class URLController {
 		 * @return - A ChildAlertURLInfo object
 		 */
 
+		logger.debug(String.format("call of childAlertURL, args : %s", address));
+
 		if (address == null) {
 			logger.error(String.format("bad request on /childAlert, args : %s", address));
 			return ResponseEntity.badRequest().build();
@@ -63,6 +65,7 @@ public class URLController {
 		// get persons at the address
 		personToSearch.setAddress(address);
 		List<Person> persons = personService.getPerson(personToSearch);
+		logger.debug(String.format("persons found in childAlertURL : %s", persons));
 		if (persons == null) {
 			logger.error(String.format("no persons found on /childAlert, args : %s", address));
 			return ResponseEntity.notFound().build();
@@ -70,14 +73,14 @@ public class URLController {
 		for (Person person : persons) {
 			// get medical record of a person
 			MedicalRecord medicalRecord = medicalRecordService.getMedicalRecord(person);
+			logger.debug(
+					String.format("medicalRecord found for person %s in childAlertURL : %s", person, medicalRecord));
 			// split between children and adults
-			if (medicalRecord != null) {
-				if (medicalRecord.isAdult())
-					result.addAdult(person);
-				else
-					result.addChild(person, medicalRecord.calculateAge());
-			} else
+			if (medicalRecord != null && !medicalRecord.isAdult())
+				result.addChild(person, medicalRecord.calculateAge());
+			else
 				result.addAdult(person);
+			logger.debug(String.format("current result for childAlertURL : %s", result));
 		}
 		logger.info(String.format("successful request on /childAlert, args : %s", address));
 		return ResponseEntity.ok().body(result);
@@ -95,6 +98,8 @@ public class URLController {
 		 * @return - A List<String> containing phone numbers
 		 */
 
+		logger.debug(String.format("call of phoneAlertURL, args : %s", firestation));
+
 		if (firestation == null) {
 			logger.error(String.format("bad request on /phoneAlert, args : %s", firestation));
 			return ResponseEntity.badRequest().build();
@@ -107,6 +112,7 @@ public class URLController {
 		// get fire stations
 		fireStationToSearch.setStation(firestation);
 		List<FireStation> fireStations = fireStationService.getFireStation(fireStationToSearch);
+		logger.debug(String.format("fireStations found in phoneAlertURL : %s", fireStations));
 		if (fireStations == null) {
 			logger.error(String.format("no firestations found on /phoneAlert, args : %s", firestation));
 			return ResponseEntity.notFound().build();
@@ -115,6 +121,8 @@ public class URLController {
 			// get persons
 			personToSearch.setAddress(fireStationInDB.getAddress());
 			List<Person> persons = personService.getPerson(personToSearch);
+			logger.debug(
+					String.format("persons found for fireStation %s in phoneAlertURL : %s", fireStationInDB, persons));
 			if (persons == null) {
 				logger.error(String.format("no persons found on /phoneAlert, args : %s", firestation));
 				return ResponseEntity.notFound().build();
@@ -122,6 +130,7 @@ public class URLController {
 			for (Person personInDB : persons) {
 				if (personInDB.getPhone() != null)
 					result.addPhone(personInDB.getPhone());
+				logger.debug(String.format("current result for phoneAlertURL : %s", result));
 			}
 		}
 		if (result.getPhones().isEmpty()) {
@@ -142,6 +151,8 @@ public class URLController {
 		 * @return - A FireURLInfo object
 		 */
 
+		logger.debug(String.format("call of fireURL, args : %s", address));
+
 		if (address == null) {
 			logger.error(String.format("bad request on /fire, args : %s", address));
 			return ResponseEntity.badRequest().build();
@@ -154,21 +165,26 @@ public class URLController {
 		// get fire station
 		fireStationToSearch.setAddress(address);
 		List<FireStation> fireStations = fireStationService.getFireStation(fireStationToSearch);
+		logger.debug(String.format("fireStations found in fireURL : %s", fireStations));
 		if (fireStations == null) {
 			logger.error(String.format("no firestations found on /fire, args : %s", address));
 			return ResponseEntity.notFound().build();
 		}
 		result.setFireStationNumber(fireStations.get(0).getStation());
+		logger.debug(String.format("current result for fireURL : %s", result));
 		// get persons
 		personToSearch.setAddress(address);
 		List<Person> persons = personService.getPerson(personToSearch);
+		logger.debug(String.format("persons found for fireStation %s in fireURL : %s", fireStations.get(0), persons));
 		if (persons == null || persons.isEmpty()) {
 			logger.error(String.format("no persons found on /fire, args : %s", address));
 			return ResponseEntity.notFound().build();
 		}
 		for (Person person : persons) {
 			MedicalRecord medicalRecord = medicalRecordService.getMedicalRecord(person);
+			logger.debug(String.format("medicalRecord found for person %s in fireURL : %s", person, medicalRecord));
 			result.addPerson(person, medicalRecord);
+			logger.debug(String.format("current result for fireURL : %s", result));
 		}
 		logger.info(String.format("successful request on /fire, args : %s", address));
 		return ResponseEntity.ok().body(result);
@@ -185,6 +201,8 @@ public class URLController {
 		 * @return - A FloodStationsURLInfo object
 		 */
 
+		logger.debug(String.format("call of floodStationsURL, args : %s", stations));
+
 		if (stations == null || stations.isEmpty()) {
 			logger.error(String.format("bad request on /flood/stations, args : %s", stations));
 			return ResponseEntity.badRequest().build();
@@ -198,6 +216,7 @@ public class URLController {
 			// get fire stations
 			fireStationToSearch.setStation(station);
 			List<FireStation> fireStations = fireStationService.getFireStation(fireStationToSearch);
+			logger.debug(String.format("fireStations found in floodStationsURL : %s", fireStations));
 			if (fireStations != null) {
 				// get homes
 				for (FireStation fireStation : fireStations) {
@@ -206,12 +225,19 @@ public class URLController {
 					// get residents
 					personToSearch.setAddress(fireStation.getAddress());
 					List<Person> persons = personService.getPerson(personToSearch);
+					logger.debug(String.format("persons found for fireStation %s in floodStationsURL : %s", fireStation,
+							persons));
 					if (persons != null)
 						for (Person person : persons) {
 							MedicalRecord medicalRecord = medicalRecordService.getMedicalRecord(person);
+							logger.debug(String.format("medicalRecord found for person %s in floodStationsURL : %s",
+									person, medicalRecord));
 							home.addResident(person, medicalRecord);
+							logger.debug(String.format("current home for fireStation %s for floodStationsURL : %s",
+									fireStation, result));
 						}
 					result.addHome(home);
+					logger.debug(String.format("current result for floodStationsURL : %s", result));
 				}
 			}
 		}
@@ -234,6 +260,8 @@ public class URLController {
 		 * @return - A List<personInfoURLPerson> object
 		 */
 
+		logger.debug(String.format("call of personInfoURL, args : %s, %s", firstName, lastName));
+
 		if (firstName == null || lastName == null) {
 			logger.error(String.format("bad request on /personInfo, args : %s, %s", firstName, lastName));
 			return ResponseEntity.badRequest().build();
@@ -245,6 +273,7 @@ public class URLController {
 		personToSearch.setLastName(lastName);
 		// get persons
 		List<Person> persons = personService.getPerson(personToSearch);
+		logger.debug(String.format("persons found in personInfoURL : %s", persons));
 		if (persons == null || persons.isEmpty()) {
 			logger.error(String.format("no persons found on /personInfo, args : %s, %s", firstName, lastName));
 			return ResponseEntity.notFound().build();
@@ -252,7 +281,10 @@ public class URLController {
 		// get medical record
 		for (Person person : persons) {
 			MedicalRecord medicalRecord = medicalRecordService.getMedicalRecord(person);
+			logger.debug(
+					String.format("medicalRecord found for person %s in personInfoURL : %s", person, medicalRecord));
 			result.addPerson(new PersonInfoURLPerson(person, medicalRecord));
+			logger.debug(String.format("current result for personInfoURL : %s", result));
 		}
 		logger.info(String.format("successful request on /personInfo, args : %s, %s", firstName, lastName));
 		return ResponseEntity.ok().body(result);
@@ -268,6 +300,8 @@ public class URLController {
 		 * @return - A List<personInfoURLPerson> object
 		 */
 
+		logger.debug(String.format("call of communityEmailURL, args : %s", city));
+
 		if (city == null) {
 			logger.error(String.format("bad request on /communityEmail, args : %s", city));
 			return ResponseEntity.badRequest().build();
@@ -278,6 +312,7 @@ public class URLController {
 		personToSearch.setCity(city);
 		// get persons
 		List<Person> persons = personService.getPerson(personToSearch);
+		logger.debug(String.format("persons found in communityEmailURL : %s", persons));
 		if (persons == null) {
 			logger.error(String.format("no persons found on /communtiyEmail, args : %s", city));
 			return ResponseEntity.notFound().build();
@@ -286,6 +321,7 @@ public class URLController {
 		for (Person person : persons) {
 			if (person.getEmail() != null)
 				result.addEmail(person.getEmail());
+			logger.debug(String.format("current result for communityEmailURL : %s", result));
 		}
 		if (result.getEmails().isEmpty()) {
 			logger.error(String.format("no emails found on /communtiyEmail, args : %s", city));

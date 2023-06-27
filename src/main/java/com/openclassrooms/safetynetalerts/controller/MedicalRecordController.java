@@ -36,6 +36,7 @@ public class MedicalRecordController {
 	 */
 	@PutMapping
 	public ResponseEntity<MedicalRecord> putMedicalRecord(@RequestBody MedicalRecord medicalRecord) {
+		logger.debug(String.format("call of putMedicalRecord, args : %s", medicalRecord));
 		if (medicalRecord == null) {
 			logger.error(String.format("bad request on /medicalrecord PUT, args : %s", medicalRecord));
 			return ResponseEntity.badRequest().build();
@@ -57,6 +58,7 @@ public class MedicalRecordController {
 	 */
 	@PostMapping
 	public ResponseEntity<MedicalRecord> postMedicalRecord(@RequestBody MedicalRecord medicalRecord) {
+		logger.debug(String.format("call of postMedicalRecord, args : %s", medicalRecord));
 		if (medicalRecord == null) {
 			logger.error(String.format("bad request on /medicalrecord POST, args : %s", medicalRecord));
 			return ResponseEntity.badRequest().build();
@@ -78,6 +80,7 @@ public class MedicalRecordController {
 	 */
 	@DeleteMapping
 	public ResponseEntity<MedicalRecord> deleteMedicalRecord(@RequestBody MedicalRecord medicalRecord) {
+		logger.debug(String.format("call of deleteMedicalRecord, args : %s", medicalRecord));
 		if (medicalRecord == null) {
 			logger.error(String.format("bad request on /medicalrecord DELETE, args : %s", medicalRecord));
 			return ResponseEntity.badRequest().build();
