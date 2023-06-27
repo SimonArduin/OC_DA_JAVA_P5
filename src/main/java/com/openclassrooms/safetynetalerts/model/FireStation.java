@@ -2,9 +2,16 @@ package com.openclassrooms.safetynetalerts.model;
 
 import java.lang.reflect.Field;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.jsoniter.annotation.JsonIgnore;
+
 
 public class FireStation {
+
+	@JsonIgnore
+	private static Logger logger = LoggerFactory.getLogger(FireStation.class);
 
 	private String address;
 	private String station;
@@ -36,16 +43,9 @@ public class FireStation {
 
 	@JsonIgnore
 	public boolean isEmpty() {
-		try {
-			Field[] fields = this.getClass().getDeclaredFields();
-			for (int i = 0; i < fields.length; i++) {
-				if (fields[i].get(this) != null)
-					return false;
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return true;
+		if (this.address == null && this.station == null)
+			return true;
+		return false;
 	}
 
 	@Override
@@ -68,6 +68,7 @@ public class FireStation {
 					return true;
 				}
 			} catch (Exception e) {
+				logger.error("exception in FireStation.equals()");
 				e.printStackTrace();
 			}
 		}

@@ -6,10 +6,16 @@ import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.jsoniter.annotation.JsonIgnore;
 import com.openclassrooms.safetynetalerts.ApplicationConfiguration;
 
 public class MedicalRecord {
+
+	@JsonIgnore
+	private static Logger logger = LoggerFactory.getLogger(MedicalRecord.class);
 
 	private String firstName;
 	private String lastName;
@@ -83,6 +89,7 @@ public class MedicalRecord {
 					.between(LocalDate.parse(birthdate, DateTimeFormatter.ofPattern("MM/dd/yyyy")), LocalDate.now())
 					.getYears();
 		} catch (Exception e) {
+			logger.error("exception in MedicalRecord.calculateAge()");
 			return null;
 		}
 	}
@@ -97,16 +104,9 @@ public class MedicalRecord {
 
 	@JsonIgnore
 	public boolean isEmpty() {
-		try {
-			Field[] fields = MedicalRecord.class.getDeclaredFields();
-			for (int i = 0; i < fields.length; i++) {
-				if (fields[i].get(this) != null)
-					return false;
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return true;
+		if (firstName == null && lastName == null && birthdate == null && medications == null && allergies == null)
+			return true;
+		return false;
 	}
 
 	@Override
@@ -136,6 +136,7 @@ public class MedicalRecord {
 					}
 				}
 			} catch (Exception e) {
+				logger.error("exception in MedicalRecord.equals()");
 				e.printStackTrace();
 			}
 		}

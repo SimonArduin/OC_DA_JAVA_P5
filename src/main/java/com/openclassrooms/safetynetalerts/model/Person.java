@@ -2,9 +2,16 @@ package com.openclassrooms.safetynetalerts.model;
 
 import java.lang.reflect.Field;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.jsoniter.annotation.JsonIgnore;
+
 
 public class Person {
+
+	@JsonIgnore
+	private static Logger logger = LoggerFactory.getLogger(Person.class);
 
 	private String firstName;
 	private String lastName;
@@ -93,16 +100,10 @@ public class Person {
 
 	@JsonIgnore
 	public boolean isEmpty() {
-		try {
-			Field[] fields = this.getClass().getDeclaredFields();
-			for (int i = 0; i < fields.length; i++) {
-				if (fields[i].get(this) != null)
-					return false;
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return true;
+		if (firstName == null && lastName == null && address == null && city == null && zip == null && phone == null
+				&& email == null)
+			return true;
+		return false;
 	}
 
 	@Override
@@ -132,6 +133,7 @@ public class Person {
 					}
 				}
 			} catch (Exception e) {
+				logger.error("exception in Person.equals()");
 				e.printStackTrace();
 			}
 		}

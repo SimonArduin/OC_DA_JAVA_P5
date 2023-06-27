@@ -6,6 +6,10 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.jsoniter.JsonIterator;
 import com.openclassrooms.safetynetalerts.model.FireStation;
 import com.openclassrooms.safetynetalerts.model.MedicalRecord;
@@ -14,6 +18,9 @@ import com.openclassrooms.safetynetalerts.model.Person;
 public class DataBase {
 
 	private static DataBase instance;
+
+	@JsonIgnore
+	private static Logger logger = LoggerFactory.getLogger(DataBase.class);
 
 	private List<FireStation> firestations;
 	private List<Person> persons;
@@ -33,6 +40,7 @@ public class DataBase {
 			this.persons = fullData.persons;
 			this.medicalrecords = fullData.medicalrecords;
 		} catch (Exception e) {
+			logger.error("exception in DataBase.DataBase()");
 			e.printStackTrace();
 		}
 	}
