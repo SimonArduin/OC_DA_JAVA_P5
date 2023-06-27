@@ -1,5 +1,7 @@
 package com.openclassrooms.safetynetalerts.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -26,6 +28,8 @@ import java.util.List;
 @EnableWebMvc
 @RequestMapping(path = "/firestation")
 public class FireStationController {
+	
+	private static Logger logger = LoggerFactory.getLogger(FireStationController.class);
 
 	@Autowired
 	private FireStationService fireStationService;
@@ -47,11 +51,16 @@ public class FireStationController {
 	 */
 	@PutMapping
 	public ResponseEntity<FireStation> putFireStation(@RequestBody FireStation fireStation) {
-		if (fireStation == null)
+		if (fireStation == null) {
+			logger.error(String.format("bad request on /firestation PUT, args : %s", fireStation));
 			return ResponseEntity.badRequest().build();
+		}
 		FireStation putFireStation = fireStationService.putFireStation(fireStation);
-		if (putFireStation == null || putFireStation.isEmpty())
+		if (putFireStation == null || putFireStation.isEmpty()) {
+			logger.error(String.format("no firestation found on /firestation PUT, args : %s", fireStation));
 			return ResponseEntity.notFound().build();
+		}
+		logger.info(String.format("successful request on /firestation PUT, args : %s", fireStation));
 		return ResponseEntity.created(null).body(putFireStation);
 	}
 
@@ -63,11 +72,16 @@ public class FireStationController {
 	 */
 	@PostMapping
 	public ResponseEntity<FireStation> postFireStation(@RequestBody FireStation fireStation) {
-		if (fireStation == null)
+		if (fireStation == null) {
+			logger.error(String.format("bad request on /firestation POST, args : %s", fireStation));
 			return ResponseEntity.badRequest().build();
+		}
 		FireStation postedFireStation = fireStationService.postFireStation(fireStation);
-		if (postedFireStation == null || postedFireStation.isEmpty())
+		if (postedFireStation == null || postedFireStation.isEmpty()) {
+			logger.error(String.format("conflict on /firestation POST, args : %s", fireStation));
 			return ResponseEntity.status(409).build();
+		}
+		logger.info(String.format("successful request on /firestation POST, args : %s", fireStation));
 		return ResponseEntity.created(null).body(postedFireStation);
 	}
 
@@ -79,11 +93,16 @@ public class FireStationController {
 	 */
 	@DeleteMapping
 	public ResponseEntity<List<FireStation>> deleteFireStation(@RequestBody FireStation fireStation) {
-		if (fireStation == null)
+		if (fireStation == null) {
+			logger.error(String.format("bad request on /firestation DELETE, args : %s", fireStation));
 			return ResponseEntity.badRequest().build();
+		}
 		List<FireStation> deletedFireStation = fireStationService.deleteFireStation(fireStation);
-		if (deletedFireStation == null || deletedFireStation.isEmpty())
+		if (deletedFireStation == null || deletedFireStation.isEmpty()) {
+			logger.error(String.format("no firestation found on /firestation DELETE, args : %s", fireStation));
 			return ResponseEntity.notFound().build();
+		}
+		logger.info(String.format("successful request on /firestation DELETE, args : %s", fireStation));
 		return ResponseEntity.ok().body(deletedFireStation);
 	}
 
@@ -106,8 +125,10 @@ public class FireStationController {
 		 *         fireStation
 		 */
 
-		if (stationNumber == null)
+		if (stationNumber == null) {
+			logger.error(String.format("bad request on /firestation GET, args : %s", stationNumber));
 			return ResponseEntity.badRequest().build();
+		}
 
 		FireStationURLDto result = new FireStationURLDto();
 		FireStation fireStationToSearch = new FireStation();
@@ -115,15 +136,19 @@ public class FireStationController {
 		// get fire stations
 		fireStationToSearch.setStation(stationNumber);
 		List<FireStation> fireStations = fireStationService.getFireStation(fireStationToSearch);
-		if (fireStations == null || fireStations.isEmpty())
+		if (fireStations == null || fireStations.isEmpty()) {
+			logger.error(String.format("no firestations found on /firestation GET, args : %s", stationNumber));
 			return ResponseEntity.notFound().build();
+		}
 		// for every person covered by each fire station
 		for (FireStation fireStation : fireStations) {
 			Person personToSearch = new Person();
 			personToSearch.setAddress(fireStation.getAddress());
 			List<Person> persons = personService.getPerson(personToSearch);
-			if (persons == null || persons.isEmpty())
+			if (persons == null || persons.isEmpty()) {
+				logger.error(String.format("no persons found on /firestation GET, args : %s", stationNumber));
 				return ResponseEntity.notFound().build();
+			}
 			else
 				for (Person personInFireStation : persons) {
 					// get first name, last name, address and phone number of the resident
@@ -137,6 +162,7 @@ public class FireStationController {
 						result.addAdult();
 				}
 		}
+		logger.info(String.format("successful request on /firestation GET, args : %s", stationNumber));
 		return ResponseEntity.ok().body(result);
 	}
 }

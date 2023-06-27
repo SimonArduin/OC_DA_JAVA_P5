@@ -1,5 +1,7 @@
 package com.openclassrooms.safetynetalerts.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,6 +19,8 @@ import com.openclassrooms.safetynetalerts.service.PersonService;
 @EnableWebMvc
 @RequestMapping("/person")
 public class PersonController {
+	
+	private static Logger logger = LoggerFactory.getLogger(PersonController.class);
 
 	@Autowired
 	private PersonService personService;
@@ -32,11 +36,16 @@ public class PersonController {
 	 */
 	@PutMapping
 	public ResponseEntity<Person> putPerson(@RequestBody Person person) {
-		if (person == null)
+		if (person == null) {
+			logger.error(String.format("bad request on /person PUT, args : %s", person));
 			return ResponseEntity.badRequest().build();
+		}
 		Person putPerson = personService.putPerson(person);
-		if (putPerson == null || putPerson.isEmpty())
+		if (putPerson == null || putPerson.isEmpty()) {
+			logger.error(String.format("no person found on /person PUT, args : %s", person));
 			return ResponseEntity.notFound().build();
+		}
+		logger.info(String.format("successful request on /person PUT, args : %s", person));
 		return ResponseEntity.created(null).body(putPerson);
 	}
 
@@ -48,11 +57,16 @@ public class PersonController {
 	 */
 	@PostMapping
 	public ResponseEntity<Person> postPerson(@RequestBody Person person) {
-		if (person == null)
+		if (person == null) {
+			logger.error(String.format("bad request on /person POST, args : %s", person));
 			return ResponseEntity.badRequest().build();
+		}
 		Person postedPerson = personService.postPerson(person);
-		if (postedPerson == null || postedPerson.isEmpty())
+		if (postedPerson == null || postedPerson.isEmpty()) {
+			logger.error(String.format("no person found on /person POST, args : %s", person));
 			return ResponseEntity.status(409).build();
+		}
+		logger.info(String.format("successful request on /person POST, args : %s", person));
 		return ResponseEntity.created(null).body(postedPerson);
 	}
 
@@ -64,11 +78,16 @@ public class PersonController {
 	 */
 	@DeleteMapping
 	public ResponseEntity<Person> deletePerson(@RequestBody Person person) {
-		if (person == null)
+		if (person == null) {
+			logger.error(String.format("bad request on /person DELETE, args : %s", person));
 			return ResponseEntity.badRequest().build();
+		}
 		Person deletedPerson = personService.deletePerson(person);
-		if (deletedPerson == null || deletedPerson.isEmpty())
+		if (deletedPerson == null || deletedPerson.isEmpty()) {
+			logger.error(String.format("no person found on /person DELETE, args : %s", person));
 			return ResponseEntity.notFound().build();
+		}
+		logger.info(String.format("successful request on /person DELETE, args : %s", person));
 		return ResponseEntity.ok().body(deletedPerson);
 	}
 }

@@ -2,6 +2,8 @@ package com.openclassrooms.safetynetalerts.controller;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,6 +30,8 @@ import com.openclassrooms.safetynetalerts.service.PersonService;
 @EnableWebMvc
 public class URLController {
 
+	private static Logger logger = LoggerFactory.getLogger(URLController.class);
+
 	@Autowired
 	private FireStationService fireStationService;
 
@@ -48,8 +52,10 @@ public class URLController {
 		 * @return - A ChildAlertURLInfo object
 		 */
 
-		if (address == null)
+		if (address == null) {
+			logger.error(String.format("bad request on /childAlert, args : %s", address));
 			return ResponseEntity.badRequest().build();
+		}
 
 		ChildAlertURLDto result = new ChildAlertURLDto();
 		Person personToSearch = new Person();
@@ -57,8 +63,10 @@ public class URLController {
 		// get persons at the address
 		personToSearch.setAddress(address);
 		List<Person> persons = personService.getPerson(personToSearch);
-		if (persons == null)
+		if (persons == null) {
+			logger.error(String.format("no persons found on /childAlert, args : %s", address));
 			return ResponseEntity.notFound().build();
+		}
 		for (Person person : persons) {
 			// get medical record of a person
 			MedicalRecord medicalRecord = medicalRecordService.getMedicalRecord(person);
@@ -71,6 +79,7 @@ public class URLController {
 			} else
 				result.addAdult(person);
 		}
+		logger.info(String.format("successful request on /childAlert, args : %s", address));
 		return ResponseEntity.ok().body(result);
 
 	}
@@ -86,8 +95,10 @@ public class URLController {
 		 * @return - A List<String> containing phone numbers
 		 */
 
-		if (firestation == null)
+		if (firestation == null) {
+			logger.error(String.format("bad request on /phoneAlert, args : %s", firestation));
 			return ResponseEntity.badRequest().build();
+		}
 
 		PhoneAlertURLDto result = new PhoneAlertURLDto();
 		FireStation fireStationToSearch = new FireStation();
@@ -96,25 +107,32 @@ public class URLController {
 		// get fire stations
 		fireStationToSearch.setStation(firestation);
 		List<FireStation> fireStations = fireStationService.getFireStation(fireStationToSearch);
-		if (fireStations == null)
+		if (fireStations == null) {
+			logger.error(String.format("no firestations found on /phoneAlert, args : %s", firestation));
 			return ResponseEntity.notFound().build();
+		}
 		for (FireStation fireStationInDB : fireStations) {
 			// get persons
 			personToSearch.setAddress(fireStationInDB.getAddress());
 			List<Person> persons = personService.getPerson(personToSearch);
-			if (persons == null)
+			if (persons == null) {
+				logger.error(String.format("no persons found on /phoneAlert, args : %s", firestation));
 				return ResponseEntity.notFound().build();
+			}
 			for (Person personInDB : persons) {
 				if (personInDB.getPhone() != null)
 					result.addPhone(personInDB.getPhone());
 			}
 		}
-		if (result.getPhones().isEmpty())
+		if (result.getPhones().isEmpty()) {
+			logger.error(String.format("no phones found on /phoneAlert, args : %s", firestation));
 			return ResponseEntity.notFound().build();
+		}
+		logger.info(String.format("successful request on /phoneAlert, args : %s", firestation));
 		return ResponseEntity.ok().body(result);
 	}
 
-	@GetMapping(value = "/fire", params = "address")
+	@GetMapping(value = "fire", params = "address")
 	public ResponseEntity<FireURLDto> fireURL(@RequestParam(value = "address") String address) {
 
 		/**
@@ -124,8 +142,10 @@ public class URLController {
 		 * @return - A FireURLInfo object
 		 */
 
-		if (address == null)
+		if (address == null) {
+			logger.error(String.format("bad request on /fire, args : %s", address));
 			return ResponseEntity.badRequest().build();
+		}
 
 		FireURLDto result = new FireURLDto();
 		FireStation fireStationToSearch = new FireStation();
@@ -134,20 +154,23 @@ public class URLController {
 		// get fire station
 		fireStationToSearch.setAddress(address);
 		List<FireStation> fireStations = fireStationService.getFireStation(fireStationToSearch);
-		if (fireStations == null)
+		if (fireStations == null) {
+			logger.error(String.format("no firestations found on /fire, args : %s", address));
 			return ResponseEntity.notFound().build();
+		}
 		result.setFireStationNumber(fireStations.get(0).getStation());
 		// get persons
 		personToSearch.setAddress(address);
 		List<Person> persons = personService.getPerson(personToSearch);
-		if (persons == null)
+		if (persons == null || persons.isEmpty()) {
+			logger.error(String.format("no persons found on /fire, args : %s", address));
 			return ResponseEntity.notFound().build();
+		}
 		for (Person person : persons) {
 			MedicalRecord medicalRecord = medicalRecordService.getMedicalRecord(person);
 			result.addPerson(person, medicalRecord);
 		}
-		if (result.getPersons().isEmpty())
-			return ResponseEntity.notFound().build();
+		logger.info(String.format("successful request on /fire, args : %s", address));
 		return ResponseEntity.ok().body(result);
 	}
 
@@ -162,8 +185,10 @@ public class URLController {
 		 * @return - A FloodStationsURLInfo object
 		 */
 
-		if (stations == null || stations.isEmpty())
+		if (stations == null || stations.isEmpty()) {
+			logger.error(String.format("bad request on /flood/stations, args : %s", stations));
 			return ResponseEntity.badRequest().build();
+		}
 
 		FloodStationsURLDto result = new FloodStationsURLDto();
 		FireStation fireStationToSearch = new FireStation();
@@ -190,8 +215,11 @@ public class URLController {
 				}
 			}
 		}
-		if (result.getHomes().isEmpty())
+		if (result.getHomes().isEmpty()) {
+			logger.error(String.format("no homes found on /flood/stations, args : %s", stations));
 			return ResponseEntity.notFound().build();
+		}
+		logger.info(String.format("successful request on /flood/stations, args : %s", stations));
 		return ResponseEntity.ok().body(result);
 	}
 
@@ -206,8 +234,10 @@ public class URLController {
 		 * @return - A List<personInfoURLPerson> object
 		 */
 
-		if (firstName == null || lastName == null)
+		if (firstName == null || lastName == null) {
+			logger.error(String.format("bad request on /personInfo, args : %s, %s", firstName, lastName));
 			return ResponseEntity.badRequest().build();
+		}
 
 		PersonInfoURLDto result = new PersonInfoURLDto();
 		Person personToSearch = new Person();
@@ -215,15 +245,16 @@ public class URLController {
 		personToSearch.setLastName(lastName);
 		// get persons
 		List<Person> persons = personService.getPerson(personToSearch);
-		if (persons == null)
+		if (persons == null || persons.isEmpty()) {
+			logger.error(String.format("no persons found on /personInfo, args : %s, %s", firstName, lastName));
 			return ResponseEntity.notFound().build();
+		}
 		// get medical record
 		for (Person person : persons) {
 			MedicalRecord medicalRecord = medicalRecordService.getMedicalRecord(person);
 			result.addPerson(new PersonInfoURLPerson(person, medicalRecord));
 		}
-		if (result.getPersons().isEmpty())
-			return ResponseEntity.notFound().build();
+		logger.info(String.format("successful request on /personInfo, args : %s, %s", firstName, lastName));
 		return ResponseEntity.ok().body(result);
 	}
 
@@ -237,23 +268,30 @@ public class URLController {
 		 * @return - A List<personInfoURLPerson> object
 		 */
 
-		if (city == null)
+		if (city == null) {
+			logger.error(String.format("bad request on /communityEmail, args : %s", city));
 			return ResponseEntity.badRequest().build();
+		}
 
 		CommunityEmailURLDto result = new CommunityEmailURLDto();
 		Person personToSearch = new Person();
 		personToSearch.setCity(city);
 		// get persons
 		List<Person> persons = personService.getPerson(personToSearch);
-		if (persons == null)
+		if (persons == null) {
+			logger.error(String.format("no persons found on /communtiyEmail, args : %s", city));
 			return ResponseEntity.notFound().build();
+		}
 		// get emails
 		for (Person person : persons) {
 			if (person.getEmail() != null)
 				result.addEmail(person.getEmail());
 		}
-		if (result.getEmails().isEmpty())
+		if (result.getEmails().isEmpty()) {
+			logger.error(String.format("no emails found on /communtiyEmail, args : %s", city));
 			return ResponseEntity.notFound().build();
+		}
+		logger.info(String.format("successful request on /communityEmail, args : %s", city));
 		return ResponseEntity.ok().body(result);
 	}
 }
