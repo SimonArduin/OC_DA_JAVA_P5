@@ -1,6 +1,7 @@
 package com.openclassrooms.safetynetalerts.unit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -231,8 +232,12 @@ public class FireStationControllerTest {
 			
 			ResponseEntity<FireStationURLDto> result = fireStationController.fireStationURL(fireStation.getStation());
 			
-			assertEquals(HttpStatus.valueOf(404), result.getStatusCode());
-			assertEquals(null, result.getBody());
+			assertEquals(HttpStatus.valueOf(200), result.getStatusCode());
+
+			assertTrue(result.getBody().getPersons().isEmpty());
+			
+			assertEquals(0, result.getBody().getNumberOfAdults());
+			assertEquals(0, result.getBody().getNumberOfChildren());
 			
 			verify(fireStationService, Mockito.times(1)).getFireStation(any(FireStation.class));
 			verify(personService, Mockito.times(numberOfFireStationByStationNumber)).getPerson(any(Person.class));

@@ -123,15 +123,12 @@ public class URLController {
 			List<Person> persons = personService.getPerson(personToSearch);
 			logger.debug(
 					String.format("persons found for fireStation %s in phoneAlertURL : %s", fireStationInDB, persons));
-			if (persons == null) {
-				logger.error(String.format("no persons found on /phoneAlert, args : %s", firestation));
-				return ResponseEntity.notFound().build();
-			}
-			for (Person personInDB : persons) {
-				if (personInDB.getPhone() != null)
-					result.addPhone(personInDB.getPhone());
-				logger.debug(String.format("current result for phoneAlertURL : %s", result));
-			}
+			if (persons != null)
+				for (Person personInDB : persons) {
+					if (personInDB.getPhone() != null)
+						result.addPhone(personInDB.getPhone());
+					logger.debug(String.format("current result for phoneAlertURL : %s", result));
+				}
 		}
 		if (result.getPhones().isEmpty()) {
 			logger.error(String.format("no phones found on /phoneAlert, args : %s", firestation));

@@ -152,11 +152,7 @@ public class FireStationController {
 			personToSearch.setAddress(fireStation.getAddress());
 			List<Person> persons = personService.getPerson(personToSearch);
 			logger.debug(String.format("persons found for fireStation %s in fireStationURL : %s", fireStation, persons));
-			if (persons == null || persons.isEmpty()) {
-				logger.error(String.format("no persons found on /firestation GET, args : %s", stationNumber));
-				return ResponseEntity.notFound().build();
-			}
-			else
+			if (persons != null && !persons.isEmpty())
 				for (Person personInFireStation : persons) {
 					// get first name, last name, address and phone number of the resident
 					result.addPerson(new FireStationURLPerson(personInFireStation));

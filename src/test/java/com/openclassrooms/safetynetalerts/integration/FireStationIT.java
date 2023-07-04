@@ -94,7 +94,12 @@ public class FireStationIT {
 		public void getFireStationTestIfNoPersons() throws Exception {
 			DataBase.setDataBase(fireStationList, null, medicalRecordList);
 			mockMvc.perform(get(String.format("/firestation?stationNumber=%s", fireStation.getStation())))
-					.andExpect(status().isNotFound()).andExpect(jsonPath("$").doesNotExist());
+			.andExpect(status().isOk())
+
+			.andExpect(jsonPath("persons").isEmpty())
+
+			.andExpect(jsonPath("numberOfAdults", is(0)))
+			.andExpect(jsonPath("numberOfChildren", is(0)));
 		}
 
 		@Test
